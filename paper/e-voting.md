@@ -125,7 +125,7 @@ En un sistema de *voto único mixto* (MSV) también se vota por un candidato par
 
 
 
-# Sistemas de Voto Electro'nico
+# Sistemas de Voto Electrónico
 ## Requisitos 
 En la siguiente sección se muestran los requisitos principales  que debe cumplir todo sistema de votación electrónico. Adicionalmente, se presentan otros requisitos opcionales que contribuyen a aumentar la calidad del sistema [@wang2017review].
 
@@ -171,7 +171,7 @@ Una de las capas en la arquitectura de Agora es la red Valeda, la cual está for
 
 Cada paso intermedio en el proceso de elección es registrado en la *blockchain* de Agora, lo cual permite una **verificación de extremo a extremo**. <!--@audit no coincide con la definicio'n --> Esta verificación es fácilmente alcanzable mediante *Audit*, una aplicación desarrollada por Agora. 
 
-Una vez  se descarga la información del *bulletin board*\footnote{Así Agora llama a su \textit{blockchain}.}, se puede inspeccionar la elección totalmente **offline**. Un dispositivo no necesita muchos recursos para validar.
+Una vez  se descarga la información del *bulletin board*, se puede inspeccionar la elección totalmente **offline**. Un dispositivo no necesita muchos recursos para validar.
 
 Con respecto a la **usabilidad**: cualquier votante sin conocimientos técnicos puede emitir y verificar un voto.
 
@@ -181,8 +181,29 @@ Además de poder votar desde una PC o una máquina de votación, también se pue
 ## *Open Vote Network*
 *Open Vote Network* es un protocolo de dos vueltas para votaciones de pequeña escala. En la primera ronda el votante se registra y en la segunda  emite su voto.  Está pensado para **sistemas de pluralidad** de dos opciones pero se puede extender para múltiples opciones [@ovn]. En @ovn se presenta una implementación de este protocolo mediante contratos inteligentes en Ethereum.
 
-<!-- @remind el tutor kiere explike esto -->
-Se alcanza la **privacidad** mediante la encriptación del voto y sólo puede ser revelado si los demás votantes conspiran con ese objetivo. <!--@note pa hablar d co'mo c encripta el voto no basta con mencionar el nombre del algoritmo, ya q es usan2 un generador en un grupo d orden primo donde DDH es un problema intratable -->
+Sea $g$ un generador de un grupo finito cíclico de orden primo $q$ en el cual no se puede tratar el [problema de decisión de Diffie-Hellman (DDH)](https://en.wikipedia.org/wiki/Decisional_Diffie%E2%80%93Hellman_assumption).<!--@audit wiki link--> El proceso de votación posee dos partes fundamentales: 
+
+1. cada elector publica su llave de votación $g^{x_i}$, donde $x_i$ es un número aleatorio de $\mathbb{Z}_q$. Luego, el votante $i$-ésimo calcula 
+   
+   $$
+   Y_i = {b_i \over a_i}, \quad 1 \leq \forall i \leq n,
+   $$
+   donde
+   $$
+   b_i = \begin{cases}
+    1 &\text{si } i = 1 \\
+    \prod_{j=1}^{i-1} g^{x_j} &\text{si } 1 < i \leq n
+   \end{cases} \quad \text{ y } \quad 
+   a_i = \begin{cases}
+    \prod_{j=i+1}^{n} g^{x_j}  &\text{si } 1 \leq i < n \\
+    1 &\text{si } i = n  
+   \end{cases}
+   $$
+
+
+2. el votante publica su voto. Este paso consiste en emitir el número $(Y_i)^{x_i} g^{v_i}$, donde $v_i$ es 0 si el voto es NO o 1 si es SÍ.
+
+Dado que  los valores de $g^{x_i}$ y $(Y_i)^{x_i} g^{v_i}$ son públicos para toda $i$, no existe un algoritmo polinomial para calcular $x_i$, ya que DDH es intratable en el grupo del cual $g$ es generador. Luego, no es posible que el votante $j$-ésimo, con $j \neq i$, sea capaz de calcular el valor de $v_i$ en tiempo polinomial, a menos, claro está, de que se conozcan los votos de los restantes votantes luego del conteo total. De esta forma OVN logra la **privacidad**.
 
 
 
@@ -192,8 +213,7 @@ Se alcanza la **privacidad** mediante la encriptación del voto y sólo puede se
 
 
 
-<!-- @remind el tutor kiere q explike esto -->
-El **doble voto** no es posible. <!--a menos que el votante coopere.-->
+Junto con el voto, el votante también publica una [*prueba de cero conocimiento*](https://en.wikipedia.org/wiki/Zero-knowledge_proof)  para probar el valor de $v_i$ y la identidad del votante.  De esta forma se evita el **doble voto**.
 
 
 El administrador configura cuáles son los votantes autorizados y el contrato impide que otros voten (**elegibilidad**).
