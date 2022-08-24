@@ -1,0 +1,7 @@
+{
+    "triggerTaskOnSave.tasks": {
+        "run-pandoc": ["e-voting.md"],
+        "todo.txt-sort-by-priority": ["todo.txt"]
+    },
+    "cSpell.language": "es,es-ES"
+}
