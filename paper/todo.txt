@@ -7,3 +7,7 @@ x (B) Citar gente q lo resuelvan o garanticen requerimientos
 (B) leerse todas las referencias d la tesis
 (B) este problema es intratable y de eso dependen las 2 u'ltimas implementaciones del estado del arte: Decisional Diffie-Hellman (DDH) problem (en el paper d borda count lo dice)
 x (B) 2022-05-07 Tipos de votaciones
+https://www.mdpi.com/2073-8994/12/8/1328
+https://ieeexplore.ieee.org/abstract/document/8405627
+https://ieeexplore.ieee.org/abstract/document/8457919
+http://ijair.id/index.php/ijair/article/view/173

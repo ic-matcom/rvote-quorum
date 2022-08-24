@@ -1,13 +1,17 @@
 ---
-title: Estado del Arte del E-voting
+title: "Capítulo 1: Tendencias y Avances en las Aplicaciones de Voto Electrónico"
 author: Andy Ledesma Garc&iacute;a
 bibliography: bib/raw.bib
 urlcolor: blue
+header-includes: |
+    \usepackage{caption}
+    \usepackage{subcaption}
+    \usepackage[spanish]{babel}
 ---
 
-<!-- @audit kitarle el pare'ntesis a las refs q no lo necesitan: akellas q c mencionan directo, i.e., "como akello q c ve en (ref)" -->
 
-# Elecciones
+
+# Introducción
 Un sistema electoral o de votación es un conjunto de reglas que dictan cómo debe comportarse una elección y cómo son determinados sus resultados. Entre los aspectos que las reglas deciden están:
 
 - cuándo ocurren las elecciones,
@@ -35,25 +39,36 @@ Mediante un sistema electrónico se pueden contar los votos de manera eficiente 
 
 Otras bondades poseen los sistemas electrónicos, como son la flexibilidad, lo fácil que pueden ser de usar y lo baratos que son con respecto a los sistemas tradicionales. Sin embargo, muchos de los sistemas electrónicos existentes son centralizados, esto es, dependen de que una agencia central se encargue de registrar, manejar, calcular y revisar los votos. Toda la confianza debe entonces ser depositada en esa agencia, lo cual hace vulnerable al sistema.
 
-Un sistema descentralizado de votación resuelve ese problema. Entre las tecnologías descentralizadas más empleadas actualmente se encuentra *blockchain*. <!--@todo explikr lo q es blockchain --> Existen algunos sistemas de votación electrónicos que emplean *blockchain*, como es *Agora* [@agora],  y muchas propuestas como son   *Open Vote Network* [@ovn] y la de @borda_count. Para poder comparar cada una de esas propuestas, a continuación se muestran los tipos de sistemas electorales que existen y los requisitos que debe cumplir todo sistema de votación electrónico. 
+Un sistema descentralizado de votación resuelve ese problema. Entre las tecnologías descentralizadas más empleadas actualmente se encuentra *blockchain*. <!--@todo explikr lo q es blockchain --> Existen algunos sistemas de votación electrónicos que emplean *blockchain*, como es @agora,  y muchas propuestas como son   *Open Vote Network* [@ovn] y la de @borda_count. Para poder comparar cada una de esas propuestas, a continuación se muestran los tipos de sistemas electorales que existen y los requisitos que debe cumplir todo sistema de votación electrónico. 
 
-## Tipos
+# Tipos de Elecciones
 
-### Sistemas de Pluralidad
+## Sistemas de Pluralidad
 Son sistemas donde gana el candidato con el mayor número de votos. En caso de que solo se esté eligiendo un puesto, se conocen como *votación de pluralidad de un solo miembro* (SMP, por sus siglas en inglés) o *first-past-the-post* (FPTP o FPP, por sus siglas en inglés). Si en cambio, se eligen varios puestos, un sistema de pluralidad se conoce como *votación en bloque*, *voto múltiple no transferible* o *pluralidad a gran escala* ("plurality-at-large" en inglés). La votación en bloque puede adoptar dos formas, en dependencia de si se puede votar por miembros de cualquier partido o no.
 
-### Sistemas Mayoritarios
+## Sistemas Mayoritarios
 En estos sistemas es necesario que un candidato alcance la mayoría de votos (un determinado porcentaje de los votos) para obtener la victoria. Si esto no sucede, entonces se decide el ganador mediante un *ranking* o en posteriores rondas de votación.
 
-En los sistemas de *ranking*, los electores deben otorgarle un puesto a cada candidato (primero, segundo, tercero, etc.). En las siguientes imágenes 
-<!-- En las figuras \ref{fig:rank-oval}, \ref{fig:rank-names} y \ref{fig:rank-nums} -->
-extraídas de [Wikipedia](https://en.wikipedia.org/wiki/Ranked_voting) <!--@audit no c si c puede poner el enlace asi' o si hay q ponerlo en las refs--> se muestran ejemplos de boletas de estos sistemas.
+En los sistemas de *ranking*, los electores deben otorgarle un puesto a cada candidato (primero, segundo, tercero, etc.). En la figura \ref{fig:ranking-ballots}, extraída de [Wikipedia](https://en.wikipedia.org/wiki/Ranked_voting), <!--@audit no c si c puede poner el enlace asi' o si hay q ponerlo en las refs--> se muestran ejemplos de boletas de estos sistemas.
 
-![Boleta para votación por *ranking* empleando óvalos. \label{fig:rank-oval}](rsrcs/rank-ballot-oval.gif){ width=33% }
-![Boleta para votación por *ranking* empleando nombres. \label{fig:rank-names}](rsrcs/rank-ballot-names.gif){ width=33% }
-![Boleta para votación por *ranking* empleando números. \label{fig:rank-nums}](rsrcs/rank-ballot-numbers.png){ width=33% }
+![](rsrcs/rank-ballot-oval.gif){ width=33% }
+![](rsrcs/rank-ballot-names.gif){ width=33% }
+![](rsrcs/rank-ballot-numbers.png){ width=33% }
+\begin{figure}[!h]
+\begin{subfigure}[t]{0.30\textwidth}
+\caption{Empleando óvalos.}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.30\textwidth}
+\caption{Empleando nombres.}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.30\textwidth}
+\caption{Empleando números.}
+\end{subfigure}
+\caption{Ejemplos de boletas de los sistemas de {\it ranking}.}\label{fig:ranking-ballots}
+\end{figure}
 
-<!-- @audit no salen las imgs en li'nea con sus captions, asi' q no c ven las referencias-->
 
 Para determinar el ganador, se utilizan métodos como el *desempate instantáneo* (IRV, por "instant-runoff voting" en inglés) o la *votación contingente*. 
 
@@ -75,7 +90,7 @@ Cuando a lo sumo se realizan dos rondas de votación, se conoce como *sistema de
 
 Existen sistemas donde en cada ronda se elimina al candidato con menos votos y se realizan rondas hasta que solo quede un candidato, el cual se proclama vencedor. A estos se le conocen como *sistemas exhaustivos*. 
 
-### Representación Proporcional
+## Representación Proporcional
 En los *sistemas de representación proporcional* (conocidos como PR) varios candidatos se proclaman ganadores. La proporción del poder de cada candidato vencedor es igual a la proporción de los votos que el candidato obtuvo. Por ejemplo, si los partidos $A_1$, $A_2$, ..., $A_n$ se están disputando los $N$ puestos de un parlamento, entonces
 
 $$
@@ -88,15 +103,19 @@ En la variante *party list PR*, cada partido coloca a sus candidatos en orden en
 
 Existe otra variante llamada *voto único transferible* (STV, por sus siglas en Inglés). Es un sistema de *ranking* donde los electores votan por candidatos de cualquier partido. El voto de un elector se le asigna a la primera opción de su lista. 
 
-En cada ronda se elimina al candidato con menos votos, pero los votos asociados a ese candidato no se pierden: si un elector depositó su voto en ese candidato entonces el voto se transfiere al próximo candidato en su lista que no se ha eliminado. Si no existe un próximo candidato, entonces el voto desaparece. 
+<!-- @audit en muchas ocasiones he esta2 hablan2 como si fuera asi', cuan2 en verdad son familias d algoritmos q vari'an en co'mo toman ciertas decisiones, i.e. en stv no todos hacen lo mismo a la hora d transferir los votos. asi' pasa con otros sistemas tambie'n -->
 
-Antes de comenzar el proceso, se designa una *cuota*. Cuando los votos de un candidato sean mayores o iguales que dicha cuota, entonces se considera elegido y los votos sobrantes (el excedente) se distribuyen de manera similar a cuando se elimina un candidato, con la diferencia de que los votos que no se pueden distribuir no desaparecen. Si   los votos que se pueden transferir superan al excedente, entonces se debe considerar un método que permita distribuir el excedente  proporcionalmente.
+En cada ronda se elimina al candidato con menos votos, pero los votos asociados a ese candidato no se pierden: si un elector depositó su voto en ese candidato entonces el voto se transfiere al próximo candidato no eliminado  en la lista del votante. Si no existe un próximo candidato, entonces el voto desaparece. 
+
+Antes de comenzar el proceso, se designa una *cuota*. Cuando los votos de un candidato sean mayores o iguales que dicha cuota, entonces se considera elegido y los votos sobrantes (el excedente) no se pierden: si un elector depositó su voto en ese candidato, entonces el voto se transfiere al próximo candidato no eliminado  en la lista del votante, en caso de existir. Si la cantidad de candidatos no eliminados que se encuentran después del candidato ganador en alguna lista es mayor que el excedente, entonces se debe considerar un método que permita distribuir el excedente  proporcionalmente. 
+
+Nótese que cuando no existe un próximo candidato al cual transferir los votos, se procede de manera distinta en dependencia de si el candidato en cuestión perdió o ganó: en el primer caso los votos desaparecen, mientras que en el segundo, permanecen en el candidato.
 
 El proceso termina cuando los $N$ asientos han sido ocupados por candidatos elegidos o cuando la cantidad de asientos libres iguala al número de candidatos todavía en disputa, en cuyo caso se declaran electos a esos candidatos.
 
 Con una cuota justa, mientras más grande sea $N$, más proporcional será la distribución de los $N$ asientos en un STV.<!--@audit justifica o pon ref--> Las cuotas de [Hare](https://en.wikipedia.org/wiki/Hare_quota) y de [Droop](https://en.wikipedia.org/wiki/Droop_quota) <!--@audit enlaces a wikipedia, eso creo q es malo--> son las más usadas. 
 
-###  Sistemas Mixtos
+##  Sistemas Mixtos
 La *votación paralela* es un ejemplo de sistema mixto. En él se eligen una parte de los asientos mediante un método de votación y la otra parte, empleando otro método; por ejemplo, FPTP para una parte y *party-list PR* para la otra. Ambas votaciones se pueden realizar en paralelo porque no deben estar conectadas en ningún sentido.
 
 Otro sistema mixto es el *mixed-member proportional representation*, en el cual cada elector emite dos votos: uno por un candidato para que represente a su distrito electoral y otro por un partido para que lo represente al nivel más alto. Los puestos son asignados primero a los ganadores de cada distrito y luego a los miembros de los partidos, de manera proporcional con respecto a la cantidad de votos. De esta forma, se ejecutan dos tipos de votaciones: una donde gana un solo candidato (generalmente una votación de pluralidad) y otra donde se utiliza un método de representación proporcional.
@@ -104,9 +123,9 @@ Otro sistema mixto es el *mixed-member proportional representation*, en el cual 
 En un sistema de *voto único mixto* (MSV) también se vota por un candidato para el distrito y por un partido para un nivel más alto, pero cada elector sólo emite un voto. Dicho voto va primeramente para el candidato que el votante desea que lo represente a nivel de distrito. Si ese voto es "malgastado", esto es, el voto pertenece a un candidato que pierde o forma parte del excedente de un candidato que gana, entonces el voto va para un partido afiliado a ese candidato. Un sistema MSV está compuesto entonces por un sistema de representación proporcional que se alimenta (sus votos provienen) de un sistema de pluralidad o mayoritario. Los puestos son asignados como en los *mixed-member PR*.
 
 
-<!--@remind gui'at x [sensors](sensors-21-05874-v4.pdf). Ahi' tambie'n c habla d las ventajas d hacerlo con blockchain y eso. Ahi' hay una pila d cosas, es el lugar q tienes q mirar ahora -->
 
 
+# Sistemas de Voto Electro'nico
 ## Requisitos 
 En la siguiente sección se muestran los requisitos principales  que debe cumplir todo sistema de votación electrónico. Adicionalmente, se presentan otros requisitos opcionales que contribuyen a aumentar la calidad del sistema [@wang2017review].
 
@@ -116,14 +135,11 @@ En la siguiente sección se muestran los requisitos principales  que debe cumpli
     -  robustez: los votos no autorizados o inv&aacute;lidos no deben ser contados.
     
 - Privacidad: no se conoce la decisi&oacute;n del votante.
-- Prevenci&oacute;n del doble voto.
+- Prevenci&oacute;n del doble voto: un votante no puede emitir la misma boleta dos veces. También se debe evitar que un tercero pueda clonar una boleta previamente emitida por un votante, para registrarla de nuevo a nombre de ese votante.
 - Elegibilidad: solo los votantes autorizados pueden votar.
 - Robustez: poder lidiar con una cierta cantidad de comportamientos incorrectos por parte de los votantes o con una falla parcial del sistema (un sistema distribuido resiste mejor este tipo de fallas). 
-- Verificabilidad: alguien puede verificar que un voto haya sido contado. La verificabilidad puede ser de tres tipos: 
-    - individual: el propio votante puede verificarlo.
-    - universal: todos pueden verificar que el resultado final sea correcto.
-    - E2E (*end-to-end*): al votante se le entrega un recibo que demuestra que votó, pero no indica cuál fue su decisión. <!--@audit agora es e2e-verificable sin embargo no entrega recibo-->
-- Usabilidad
+- Verificabilidad individual: el votante debe poder verificar que su voto haya sido contado.
+- Usabilidad: se le debe facilitar a los usuarios del sistema la utilización de este a lo largo del proceso de votación, auditoría y consulta. El usuario debe poder lograr su cometido con la menor cantidad de recursos y la mayor satisfacción posibles. 
 
 ### Adicionales
 - Justeza: no se calculan los resultados hasta el fin de la votaci&oacute;n.
@@ -131,16 +147,10 @@ En la siguiente sección se muestran los requisitos principales  que debe cumpli
 - Eficiencia: el sistema debe responder con rapidez ante una gran cantidad de votantes y elecciones.
 - Movilidad: se puede votar desde dispositivos móviles.
 - *Vote-and-Go:* que se pueda votar *offline* una vez la boleta haya sido emitida.
-- Verificabilidad Universal.
-- Verificabilidad de extremo a extremo (E2E).
-<!-- @todo ver tambie'n estos arti'culos
-https://www.mdpi.com/2073-8994/12/8/1328
-https://ieeexplore.ieee.org/abstract/document/8405627
-https://ieeexplore.ieee.org/abstract/document/8457919
-http://ijair.id/index.php/ijair/article/view/173
- -->
+- Verificabilidad universal: cualquier persona puede verificar que los votos hayan sido contados correctamente.
+- Verificabilidad de extremo a extremo (*end-to-end* o E2E): al votante se le entrega un recibo que demuestra que votó, pero no indica cuál fue su decisión. <!--@audit agora es e2e-verificable sin embargo no entrega recibo-->
 
-# Agora
+## Agora
 Agora es un sistema de votación basado en *blockchain* desarrollado por la compañía homónima con sede en Suiza. Está destinado a gobiernos e instituciones [@agora].
 
 En él se pueden realizar elecciones mayoritarias y STV.
@@ -151,19 +161,28 @@ Las boletas se encriptan con el umbral de ElGamal [@elgamal-threshold] <!--@todo
 
 Agora no posee un mecanismo propio para autenticar los votos, en cambio, depende de que los administradores de la red seleccionen un sistema de manejo de identidades. <!--@note esto es eligibilidad-->
 
-Debido a su transparencia, cualquiera puede detectar errores en el sistema. Agora los reporta a los auditores y los almacena en el propio sistema. Cuando los auditores <!--@audit seri'a bueno decir kie'nes son los auditores-->resuelven el conflicto publican el resultado en el boletín [@agora]. Por otro lado, no existe un solo punto de fallas. Todo esto contribuye a la  **robustez** del sistema. 
+<!-- @audit valora la opcio'n d poner el te'rmino bulletin board en espanyol -->
 
-Agora posee **verificabilidad individual**, ya que el votante puede verificar que su boleta encriptada refleja su intención de voto, mediante una validación *cast-or-challenge* [@agora]. Los votantes también pueden  verificar que su voto ha sido registrado correctamente (*collected-as-cast validation*). El sistema también posee **verificabilidad universal** y de **extremo a extremo**, mediante la aplicación Audit. Una vez  se descarga la información del *bulletin board*\footnote{Así Agora llama a su \textit{blockchain}.}, se puede inspeccionar la elección totalmente **offline**. Un dispositivo no necesita muchos recursos para validar.
+Con respecto a los errores, Agora los detecta, los reporta a los auditores y los almacena en el propio sistema. Cuando los auditores <!--@audit sería bueno decir kiénes son los auditores-->resuelven el conflicto publican el resultado en el *bulletin board*\footnote{Así Agora llama a su \textit{blockchain}.} [@agora]. Por otro lado, el sistema es capaz de soportar un número limitado de [fallas bizantinas](https://es.m.wikipedia.org/wiki/Tolerancia_a_faltas_bizantinas). <!--@audit url a wikipedia --> Todo esto contribuye a la  **robustez** de Agora. 
+
+Agora posee **verificabilidad individual**, ya que el votante puede verificar que su boleta encriptada refleja su intención de voto, mediante una validación *cast-or-challenge* [@agora]. Los votantes también pueden  verificar que su voto ha sido registrado correctamente (*collected-as-cast validation*). 
+
+Una de las capas en la arquitectura de Agora es la red Valeda, la cual está formada por los nodos auditores. Estos nodos se encargan de validar los resultados de la elección, los cuales se encuentran almacenados en el *bulletin board*. Cualquiera en el mundo puede correr un nodo auditor y, por ende, verificar una elección en Agora. Por otro lado, cada cierto tiempo se almacena una copia del estado del *bulletin board* en la *blockchain* de Bitcoin. Todo esto contribuye a que Agora sea un sistema **verificable universalmente**. 
+
+Cada paso intermedio en el proceso de elección es registrado en la *blockchain* de Agora, lo cual permite una **verificación de extremo a extremo**. <!--@audit no coincide con la definicio'n --> Esta verificación es fácilmente alcanzable mediante *Audit*, una aplicación desarrollada por Agora. 
+
+Una vez  se descarga la información del *bulletin board*\footnote{Así Agora llama a su \textit{blockchain}.}, se puede inspeccionar la elección totalmente **offline**. Un dispositivo no necesita muchos recursos para validar.
 
 Con respecto a la **usabilidad**: cualquier votante sin conocimientos técnicos puede emitir y verificar un voto.
 
 Además de poder votar desde una PC o una máquina de votación, también se puede votar desde un dispositivo móvil.
 
 
-# *Open Vote Network*
-*Open Vote Network* es un protocolo de dos vueltas para votaciones de pequeña escala. En la primera ronda el votante se registra y en la segunda  emite su voto.  Está pensado para **sistemas de pluralidad** de dos opciones pero se puede extender para múltiples opciones [@ovn]. En [@ovn] se presenta una implementación de este protocolo mediante contratos inteligentes en Ethereum.
+## *Open Vote Network*
+*Open Vote Network* es un protocolo de dos vueltas para votaciones de pequeña escala. En la primera ronda el votante se registra y en la segunda  emite su voto.  Está pensado para **sistemas de pluralidad** de dos opciones pero se puede extender para múltiples opciones [@ovn]. En @ovn se presenta una implementación de este protocolo mediante contratos inteligentes en Ethereum.
 
-Se alcanza la **privacidad** mediante la encriptación del voto y sólo puede ser revelado si los demás votantes conspiran con ese objetivo.
+<!-- @remind el tutor kiere explike esto -->
+Se alcanza la **privacidad** mediante la encriptación del voto y sólo puede ser revelado si los demás votantes conspiran con ese objetivo. <!--@note pa hablar d co'mo c encripta el voto no basta con mencionar el nombre del algoritmo, ya q es usan2 un generador en un grupo d orden primo donde DDH es un problema intratable -->
 
 
 
@@ -173,7 +192,7 @@ Se alcanza la **privacidad** mediante la encriptación del voto y sólo puede se
 
 
 
-
+<!-- @remind el tutor kiere q explike esto -->
 El **doble voto** no es posible. <!--a menos que el votante coopere.-->
 
 
@@ -183,7 +202,7 @@ El sistema es resistente a los [ataques de reingreso](https://hackernoon.com/hac
 
 Cualquiera puede contar los votos. El votante puede verificar que su voto haya sido registrado y emitido correctamente, mediante la inspección de la *blockchain* y desencriptando su voto con su llave privada. De esta manera, el sistema alcanza la **verificabilidad individual y universal**.
 
-En lo que respecta a la **usabilidad**, los votantes necesitan guardar toda la *blockchain*, aunque es un requisito que puede ser eliminado [@ovn]. Según  [@ovn], una elección en la que participen 40 votantes consume en total 145381858 de gas\footnote{Ver definición de gas en \url{https://ethereum.org/en/developers/docs/gas/}.}. A precio actual\footnote{28 de Julio del 2022, 11:39 am.}, eso trae un costo aproximado de    $14406, de los cuales $1232 recaen sobre el administrador y el resto sobre los votantes, promediando un costo de $329 por votante, aproximadamente. Es un costo bastante elevado.
+En lo que respecta a la **usabilidad**, los votantes necesitan guardar toda la *blockchain*, aunque es un requisito que puede ser eliminado [@ovn]. Según  @ovn, una elección en la que participen 40 votantes consume en total 145381858 de gas\footnote{Ver definición de gas en \url{https://ethereum.org/en/developers/docs/gas/}.}. A precio actual\footnote{28 de Julio del 2022, 11:39 am.}, eso trae un costo aproximado de    $14406, de los cuales $1232 recaen sobre el administrador y el resto sobre los votantes, promediando un costo de $329 por votante, aproximadamente. Es un costo bastante elevado.
 
 No se pueden calcular los votos hasta que todos hayan sido emitidos, por lo que el requisito de la  **justeza** es satisfecho.
 
@@ -196,7 +215,7 @@ Para que el proceso termine exitosamente, es necesario que todos los votantes re
 
 <!-- los logs c mandan a la blockchain d btc. Estos logs son snapshots del bulletin board. co'pialo d abajo -->
 
-# Extensión de *Open Vote Network* para Sistemas de *Ranking* con Conteo de Borda
+## Extensión de *Open Vote Network* para Sistemas de *Ranking* con Conteo de Borda
 En @borda_count se presenta un protocolo basado en *Open Vote Network* que permite la ejecución de sistemas electorales de ranking que empleen el conteo de Borda [@borda_count]. La implementación se realizó sobre Ethereum mediante contratos inteligentes.
 
 Debido a que este protocolo se basa en OVN, es natural que sus características sean semejantes. El costo de la elección es también de naturaleza elevada. Según  @borda_count, una elección en la que participen 80 votantes con 5 candidatos cuesta, a precio actual\footnote{31 de Julio del 2022, 04:05 pm. 1 ETH $\approx \$1721$. {\it fee} del bloque: 11 gwei. {\it fee} del minero: 1 gwei.}, $1604 para el administrador y $828 para cada votante,  aproximadamente. Es un costo bastante elevado.
