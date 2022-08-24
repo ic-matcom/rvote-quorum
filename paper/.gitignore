@@ -1,1 +1,6 @@
 /out.pdf
+/quorum.*
+!quorum.md
+/e-voting.*
+!e-voting.md
+/info/

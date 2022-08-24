@@ -1,6 +1,6 @@
 {
     "triggerTaskOnSave.tasks": {
-        "run-pandoc": ["e-voting.md"],
+        "run-pandoc": ["e-voting.md", "quorum.md"],
         "todo.txt-sort-by-priority": ["todo.txt"]
     },
     "cSpell.language": "es,es-ES"

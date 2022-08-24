@@ -5,7 +5,7 @@
         "command": "pandoc",
         "args": [
             "-f", "markdown+example_lists+link_attributes",
-            "e-voting.md",
+            "${file}",
             "-o", "out.pdf",
             "--citeproc"
         ],
