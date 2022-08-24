@@ -5,6 +5,8 @@ bibliography: bib/raw.bib
 urlcolor: blue
 ---
 
+<!-- @audit kitarle el pare'ntesis a las refs q no lo necesitan: akellas q c mencionan directo, i.e., "como akello q c ve en (ref)" -->
+
 # Elecciones
 Un sistema electoral o de votación es un conjunto de reglas que dictan cómo debe comportarse una elección y cómo son determinados sus resultados. Entre los aspectos que las reglas deciden están:
 
@@ -158,13 +160,69 @@ Con respecto a la **usabilidad**: cualquier votante sin conocimientos técnicos 
 Además de poder votar desde una PC o una máquina de votación, también se puede votar desde un dispositivo móvil.
 
 
+# *Open Vote Network*
+*Open Vote Network* es un protocolo de dos vueltas para votaciones de pequeña escala. En la primera ronda el votante se registra y en la segunda  emite su voto.  Está pensado para **sistemas de pluralidad** de dos opciones pero se puede extender para múltiples opciones [@ovn]. En [@ovn] se presenta una implementación de este protocolo mediante contratos inteligentes en Ethereum.
+
+Se alcanza la **privacidad** mediante la encriptación del voto y sólo puede ser revelado si los demás votantes conspiran con ese objetivo.
+
+
+
+<!-- el conteo d los votos lo hac el propio sistema -->
 
 
 
 
 
 
-<!-- los logs c mandan a la blockchain d btc. Estos logs son snapshots del bulletin board -->
+El **doble voto** no es posible. <!--a menos que el votante coopere.-->
 
+
+El administrador configura cuáles son los votantes autorizados y el contrato impide que otros voten (**elegibilidad**).
+
+El sistema es resistente a los [ataques de reingreso](https://hackernoon.com/hack-solidity-reentrancy-attack). Por otro lado, existe la posibilidad de que la mayoría de los mineros eviten el registro de un votante, aun cuando este haya emitido la orden de registro a tiempo, por lo que se requiere que los votantes se registren razonablemente antes del tiempo límite.  De esa manera se caracteriza la **robustez** del sistema.
+
+Cualquiera puede contar los votos. El votante puede verificar que su voto haya sido registrado y emitido correctamente, mediante la inspección de la *blockchain* y desencriptando su voto con su llave privada. De esta manera, el sistema alcanza la **verificabilidad individual y universal**.
+
+En lo que respecta a la **usabilidad**, los votantes necesitan guardar toda la *blockchain*, aunque es un requisito que puede ser eliminado [@ovn]. Según  [@ovn], una elección en la que participen 40 votantes consume en total 145381858 de gas\footnote{Ver definición de gas en \url{https://ethereum.org/en/developers/docs/gas/}.}. A precio actual\footnote{28 de Julio del 2022, 11:39 am.}, eso trae un costo aproximado de    $14406, de los cuales $1232 recaen sobre el administrador y el resto sobre los votantes, promediando un costo de $329 por votante, aproximadamente. Es un costo bastante elevado.
+
+No se pueden calcular los votos hasta que todos hayan sido emitidos, por lo que el requisito de la  **justeza** es satisfecho.
+
+
+
+El votante le puede probar a otros cuál fue su decisión, mostrándole su llave privada. Por ello, *Open Vote Network* sólo es adecuado en ambientes de poca **coerción**.
+
+Para que el proceso termine exitosamente, es necesario que todos los votantes registrados emitan su voto. Para incentivarlos, se les exige que depositen ether cuando se registran y se les devuelve la misma cantidad cuando emiten el voto. En caso de que abandonen la elección, se puede saber quién lo hizo y excluirlo de una elección posterior. El fondo retenido del votante que abandona puede ser utilizado para recompensar al resto de los votantes por tener que repetir la elección.
+
+
+<!-- los logs c mandan a la blockchain d btc. Estos logs son snapshots del bulletin board. co'pialo d abajo -->
+
+# Extensión de *Open Vote Network* para Sistemas de *Ranking* con Conteo de Borda
+En @borda_count se presenta un protocolo basado en *Open Vote Network* que permite la ejecución de sistemas electorales de ranking que empleen el conteo de Borda [@borda_count]. La implementación se realizó sobre Ethereum mediante contratos inteligentes.
+
+Debido a que este protocolo se basa en OVN, es natural que sus características sean semejantes. El costo de la elección es también de naturaleza elevada. Según  @borda_count, una elección en la que participen 80 votantes con 5 candidatos cuesta, a precio actual\footnote{31 de Julio del 2022, 04:05 pm. 1 ETH $\approx \$1721$. {\it fee} del bloque: 11 gwei. {\it fee} del minero: 1 gwei.}, $1604 para el administrador y $828 para cada votante,  aproximadamente. Es un costo bastante elevado.
+
+<!-- El voto de un individuo sólo puede ser revelado si todo los votantes restantes conspiran [@borda_count]. no existe adversario polinomial q pueda deducir el voto d un votante (depende de q el problema DDH sea intratable) -->
+
+<!-- El **doble voto** no es posible. -->
+
+<!-- Cada uno de los pasos del proceso es públicamente verificable. El conteo de los votos puede ser realizado por un tercero. Por todo esto, podemos decir que el sistema posee **verificabilidad universal**. -->
+
+<!-- la eligibilidad c cumple =. -->
+
+
+
+
+<!-- aki' tambie'n pasa lo d la coercio'n. c recomienda su uso cuan2 son pocos los votantes. -->
+
+<!-- la misma historia del re-entrancy -->
+
+<!-- tambie'n necesita tener toa la blockchain -->
+
+
+
+
+<!-- justeza c cumple = -->
+
+<!-- @remind ta bueno hablar d lo caro q cuesta hacer esto sobre ethereum y q quorum es tremenda solucio'n a eso x lo d los fees -->
 
 # Referencias
