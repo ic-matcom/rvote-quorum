@@ -5,6 +5,7 @@ import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/RepVoting.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "./Array.sol";
 
 contract TestRepVoting {
     function testVote() external {
@@ -36,17 +37,13 @@ contract TestRepVoting {
         Assert.equal(
             got, 
             expected, 
-            string.concat("wrong counting. Expected: ", toString(expected), ", got: ", toString(got))
+            string.concat(
+                "wrong counting. Expected: ", 
+                Array.toString(expected), 
+                ", got: ", 
+                Array.toString(got)
+            )
         );
-    }
-
-    function toString(uint[] memory data) private pure returns (string memory) {
-        string memory str = '[';
-        for (uint256 i = 0; i < data.length; i++) {
-            str = string.concat(str, Strings.toString(data[i]), ', ');
-        }
-        str = string.concat(str, ']');
-        return str;
     }
 
     function testSimpleCycleVoting() external {
@@ -72,7 +69,12 @@ contract TestRepVoting {
         Assert.equal(
             got, 
             expected, 
-            string.concat("wrong counting. Expected: ", toString(expected), ", got: ", toString(got))
+            string.concat(
+                "wrong counting. Expected: ", 
+                Array.toString(expected), 
+                ", got: ", 
+                Array.toString(got)
+            )
         );
     }
 
@@ -97,7 +99,12 @@ contract TestRepVoting {
         Assert.equal(
             got, 
             expected, 
-            string.concat("wrong counting. Expected: ", toString(expected), ", got: ", toString(got))
+            string.concat(
+                "wrong counting. Expected: ", 
+                Array.toString(expected), 
+                ", got: ", 
+                Array.toString(got)
+            )
         );
     }
 
@@ -120,7 +127,12 @@ contract TestRepVoting {
         Assert.equal(
             got, 
             expected, 
-            string.concat("wrong counting. Expected: ", toString(expected), ", got: ", toString(got))
+            string.concat(
+                "wrong counting. Expected: ", 
+                Array.toString(expected), 
+                ", got: ", 
+                Array.toString(got)
+            )
         );
     }
 
@@ -160,7 +172,12 @@ contract TestRepVoting {
         Assert.equal(
             got, 
             expected, 
-            string.concat("wrong counting. Expected: ", toString(expected), ", got: ", toString(got))
+            string.concat(
+                "wrong counting. Expected: ", 
+                Array.toString(expected), 
+                ", got: ", 
+                Array.toString(got)
+            )
         );
     }
 
@@ -185,9 +202,9 @@ contract TestRepVoting {
             expected, 
             string.concat(
                 "wrong counting. Expected: ", 
-                toString(expected), 
+                Array.toString(expected), 
                 ", got: ", 
-                toString(got))
+                Array.toString(got))
         );
 
         got = voting.countVotes();
@@ -196,9 +213,9 @@ contract TestRepVoting {
             expected, 
             string.concat(
                 "wrong counting. Expected: ", 
-                toString(expected), 
+                Array.toString(expected), 
                 ", got: ", 
-                toString(got))
+                Array.toString(got))
         );
     }
 }
