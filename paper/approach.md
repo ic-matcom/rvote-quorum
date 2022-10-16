@@ -12,13 +12,13 @@ La manera en la que el banco decide el otorgamiento de préstamos y el valor del
 
 La figura \ref{fig:r-voting} ilustra un ejemplo de votación en el que `A` votó por `B`, `B` y `E` votaron por `C` y `C` votó por `D`. `B` obtiene solamente el voto de `A`, mientras que `C` obtiene los votos de `A`, `B` y `E`. `D` recibe el voto directo de `C` y, con este,  los votos indirectos de los restantes participantes.
 
-![Conteo de votos en votación representativa.\label{fig:r-voting}](rsrcs/rep-voting.pdf)
+![Conteo de votos en votación representativa.\label{fig:r-voting}](latex/Graphics/rep-voting.pdf)
 
 <!-- @todo qué hacer cuan2 tol mun2 se abstiene? -->
 
 En un proceso electoral de este tipo pueden surgir ciclos de votación, como el que se muestra en la figura \ref{fig:voting-cycle}, donde el voto emitido por `D` hacia `B` forma un ciclo que los involucra a ambos y a `C`.
 
-![Ciclo de votación.\label{fig:voting-cycle}](rsrcs/voting-cycle.pdf)
+![Ciclo de votación.\label{fig:voting-cycle}](latex/Graphics/voting-cycle.pdf)
 
 El presente trabajo de diploma\footnote{El tratamiento de este documento como si fuera el trabajo de diploma se hace con toda intención, ya que se pretende que lo que aquí se dice se encuentre plasmado en el documento de tesis.} tiene como objetivo principal darle respuesta a las interrogantes:
 
