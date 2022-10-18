@@ -1,7 +1,7 @@
 ---
 title: "Capítulo 1: Tendencias y Avances en las Aplicaciones de Voto Electrónico"
 author: Andy Ledesma Garc&iacute;a
-bibliography: bib/raw.bib
+bibliography: latex/Bibliography.bib
 urlcolor: blue
 header-includes: |
     \usepackage{caption}
