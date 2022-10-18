@@ -23,9 +23,9 @@
 \RequirePackage{csquotes}
 \RequirePackage[
 	% style=apa,  
-  % style=science,  @FIXME uncomment when delivering
+  % style=science,  % @FIXME uncomment when delivering
 	style=draft,  % @FIXME comment when delivering
-	% citestyle=authoryear,  @FIXME uncomment when delivering
+	% citestyle=authoryear,  % @FIXME uncomment when delivering
   hyperref=true,
 	backref=true
 	]{biblatex}

@@ -3,5 +3,6 @@
         "run-pandoc": ["e-voting.md", "quorum.md", "approach.md"],
         "todo.txt-sort-by-priority": ["todo.txt"]
     },
-    "cSpell.language": "es,es-ES"
+    "cSpell.language": "es,es-ES",
+    "editor.wordWrap": "on"
 }
