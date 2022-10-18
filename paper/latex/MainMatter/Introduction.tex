@@ -3,7 +3,8 @@
 
 
 
-El banco \todo{@TODO qu\'e banco es? metropolitano, BPA, ...?} le ofrece pr\'estamos a entidades del estado cubano. \todo[fancyline]{@TODO poner ejemplos de entidades prestatarias} El banco  decide mediante una subasta el valor e inter\'es de cada pr\'estamo que ofrece. Durante este proceso, se confeccionan los Comit\'es de Mercado Financiero (CMF). \todo{@TODO qu\'e son los comit\'es esos?} Para elegir los miembros y el presidente de cada Comit\'e, se efect\'ua un proceso electoral en el que cualquier elector puede ceder su poder de voto a otro elector. A ese tipo de elecci\'on el autor le denomina \textbf{votaci\'on representativa}.  
+El Estado cubano pide dinero prestado a entidades de la econom\'ia a trav\'es del Banco Central de Cuba. El monto solicitado y el inter\'es m\'aximo con el que se devolver\'a se plasman en un documento llamado bono soberano.  Los posibles prestamistas participan en una subasta por el bono y el que menor tasa de inter\'es exija por el pr\'estamo ser\'a el ganador, y el Estado pasar\'a a ser su prestatario.  Para decidir qui\'enes participan en la subasta, se confeccionan los Comit\'es de Mercado Financiero (CMF).  Los miembros y el presidente de cada Comit\'e se deciden mediante un proceso electoral en el que cualquier elector puede ceder su poder de voto a otro elector. A ese tipo de elecci\'on el autor le denomina \textbf{votaci\'on representativa}.  
+
 
 En un sistema de votaci\'on representativa  los votos se transfieren, esto es, si una persona $A$ vota por una persona $B$ y esta, a su vez, vota por  $C$, entonces el voto de $A$ se transfiere a $C$. En el caso particular de la confecci\'on de los CMF, cada individuo puede votar por a lo sumo otra persona.
 
@@ -37,7 +38,6 @@ Otras bondades poseen los sistemas electrónicos, como son la flexibilidad, lo f
  
 Un sistema digital descentralizado de votación no tiene ese problema. Una de las tecnologías descentralizadas empleadas actualmente es \textit{blockchain}.   \textit{Blockchain} es un registro distribuido e inmutable  de transacciones. Lo que se transacciona puede ser tangible, como son  una casa o dinero en efectivo, o intangible, como son el derecho de autor de una obra o el voto de un elector por un candidato (\cite{blockchain-ibm}). La inmutabilidad y seguridad de este registro se basan en principios de  criptografía, descentralizaci\'on y mecanismos de consenso (\cite{blockch-security-ibm}). 
 
-% @TODO pregu'ntale al tutor cua'nto citar. No m keda claro si es necesario citar cuando hablo de la def d blockchain o cuando hablo de la seguridad de blockchain (ver arriba)
 
 % Hacerlo con \textit{blockchain} ta bueno xq resuelve la parte m\'as importante de esos problemas. 
 
@@ -50,13 +50,27 @@ GoQuorum es una implementaci\'on de Ethereum capaz de crear redes privadas y con
 
 Existen implementaciones de sistemas de votaci\'on en otras \textit{blockchain} (\cite{agora}) y tambi\'en en Ethereum (\cite{ovn} y \cite{borda_count}), pero no se conoce ninguna implementaci\'on de un sistema de voto representativo en GoQuorum.
 
-\todo[inline]{@TODO decir que el Instituto de Criptograf\'ia implement\'o un sistema de votaci\'on en hyperledger fabric pero tampoco nos sirve. ?`C\'omo cito eso?}
+\todo[inline, disable]{@TODO decir que el Instituto de Criptograf\'ia implement\'o un sistema de votaci\'on en hyperledger fabric pero tampoco nos sirve. ?`C\'omo cito eso?}
+
+En \cite{wang2017review} se proponen los requisitos principales y opcionales que debe cumplir todo sistema de votaci\'on electr\'onico. Entre ellos est\'an:
+\begin{itemize}
+    \item correctitud: los votos deben ser contados correctamente, esto es, todos los votos v\'alidos deben ser contados y los votos inv\'alidos no deben ser contados.
+
+    \item privacidad: no se conoce la decisi\'on del votante.
+
+    \item prevenci\'on del doble voto: un votante no puede emitir la misma boleta dos veces. También se debe evitar que un tercero pueda clonar una boleta previamente emitida por un votante, para registrarla de nuevo a nombre de ese votante.
+
+    \item elegibilidad: s\'olo los votantes autorizados pueden votar.
+
+    \item robustez: poder lidiar con una cierta cantidad de comportamientos incorrectos por parte de los votantes o con una falla parcial del sistema.
+
+    \item justeza: no se calculan los resultados hasta el fin de la votaci\'on.
+
+\end{itemize}
+
+Con el presente trabajo de diploma  se pretende dise\~nar e implementar un sistema de votaci\'on representativa en GoQuorum que cumpla con los requisitos mencionados anteriormente. El sistema debe ser capaz, adem\'as, de realizar elecciones para un CMF, asignando un valor justo de votos para los electores involucrados en un ciclo de votaci\'on y determinando un ganador, incluso cuando hay empate en el primer lugar. El sistema debe ser lo m\'as gen\'erico posible, de forma tal que sea factible su uso m\'as all\'a del entorno bancario.
 
 
-Con el presente trabajo de diploma  se pretende dise\~nar e implementar un sistema de votaci\'on representativa en GoQuorum. El sistema debe ser capaz de realizar elecciones para un CMF, asignando un valor justo de votos para los electores involucrados en un ciclo de votaci\'on y determinando un ganador, incluso cuando hay empate en el primer lugar. El sistema debe ser lo m\'as gen\'erico posible, de forma tal que sea factible su uso m\'as all\'a del entorno bancario.
-
-
-\todo[inline]{@audit no s\'e si aqu\'i poner algunos requisitos de \cite{wang2017review} que pensamos que el sistema debe cumplir o simplemente citar ese art\'iculo y decir que el sistema debe ser implementado de forma tal que cumpla la mayor cantidad de requisitos posibles}
 
 
 % estudiar, disenyar y modelar, implementar y evaluar resultados
