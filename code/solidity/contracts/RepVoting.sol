@@ -140,9 +140,10 @@ contract RepVoting {
     /// hasn't to worry about adding and substracting 1
     /// @return Parent of x
     function get(uint32[] memory pi, uint32 x) private pure returns (int32) {
-        return int32(pi[x+1]-1);
+        return int32(pi[x+1])-1;
     }
 
+    // @FIXME `y` param must be `int32` instead in order to support -1
     /// @dev Sets parent of a vertex
     /// @param pi DFS parent array
     /// @param x Target vertex
@@ -151,59 +152,59 @@ contract RepVoting {
         pi[x+1] = y+1;
     }
 
-    function getWinner() external view returns (uint32) {
-        uint[] memory count = countVotes();
-        (uint32 mostVotesId, bool tied) = isTied(count);
-        if (!tied) {
-            return mostVotesId;
-        }
-        uint32 n = uint32(graph.length);
-        TiedPerson.Data[] memory tiedData = new TiedPerson.Data[](n);
-        Ranks.Data memory ranks = Ranks.build(count[mostVotesId], n);  // @TODO use "using for" for attachment
+    // function getWinner() external view returns (uint32) {
+    //     uint[] memory count = countVotes();
+    //     (uint32 mostVotesId, bool tied) = isTied(count);
+    //     if (!tied) {
+    //         return mostVotesId;
+    //     }
+    //     uint32 n = uint32(graph.length);
+    //     TiedPerson.Data[] memory tiedData = new TiedPerson.Data[](n);
+    //     Ranks.Data memory ranks = Ranks.build(count[mostVotesId], n);  
 
-        // counting direct votes giving to tied-in-the-first-place (max-tied) people
-        uint32 maxTiedCount;
-        for (uint32 x = 0; x < n; x++) {
-            // gets next max-tied person in x's ranking and the time its predecessor 
-            // (can be a non max-tied) in the ranking voted for him
-            (uint32 firstX, uint voteTime, bool emptyRank) = ranks.next(x);
+    //     // counting direct votes giving to tied-in-the-first-place (max-tied) people
+    //     uint32 maxTiedCount;
+    //     for (uint32 x = 0; x < n; x++) {
+    //         // gets next max-tied person in x's ranking and the time its predecessor 
+    //         // (can be a non max-tied) in the ranking voted for him
+    //         (uint32 firstX, uint voteTime, bool emptyRank) = ranks.next(x);
 
-            if (!emptyRank) {
-                if (tiedData.defaultAt(firstX)) {  // @TODO use "using for" for attachment. Makes notIn a function of TiedPersonLib
-                    tiedData[firstX] = TiedPerson.newData(firstX, voteTime);
-                    maxTiedCount++;
-                } else {
-                    tiedData[firstX].addVote(voteTime);
-                }
-            }
-        }
-        TiedPersonHeap.Data memory heap = TiedPersonHeap.build(tiedData, maxTiedCount);
+    //         if (!emptyRank) {
+    //             if (tiedData.defaultAt(firstX)) {  
+    //                 tiedData[firstX] = TiedPerson.newData(firstX, voteTime);
+    //                 maxTiedCount++;
+    //             } else {
+    //                 tiedData[firstX].addVote(voteTime);
+    //             }
+    //         }
+    //     }
+    //     TiedPersonHeap.Data memory heap = TiedPersonHeap.build(tiedData, maxTiedCount);
 
-        while (heap.max.votes <= uint(ranks.activeAmount) / 2) {  // majority isn't achieved yet
-            TiedPerson.Data memory loser = heap.popMin();  // loser (let it be A)
+    //     while (heap.max.votes <= uint(ranks.activeAmount) / 2) {  // majority isn't achieved yet
+    //         TiedPerson.Data memory loser = heap.popMin();  // loser (let it be A)
 
-            // @TODO getFirst() performs a next() if current in rank isn't valid
-            // loser's first choice (let it be B)
-            (uint32 loserFirstId, bool emptyRank) = ranks.getFirst(loser.id);
+    //         // @TODO getFirst() performs a next() if current in rank isn't valid
+    //         // loser's first choice (let it be B)
+    //         (uint32 loserFirstId, bool emptyRank) = ranks.getFirst(loser.id);
 
-            if (!emptyRank) {
-                uint votesToSum = loser.votes;
+    //         if (!emptyRank) {
+    //             uint votesToSum = loser.votes;
                 
-                // B's first choice (let it be C)
-                (uint32 fFirstId, bool fEmptyRank) = ranks.getFirst(loserFirstId);
+    //             // B's first choice (let it be C)
+    //             (uint32 fFirstId, bool fEmptyRank) = ranks.getFirst(loserFirstId);
 
-                if (!fEmptyRank && fFirstId == loser.id) {  // C = A (B voted for A)
-                    // A voted for B and B voted for A, so B's ranking is empty after loser 
-                    // removal. One vote for A is then lost.
-                    votesToSum -= 1;  
-                }
-                // @FIXME vote time can't be obtained right now, that's why 0 is set as 3rd parameter
-                heap.addVotes(votesToSum, loserFirstId, 0);  // all votes for A go to B
-            }
-            ranks.remove(loser);
-        }
-        return heap.max.id;
-    }
+    //             if (!fEmptyRank && fFirstId == loser.id) {  // C = A (B voted for A)
+    //                 // A voted for B and B voted for A, so B's ranking is empty after loser 
+    //                 // removal. One vote for A is then lost.
+    //                 votesToSum -= 1;  
+    //             }
+    //             // @FIXME vote time can't be obtained right now, that's why 0 is set as 3rd parameter
+    //             heap.addVotes(votesToSum, loserFirstId, 0);  // all votes for A go to B
+    //         }
+    //         ranks.remove(loser);
+    //     }
+    //     return heap.max.id;
+    // }
 
     function isTied(uint[] memory count) private pure returns (uint32 mostVotesId, bool tied) {
         uint32 n = uint32(count.length);
