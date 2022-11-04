@@ -27,7 +27,8 @@
 	style=draft,  % @FIXME comment when delivering
 	% citestyle=authoryear,  % @FIXME uncomment when delivering
   hyperref=true,
-	backref=true
+	backref=true,
+  natbib=true
 	]{biblatex}
 \RequirePackage[linktocpage,breaklinks,colorlinks,%
                 linkcolor=black,anchorcolor=black,citecolor=black,%

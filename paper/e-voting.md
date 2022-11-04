@@ -76,12 +76,13 @@ En IRV se cuentan los votos de la primera elección de cada votante. Si un candi
 
 La figura \ref{fig:irv} muestra el diagrama de flujo de IRV.
 
-![Diagrama de flujo del método de desempate instantáneo. \label{fig:irv}](rsrcs/irv.pdf){ width=80% }
+![Diagrama de flujo del método de desempate instantáneo. \label{fig:irv}](latex/Graphics/irv.pdf){ width=80% }
 
 El método de  votación contingente es similar a IRV, pero posee a lo sumo dos rondas de conteo. En la primera ronda se cuentan los votos de las primeras opciones de todos los votantes. Si algún candidato obtiene más del 50% de los votos, se declara ganador. En otro caso, se eliminan todos los candidatos excepto los dos que más votos tienen en el conteo. Si una primera opción ha sido eliminada de una boleta, entonces los votos de ese votante pasan al candidato disponible (solo hay dos) que más arriba se encuentre en el *ranking* de esa boleta.
 
 En la figura \ref{fig:conting} se muestra el diagrama de flujo del método de votación contingente.
 
+<!-- @TODO haz el gra'fico con puml pa q kede = q los d votos -->
 ![Diagrama de flujo del método de votación contingente. \label{fig:conting}](rsrcs/conting.pdf){ width=60% }
 
 A pesar  de lo eficiente que puede resultar emplear un sistema de *ranking*, en la mayoría de los sistemas electorales mayoritarios se realiza una segunda ronda de votación cuando ningún candidato obtuvo el porcentaje acordado en la primera ronda.
