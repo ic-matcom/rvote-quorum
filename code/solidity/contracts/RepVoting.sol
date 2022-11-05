@@ -5,6 +5,7 @@ pragma solidity >=0.4.22 <0.9.0;
 import './TiedPerson.sol';
 import './TiedPersonHeap.sol';
 import './Ranks.sol';
+import "./NegativeDefaultArray.sol";
 
 /// @title Representative voting system
 /// @author Andy Ledesma García
@@ -13,6 +14,7 @@ contract RepVoting {
     using Ranks for Ranks.Data;
     using {TiedPerson.defaultAt} for TiedPerson.Data[];
     using TiedPersonHeap for TiedPersonHeap.Data;
+    using NegativeDefaultArray for uint32[];
 
     /// @dev (x, y) is an arc of graph <=> y voted by x
     uint32[][] graph;
@@ -43,9 +45,7 @@ contract RepVoting {
         count = new uint[](n);
         DfsColor[] memory color = new DfsColor[](n);
     
-        // pi[x+1]-1 = parent of x. pi[x+1] = 0 if x is root. NOTE: only access pi by using get(pi,...) 
-        // and set(pi,...) functions.
-        uint32[] memory pi = new uint32[](n+1);  
+        uint32[] memory pi = NegativeDefaultArray.build(n);
     
         // DFS back edges
         uint32[2][] memory backEdges = new uint32[2][](n);  // at most n back edges in any cycle
@@ -80,13 +80,13 @@ contract RepVoting {
 
             uint maxCount = count[v];
             // computing max count
-            for (uint32 x = u; x != v; x = uint32(get(pi, x))) {
+            for (uint32 x = u; x != v; x = uint32(pi.getAt(x))) {
                 if (count[x] > maxCount) {
                     maxCount = count[x];
                 }
             }
             // setting max count to all nodes in cycle
-            for (uint32 x = u; x != v; x = uint32(get(pi, x))) {
+            for (uint32 x = u; x != v; x = uint32(pi.getAt(x))) {
                 count[x] = maxCount;
             }
             count[v] = maxCount;
@@ -118,7 +118,7 @@ contract RepVoting {
         for (uint256 i = 0; i < graph[u].length; i++) {
             uint32 v = graph[u][i];
             if (color[v] == DfsColor.White) {  // undiscover vertex
-                set(pi, v, u);
+                pi.setAt(v, u);
                 backEdgesLength = dfsVisit(v, color, pi, count, backEdges, backEdgesLength);
 
             } else if (color[v] == DfsColor.Gray) {  // cycle found
@@ -127,29 +127,13 @@ contract RepVoting {
 
             // it's not an else-if 'cause I want it executed when coming out from if above
             if (color[v] == DfsColor.Black) {
-                set(pi, v, u);  
+                pi.setAt(v, u);  
                 count[u] += count[v] + 1;  // +1 for the vote from v to u
             }
         }
         color[u] = DfsColor.Black;
 
         return backEdgesLength;
-    }
-
-    /// @dev pi[x+1]-1 = parent of x. This function encapsulates that computation so developer
-    /// hasn't to worry about adding and substracting 1
-    /// @return Parent of x
-    function get(uint32[] memory pi, uint32 x) private pure returns (int32) {
-        return int32(pi[x+1])-1;
-    }
-
-    // @FIXME `y` param must be `int32` instead in order to support -1
-    /// @dev Sets parent of a vertex
-    /// @param pi DFS parent array
-    /// @param x Target vertex
-    /// @param y Parent vertex
-    function set(uint32[] memory pi, uint32 x, uint32 y) private pure {
-        pi[x+1] = y+1;
     }
 
     // function getWinner() external view returns (uint32) {

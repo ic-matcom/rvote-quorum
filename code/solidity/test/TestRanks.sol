@@ -5,15 +5,17 @@ import "truffle/Assert.sol";
 import "../contracts/Ranks.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
+import "../contracts/NegativeDefaultArray.sol";
 
 contract TestRanks {
     using Ranks for Ranks.Data;
+    using NegativeDefaultArray for uint32[];
 
     function testGetFirstNoTie() external {
         uint32 n = 5;
         uint32[] memory pi = new uint32[](n+1);
         for (uint32 i = 0; i < pi.length-1; i++) {
-            set(pi, i, [int32(1), 2, 3, -1, 2][i]);
+            pi.setAt(i, [int32(1), 2, 3, -1, 2][i]);
         }
         // 0 -> 1 -> 2 -> 3
         //          /
@@ -44,7 +46,7 @@ contract TestRanks {
         uint32 n = 5;
         uint32[] memory pi = new uint32[](n+1);
         for (uint32 i = 0; i < pi.length-1; i++) {
-            set(pi, i, [int32(1), 2, 3, 1, 2][i]);
+            pi.setAt(i, [int32(1), 2, 3, 1, 2][i]);
         }
         //        -----<-
         //       /       \ 
@@ -69,7 +71,7 @@ contract TestRanks {
         for (uint32 i = 0; i < n; i++) {
             AssertFirst({
                 target: i, 
-                expected: uint32(get(pi, i)), 
+                expected: uint32(pi.getAt(i)), 
                 time: voteTime[i], 
                 data: data
             });
@@ -80,7 +82,7 @@ contract TestRanks {
         uint32 n = 13;
         uint32[] memory pi = new uint32[](n+1);
         for (uint32 i = 0; i < pi.length-1; i++) {
-            set(pi, i, [int32(2), 7, 12, 7, 8, 6, 4, 1, 10, 6, 11, 4, 10][i]);
+            pi.setAt(i, [int32(2), 7, 12, 7, 8, 6, 4, 1, 10, 6, 11, 4, 10][i]);
         }
         // 10 <- 12 <- 2 <- 0
         // | \
@@ -145,7 +147,7 @@ contract TestRanks {
         uint32 n = 5;
         uint32[] memory pi = new uint32[](n+1);
         for (uint32 i = 0; i < pi.length-1; i++) {
-            set(pi, i, [int32(1), 2, 3, -1, 2][i]);
+            pi.setAt(i, [int32(1), 2, 3, -1, 2][i]);
         }
         // 0 -> 1 -> 2 -> 3
         //          /
@@ -183,7 +185,7 @@ contract TestRanks {
         uint32 n = 5;
         uint32[] memory pi = new uint32[](n+1);
         for (uint32 i = 0; i < pi.length-1; i++) {
-            set(pi, i, [int32(1), 2, 3, 1, 2][i]);
+            pi.setAt(i, [int32(1), 2, 3, 1, 2][i]);
         }
         //        -----<-
         //       /       \ 
@@ -208,7 +210,7 @@ contract TestRanks {
         for (uint32 i = 0; i < n; i++) {
             AssertFirst({
                 target: i, 
-                expected: uint32(get(pi, i)), 
+                expected: uint32(pi.getAt(i)), 
                 time: voteTime[i], 
                 data: data
             });
@@ -232,7 +234,7 @@ contract TestRanks {
         uint32 n = 5;
         uint32[] memory pi = new uint32[](n+1);
         for (uint32 i = 0; i < pi.length-1; i++) {
-            set(pi, i, [int32(1), 2, 3, -1, 2][i]);
+            pi.setAt(i, [int32(1), 2, 3, -1, 2][i]);
         }
         // 0 -> 1 -> 2 -> 3
         //          /
@@ -272,22 +274,5 @@ contract TestRanks {
                 Strings.toString(yTime)
             )
         );
-    }
-
-    // @TODO move this function to a library and import that library in RepVoting
-    /// @dev Sets parent of a vertex
-    /// @param pi DFS parent array
-    /// @param x Target vertex
-    /// @param y Parent vertex
-    function set(uint32[] memory pi, uint32 x, int32 y) private pure {
-        pi[x+1] = uint32(y+1);
-    }
-
-    // @TODO move this function to a library and import that library in RepVoting
-    /// @dev pi[x+1]-1 = parent of x. This function encapsulates that computation so developer
-    /// hasn't to worry about adding and substracting 1
-    /// @return Parent of x
-    function get(uint32[] memory pi, uint32 x) private pure returns (int32) {
-        return int32(pi[x+1])-1;
     }
 }

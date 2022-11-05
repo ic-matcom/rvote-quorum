@@ -4,9 +4,11 @@ pragma solidity >=0.4.22 <0.9.0;
 
 import './TiedPerson.sol';
 import "@openzeppelin/contracts/utils/math/Math.sol";
+import "./NegativeDefaultArray.sol";
 
 library Ranks {
     using Ranks for Data;
+    using NegativeDefaultArray for uint32[];
 
     struct IrvVote {
         uint32 choice;
@@ -45,9 +47,9 @@ library Ranks {
 
         for (uint32 x = 0; x < ranksAmount; x++) {  // filling `first` values from `pi`
             IrvVote memory vote = ans.first[x];
-            int32 y = get(pi, x);
+            int32 y = pi.getAt(x);
 
-            if (y != -1) {  // @TODO move -1 to a constant in `pi` library and use it instead
+            if (y != DEFAULT_ELEMENT) {  // if `x` has a vote 
                 vote.choice = uint32(y);
                 vote.time = voteTime[x];
             } else {
@@ -111,23 +113,5 @@ library Ranks {
 
     function isValid(uint32 x, Data memory data) private pure returns (bool) {
         return data.count[x] == data.targetCount && !data.removed[x];
-    }
-
-    // @TODO move this function to a library and import that library in RepVoting
-    // @FIXME `y` param must be `int32` instead in order to support -1
-    /// @dev Sets parent of a vertex
-    /// @param pi DFS parent array
-    /// @param x Target vertex
-    /// @param y Parent vertex
-    function set(uint32[] memory pi, uint32 x, uint32 y) private pure {
-        pi[x+1] = y+1;
-    }
-
-    // @TODO move this function to a library and import that library in RepVoting
-    /// @dev pi[x+1]-1 = parent of x. This function encapsulates that computation so developer
-    /// hasn't to worry about adding and substracting 1
-    /// @return Parent of x
-    function get(uint32[] memory pi, uint32 x) private pure returns (int32) {
-        return int32(pi[x+1])-1;
     }
 }
