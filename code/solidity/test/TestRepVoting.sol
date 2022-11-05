@@ -2,7 +2,6 @@
 pragma solidity >=0.4.25 <0.9.0;
 
 import "truffle/Assert.sol";
-import "truffle/DeployedAddresses.sol";
 import "../contracts/RepVoting.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "./Array.sol";

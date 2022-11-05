@@ -2,8 +2,8 @@
 
 pragma solidity >=0.4.22 <0.9.0;
 
-import './TiedPerson.sol';
-import '@openzeppelin/contracts/utils/math/Math.sol';
+import "./TiedPerson.sol";
+import "@openzeppelin/contracts/utils/math/Math.sol";
 
 /// @author Andy Ledesma García
 /// @title Heap of `TiedPerson.Data` instances
@@ -127,7 +127,7 @@ library TiedPersonHeap {
         pure 
         returns (TiedPerson.Data memory ans) 
     {
-        require(self.size > 0, 'Heap is empty');
+        require(self.size > 0, "Heap is empty");
 
         ans = self.tree[0].data;
         self.tree[0] = self.tree[self.size - 1];
@@ -165,5 +165,3 @@ library TiedPersonHeap {
         return !self[id].data.nonDefault;
     }
 }
-// @TODO averiguar co'mo hago pa q las dependencias (e.g. openzeppeling) puedan ser instaladas 
-// fa'cilmente x el q le haga git clone a este repo

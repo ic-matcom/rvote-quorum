@@ -2,9 +2,9 @@
 // @audit NOTE check if 'UNLICENSED' is suitable
 pragma solidity >=0.4.22 <0.9.0;
 
-import './TiedPerson.sol';
-import './TiedPersonHeap.sol';
-import './Ranks.sol';
+import "./TiedPerson.sol";
+import "./TiedPersonHeap.sol";
+import "./Ranks.sol";
 import "./NegativeDefaultArray.sol";
 
 /// @title Representative voting system

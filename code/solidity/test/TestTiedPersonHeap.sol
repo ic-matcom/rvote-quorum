@@ -2,8 +2,8 @@
 pragma solidity >=0.4.25 <0.9.0;
 
 import "truffle/Assert.sol";
-import '../contracts/TiedPersonHeap.sol';
-import '../contracts/TiedPerson.sol';
+import "../contracts/TiedPersonHeap.sol";
+import "../contracts/TiedPerson.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "./Array.sol";
 
@@ -34,22 +34,22 @@ contract TestTiedPersonHeap {
         Assert.equal(
             heap.size, 
             size, 
-            'wrong heap size'
+            "wrong heap size"
         );
         Assert.equal(
             heap.max.id, 
             8,  // 8 has the highest vote count (2) and the lowest time (3)
-            'wrong max ID'
+            "wrong max ID"
         );
         Assert.equal(
             heap.tree[0].data.id,
             9,  // 9 has the lowest vote count (1) and the highest time (100)
-            'wrong min ID'
+            "wrong min ID"
         );
         Assert.equal(
             heap.tree[0].idx,
             0, 
-            'wrong min index'
+            "wrong min index"
         );
     }
 
@@ -78,12 +78,12 @@ contract TestTiedPersonHeap {
         Assert.equal(
             heap.size, 
             size, 
-            'wrong heap size'
+            "wrong heap size"
         );
         Assert.equal(
             heap.max.id, 
             5,  // 5 has the highest vote count (3) and the lowest time (22)
-            'wrong max ID'
+            "wrong max ID"
         );
         uint[] memory expectedMins = new uint[](size);
         // votes = 1
@@ -139,22 +139,22 @@ contract TestTiedPersonHeap {
         Assert.equal(
             heap.max.id, 
             5,  // 5 has the highest vote count (3) and the lowest time (22)
-            'wrong max ID'
+            "wrong max ID"
         );
         Assert.equal(
             heap.max.oldestVoteTime, 
             22,  // 5 has the highest vote count (3) and the lowest time (22)
-            'wrong max oldest vote time'
+            "wrong max oldest vote time"
         );
         Assert.equal(
             heap.tree[0].data.id,
             9,  // 9 has the lowest vote count (1) and the highest time (100)
-            'wrong min ID'
+            "wrong min ID"
         );
         Assert.equal(
             heap.tree[0].idx,
             0, 
-            'wrong min index'
+            "wrong min index"
         );
         uint[] memory expectedMins = new uint[](size);
         // votes = 1

@@ -2,10 +2,10 @@
 pragma solidity >=0.4.25 <0.9.0;
 
 import "truffle/Assert.sol";
-import '../contracts/TiedPersonHeap.sol';
-import '../contracts/TiedPerson.sol';
+import "../contracts/TiedPersonHeap.sol";
+import "../contracts/TiedPerson.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import './Array.sol';
+import "./Array.sol";
 
 contract TestTiedPerson {
     using TiedPerson for TiedPerson.Data;

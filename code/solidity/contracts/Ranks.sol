@@ -2,7 +2,7 @@
 
 pragma solidity >=0.4.22 <0.9.0;
 
-import './TiedPerson.sol';
+import "./TiedPerson.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 import "./NegativeDefaultArray.sol";
 
