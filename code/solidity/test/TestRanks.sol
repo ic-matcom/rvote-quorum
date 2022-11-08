@@ -11,6 +11,8 @@ contract TestRanks {
     using Ranks for Ranks.Data;
     using NegativeDefaultArray for uint32[];
 
+    uint[] voteTime;
+
     function testGetFirstNoTie() external {
         uint32 n = 5;
         uint32[] memory pi = new uint32[](n+1);
@@ -21,7 +23,7 @@ contract TestRanks {
         //          /
         //      4 ->
 
-        uint[] memory voteTime = new uint[](n);
+        voteTime = new uint[](n);
         for (uint256 i = 0; i < voteTime.length; i++) {
             voteTime[i] = [7, 2, 3, 0, 5][i];
         }
@@ -54,7 +56,7 @@ contract TestRanks {
         //          /
         //      4 ->
 
-        uint[] memory voteTime = new uint[](n);
+        voteTime = new uint[](n);
         for (uint256 i = 0; i < voteTime.length; i++) {
             voteTime[i] = [1, 4, 3, 2, 5][i];
         }
@@ -78,6 +80,35 @@ contract TestRanks {
         }
     }
 
+    function testGetFirst2VerticesCycle() external {
+        uint32 n = 3;
+        uint32[] memory pi = new uint32[](n+1);
+        for (uint32 i = 0; i < pi.length-1; i++) {
+            pi.setAt(i, [int32(2), 2, 1][i]);
+        }
+        // 1 -> 2 <- 0
+        //  \   /
+        //   -<-
+
+        voteTime = new uint[](n);
+        for (uint256 i = 0; i < voteTime.length; i++) {
+            voteTime[i] = i+1;
+        }
+        uint[] memory count = new uint[](n);
+        uint maxCount = 0;
+        for (uint256 i = 0; i < count.length; i++) {
+            uint val = [0, 2, 2][i];
+            count[i] = val;
+
+            maxCount = Math.max(val, maxCount);
+        }
+        Ranks.Data memory data = Ranks.build(maxCount, n, pi, voteTime, count);
+        
+        AssertFirst({target: 0, expected: 2, time: 1, data: data});
+        AssertFirst({target: 1, expected: 2, time: 2, data: data});
+        AssertFirst({target: 2, expected: 1, time: 3, data: data});
+    }
+
     function testGetFirstInvalidInTheWayToMaxTied() external {
         uint32 n = 13;
         uint32[] memory pi = new uint32[](n+1);
@@ -93,7 +124,7 @@ contract TestRanks {
         //           \
         //            -<- 5
 
-        uint[] memory voteTime = new uint[](n);
+        voteTime = new uint[](n);
         for (uint256 i = 0; i < voteTime.length; i++) {
             voteTime[i] = i+1;
         }
@@ -153,7 +184,7 @@ contract TestRanks {
         //          /
         //      4 ->
 
-        uint[] memory voteTime = new uint[](n);
+        voteTime = new uint[](n);
         for (uint256 i = 0; i < voteTime.length; i++) {
             voteTime[i] = [1, 2, 3, 0, 5][i];
         }
@@ -193,7 +224,7 @@ contract TestRanks {
         //          /
         //      4 ->
 
-        uint[] memory voteTime = new uint[](n);
+        voteTime = new uint[](n);
         for (uint256 i = 0; i < voteTime.length; i++) {
             voteTime[i] = [1, 4, 3, 2, 5][i];
         }
@@ -240,7 +271,7 @@ contract TestRanks {
         //          /
         //      4 ->
 
-        uint[] memory voteTime = new uint[](n);
+        voteTime = new uint[](n);
         for (uint256 i = 0; i < voteTime.length; i++) {
             voteTime[i] = [7, 2, 3, 0, 5][i];
         }

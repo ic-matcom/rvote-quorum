@@ -3,25 +3,16 @@ pragma solidity >=0.4.25 <0.9.0;
 
 import "truffle/Assert.sol";
 import "../contracts/RepVoting.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
 import "./Array.sol";
+import "./RepVotingTestCases.sol";
 
 contract TestRepVoting {
     function testVote() external {
-        RepVoting voting = new RepVoting(5);
-        voting.vote(0, 1);  
-        voting.vote(1, 2);
-        voting.vote(2, 3);
-        voting.vote(4, 2);
+        RepVotingTestCases.noCycle5Voters();
     }
 
     function testNoCycleVoting() external {
-        RepVoting voting = new RepVoting(5);
-        voting.vote(0, 1);  
-        voting.vote(1, 2);
-        voting.vote(2, 3);
-        voting.vote(4, 2);
-
+        RepVoting voting = RepVotingTestCases.noCycle5Voters();
         // 0 -> 1 -> 2 -> 3
         //          /
         //      4 ->
@@ -46,13 +37,7 @@ contract TestRepVoting {
     }
 
     function testSimpleCycleVoting() external {
-        RepVoting voting = new RepVoting(5);
-        voting.vote(0, 1);  
-        voting.vote(1, 2);
-        voting.vote(2, 3);
-        voting.vote(4, 2);
-        voting.vote(3, 1);
-
+        RepVoting voting = RepVotingTestCases.cycle3VotersOf5Total();
         //        -----<-
         //       /       \ 
         // 0 -> 1 -> 2 -> 3
@@ -78,13 +63,7 @@ contract TestRepVoting {
     }
 
     function testLongBranch() external {
-        RepVoting voting = new RepVoting(6);
-        voting.vote(1, 2);
-        voting.vote(2, 3);
-        voting.vote(3, 4);
-        voting.vote(4, 5);
-        voting.vote(0, 4);
-
+        RepVoting voting = RepVotingTestCases.branch5VotersOf6Total();
         // 1 -> 2 -> 3 -> 4 -> 5
         //               /
         //           0 ->
@@ -108,11 +87,7 @@ contract TestRepVoting {
     }
 
     function test2VerticesCycle() external {
-        RepVoting voting = new RepVoting(3);
-        voting.vote(1, 2);
-        voting.vote(2, 1);
-        voting.vote(0, 2);
-
+        RepVoting voting = RepVotingTestCases.cycle2VotersOf3Total();
         // 1 -> 2 <- 0
         //  \   /
         //   -<-
@@ -136,30 +111,7 @@ contract TestRepVoting {
     }
 
     function test2Cycles() external {
-        RepVoting voting = new RepVoting(13);
-        voting.vote(0, 2);
-        voting.vote(2, 12);
-        voting.vote(12, 10);
-        voting.vote(10, 11);
-        voting.vote(11, 4);
-        voting.vote(4, 8);
-        voting.vote(8, 10);
-        voting.vote(6, 4);
-        voting.vote(9, 6);
-        voting.vote(5, 6);
-        voting.vote(3, 7);
-        voting.vote(7, 1);
-        voting.vote(1, 7);
-
-        // 10 <- 12 <- 2 <- 0
-        // | \
-        // |  11                     1 <-> 7 <- 3
-        // ^   |
-        // |   v
-        // 8 <-4 <- 6 <- 9
-        //           \
-        //            -<- 5
-
+        RepVoting voting = RepVotingTestCases.twoCyclesTheLargestOf4Vertices13Total();
         //                            0  1  2  3  4  5  6  7  8  9 10 11 12
         uint[13] memory data = [uint(0), 2, 1, 0, 9, 0, 2, 2, 9, 0, 9, 9, 2];
         uint[] memory expected = new uint[](data.length);
@@ -217,4 +169,47 @@ contract TestRepVoting {
                 Array.toString(got))
         );
     }
+
+    function testGetWinnerNoTie() external {
+        RepVoting voting = RepVotingTestCases.noCycle5Voters();
+        // 0 -> 1 -> 2 -> 3
+        //          /
+        //      4 ->
+        Assert.equal(voting.getWinner(), 3, "wrong winner");
+    }
+
+    function testGetWinnerSimpleCycle() external {
+        RepVoting voting = RepVotingTestCases.cycle3VotersOf5Total();
+        //        -----<-
+        //       /       \ 
+        // 0 -> 1 -> 2 -> 3
+        //          /
+        //      4 ->
+        Assert.equal(voting.getWinner(), 1, "wrong winner");
+    }
+
+    function testGetWinner2VerticesCycle() external {
+        RepVoting voting = RepVotingTestCases.cycle2VotersOf3Total();
+        // 1 -> 2 <- 0
+        //  \   /
+        //   -<-
+        Assert.equal(voting.getWinner(), 2, "wrong winner");
+    }
+
+    function testGetWinner2Cycles() external {
+        RepVoting voting = RepVotingTestCases.twoCyclesTheLargestOf4Vertices13Total();
+        //      2     7    3
+        //   10 <- 12 <- 2 <- 0
+        //   |  \ 10                       9     1
+        //   |   11                     1 <-> 7 <- 3
+        // 5 ^    | 4                      13
+        //   |    v      6
+        //   8 <- 4 <- 6 <- 9
+        //      12  11  \ 
+        //               -<- 5
+        //                8
+        Assert.equal(voting.getWinner(), 10, "wrong winner");
+    }
 }
+// @TODO reemplaza la parte donde se setea el grafo x la funcio'n correspondiente de
+// RepVotingTestCases
