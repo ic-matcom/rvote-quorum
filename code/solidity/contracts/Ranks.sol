@@ -32,11 +32,11 @@ library Ranks {
         uint targetCount, 
         uint32 ranksAmount, 
         uint32[] memory pi,
-        uint[] memory voteTime,
+        uint[] storage voteTime,  
         uint[] memory count
     ) 
         internal 
-        pure 
+        view 
         returns (Data memory ans) 
     {
         ans.targetCount = targetCount;
@@ -58,9 +58,8 @@ library Ranks {
         }
     }
 
-    /// @dev Gets first max-tied person in `x`'s ranking and the time its predecessor 
-    /// (can be a non max-tied) in the ranking voted for him. If `x`'s ranking is empty,
-    /// `emptyRank` is set to true.
+    /// @dev Gets first max-tied person in `x`'s ranking and the max time in the voting path
+    /// to it. If `x`'s ranking is empty, `emptyRank` is set to true.
     /// @param x The id of the voter
     /// @return firstChoice The id of the first max-tied person in `x`'s ranking
     /// @return oldestVoteTime The time the predecessor of `firstChoice` in `x`'s ranking
@@ -115,3 +114,5 @@ library Ranks {
         return data.count[x] == data.targetCount && !data.removed[x];
     }
 }
+
+// @TODO decrease `activeAmount` when a ranking gets empty
