@@ -6,6 +6,7 @@ import "../contracts/InstantRunoffLib.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 import "../contracts/NegativeDefaultArray.sol";
+import "./InstantRunoffLibTestCases.sol";
 
 contract TestInstantRunoffLib {
     using InstantRunoffLib for InstantRunoffSystem;
@@ -15,34 +16,13 @@ contract TestInstantRunoffLib {
     uint[] voteTime;
 
     function testGetFirstNoTie() external {
-        uint32 n = 5;
-        uint32[] memory pi = new uint32[](n+1);
-        for (uint32 i = 0; i < pi.length-1; i++) {
-            pi.setAt(i, [int32(1), 2, 3, -1, 2][i]);
-        }
+        uint32 voters = 5;
+        voteTime = new uint[](voters);
+        // @FIXME rename to `system`
+        InstantRunoffSystem memory data = InstantRunoffLibTestCases.noCycle5Voters(voteTime);
         // 0 -> 1 -> 2 -> 3
         //          /
         //      4 ->
-
-        voteTime = new uint[](n);
-        for (uint256 i = 0; i < voteTime.length; i++) {
-            voteTime[i] = [7, 2, 3, 0, 5][i];
-        }
-        uint[] memory count = new uint[](n);
-        uint maxCount = 0;
-        for (uint256 i = 0; i < count.length; i++) {
-            uint val = [0, 1, 3, 4, 0][i];
-            count[i] = val;
-
-            maxCount = Math.max(val, maxCount);
-        }
-        InstantRunoffSystemBuilder memory systemBuilder = InstantRunoffSystemBuilder({
-            targetVotesAmount: maxCount,
-            vote: pi,
-            votesAmount: count
-        });
-        InstantRunoffSystem memory data = systemBuilder.buildFrom(voteTime);
-        
         AssertFirst({target: 0, expected: 3, time: 7, data: data});
         AssertFirst({target: 1, expected: 3, time: 3, data: data});
         AssertFirst({target: 2, expected: 3, time: 3, data: data});
@@ -51,40 +31,20 @@ contract TestInstantRunoffLib {
     }
 
     function testGetFirstCycleOf3() external {
-        uint32 n = 5;
-        uint32[] memory pi = new uint32[](n+1);
-        for (uint32 i = 0; i < pi.length-1; i++) {
-            pi.setAt(i, [int32(1), 2, 3, 1, 2][i]);
-        }
+        uint32 voters = 5;
+        voteTime = new uint[](voters);
+        InstantRunoffSystem memory data = InstantRunoffLibTestCases.cycle3VotersOf5Total(voteTime);
         //        -----<-
         //       /       \ 
         // 0 -> 1 -> 2 -> 3
         //          /
         //      4 ->
-
-        voteTime = new uint[](n);
-        for (uint256 i = 0; i < voteTime.length; i++) {
-            voteTime[i] = [1, 4, 3, 2, 5][i];
-        }
-        uint[] memory count = new uint[](n);
-        uint maxCount = 0;
-        for (uint256 i = 0; i < count.length; i++) {
-            uint val = [0, 4, 4, 4, 0][i];
-            count[i] = val;
-
-            maxCount = Math.max(val, maxCount);
-        }
-        InstantRunoffSystemBuilder memory systemBuilder = InstantRunoffSystemBuilder({
-            targetVotesAmount: maxCount,
-            vote: pi,
-            votesAmount: count
-        });
-        InstantRunoffSystem memory data = systemBuilder.buildFrom(voteTime);
+        uint32[5] memory vote = [uint32(1), 2, 3, 1, 2];
         
-        for (uint32 i = 0; i < n; i++) {
+        for (uint32 i = 0; i < voters; i++) {
             AssertFirst({
                 target: i, 
-                expected: uint32(pi.getAt(i)), 
+                expected: vote[i],
                 time: voteTime[i], 
                 data: data
             });
@@ -196,35 +156,13 @@ contract TestInstantRunoffLib {
     }
 
     function testRemoveNoTie() external {
-        uint32 n = 5;
-        uint32[] memory pi = new uint32[](n+1);
-        for (uint32 i = 0; i < pi.length-1; i++) {
-            pi.setAt(i, [int32(1), 2, 3, -1, 2][i]);
-        }
+        uint32 voters = 5;
+        voteTime = new uint[](voters);
+        InstantRunoffSystem memory data = InstantRunoffLibTestCases.noCycle5Voters(voteTime);
         // 0 -> 1 -> 2 -> 3
         //          /
         //      4 ->
-
-        voteTime = new uint[](n);
-        for (uint256 i = 0; i < voteTime.length; i++) {
-            voteTime[i] = [1, 2, 3, 0, 5][i];
-        }
-        uint[] memory count = new uint[](n);
-        uint maxCount = 0;
-        for (uint256 i = 0; i < count.length; i++) {
-            uint val = [0, 1, 3, 4, 0][i];
-            count[i] = val;
-
-            maxCount = Math.max(val, maxCount);
-        }
-        InstantRunoffSystemBuilder memory systemBuilder = InstantRunoffSystemBuilder({
-            targetVotesAmount: maxCount,
-            vote: pi,
-            votesAmount: count
-        });
-        InstantRunoffSystem memory data = systemBuilder.buildFrom(voteTime);
-        
-        AssertFirst({target: 0, expected: 3, time: 3, data: data});
+        AssertFirst({target: 0, expected: 3, time: 7, data: data});
         AssertFirst({target: 1, expected: 3, time: 3, data: data});
         AssertFirst({target: 2, expected: 3, time: 3, data: data});
         AssertEmpty(3, data);
@@ -342,6 +280,27 @@ contract TestInstantRunoffLib {
             )
         );
     }
+
+    function testActiveVotersCycleOf3() external {
+        uint32 voters = 5;                                             //        -----<-
+        voteTime = new uint[](voters);                                 //       /       \ 
+        InstantRunoffSystem memory system =                            // 0 -> 1 -> 2 -> 3
+            InstantRunoffLibTestCases.cycle3VotersOf5Total(voteTime);  //          /
+                                                                       //      4 ->
+        system.remove(TiedPerson.newData(1, 0));
+        AssertFirst(0, 2, 4, system);
+        Assert.equal(system.activeVoters, 5, "wrong active voters amount");
+        system.remove(TiedPerson.newData(2, 0));
+        system.remove(TiedPerson.newData(3, 0));
+        AssertEmpty(0, system);
+        AssertEmpty(1, system);
+        AssertEmpty(2, system);
+        AssertEmpty(3, system);
+        Assert.equal(system.activeVoters, 1, "wrong active voters amount");
+        AssertEmpty(4, system);
+        Assert.equal(system.activeVoters, 0, "wrong active voters amount");
+    }
 }
 
 // @TODO refactor
+// @TODO use functions from `InstantRunoffLibTestCases`
