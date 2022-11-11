@@ -2,13 +2,14 @@
 pragma solidity >=0.4.25 <0.9.0;
 
 import "truffle/Assert.sol";
-import "../contracts/Ranks.sol";
+import "../contracts/InstantRunoffLib.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 import "../contracts/NegativeDefaultArray.sol";
 
-contract TestRanks {
-    using Ranks for Ranks.Data;
+contract TestInstantRunoffLib {
+    using InstantRunoffLib for InstantRunoffSystem;
+    using InstantRunoffLib for InstantRunoffSystemBuilder;
     using NegativeDefaultArray for uint32[];
 
     uint[] voteTime;
@@ -35,7 +36,12 @@ contract TestRanks {
 
             maxCount = Math.max(val, maxCount);
         }
-        Ranks.Data memory data = Ranks.build(maxCount, n, pi, voteTime, count);
+        InstantRunoffSystemBuilder memory systemBuilder = InstantRunoffSystemBuilder({
+            targetVotesAmount: maxCount,
+            vote: pi,
+            votesAmount: count
+        });
+        InstantRunoffSystem memory data = systemBuilder.buildFrom(voteTime);
         
         AssertFirst({target: 0, expected: 3, time: 7, data: data});
         AssertFirst({target: 1, expected: 3, time: 3, data: data});
@@ -68,7 +74,12 @@ contract TestRanks {
 
             maxCount = Math.max(val, maxCount);
         }
-        Ranks.Data memory data = Ranks.build(maxCount, n, pi, voteTime, count);
+        InstantRunoffSystemBuilder memory systemBuilder = InstantRunoffSystemBuilder({
+            targetVotesAmount: maxCount,
+            vote: pi,
+            votesAmount: count
+        });
+        InstantRunoffSystem memory data = systemBuilder.buildFrom(voteTime);
         
         for (uint32 i = 0; i < n; i++) {
             AssertFirst({
@@ -102,7 +113,12 @@ contract TestRanks {
 
             maxCount = Math.max(val, maxCount);
         }
-        Ranks.Data memory data = Ranks.build(maxCount, n, pi, voteTime, count);
+        InstantRunoffSystemBuilder memory systemBuilder = InstantRunoffSystemBuilder({
+            targetVotesAmount: maxCount,
+            vote: pi,
+            votesAmount: count
+        });
+        InstantRunoffSystem memory data = systemBuilder.buildFrom(voteTime);
         
         AssertFirst({target: 0, expected: 2, time: 1, data: data});
         AssertFirst({target: 1, expected: 2, time: 2, data: data});
@@ -136,7 +152,12 @@ contract TestRanks {
 
             maxCount = Math.max(val, maxCount);
         }
-        Ranks.Data memory data = Ranks.build(maxCount, n, pi, voteTime, count);
+        InstantRunoffSystemBuilder memory systemBuilder = InstantRunoffSystemBuilder({
+            targetVotesAmount: maxCount,
+            vote: pi,
+            votesAmount: count
+        });
+        InstantRunoffSystem memory data = systemBuilder.buildFrom(voteTime);
         
         AssertFirst({target: 0, expected: 10, time: 13, data: data});
         AssertEmpty(1, data);
@@ -157,21 +178,21 @@ contract TestRanks {
         uint32 target, 
         uint32 expected, 
         uint time, 
-        Ranks.Data memory data
+        InstantRunoffSystem memory data
     ) 
         internal 
     {
-        (uint32 got, uint gotTime, bool empty) = data.getFirst(target);
+        RepresentativeVote memory targetVote = data.getFirstInRank(target);
         Assert.isFalse(
-            empty, 
+            targetVote.none, 
             string.concat(
                 "rank of ",
                 Strings.toString(target),
                 " is empty"
             )
         );
-        Assert.equal(got, expected, "wrong first");
-        Assert.equal(gotTime, time, "wrong time");
+        Assert.equal(targetVote.choice, expected, "wrong first");
+        Assert.equal(targetVote.time, time, "wrong time");
     }
 
     function testRemoveNoTie() external {
@@ -196,7 +217,12 @@ contract TestRanks {
 
             maxCount = Math.max(val, maxCount);
         }
-        Ranks.Data memory data = Ranks.build(maxCount, n, pi, voteTime, count);
+        InstantRunoffSystemBuilder memory systemBuilder = InstantRunoffSystemBuilder({
+            targetVotesAmount: maxCount,
+            vote: pi,
+            votesAmount: count
+        });
+        InstantRunoffSystem memory data = systemBuilder.buildFrom(voteTime);
         
         AssertFirst({target: 0, expected: 3, time: 3, data: data});
         AssertFirst({target: 1, expected: 3, time: 3, data: data});
@@ -236,7 +262,12 @@ contract TestRanks {
 
             maxCount = Math.max(val, maxCount);
         }
-        Ranks.Data memory data = Ranks.build(maxCount, n, pi, voteTime, count);
+        InstantRunoffSystemBuilder memory systemBuilder = InstantRunoffSystemBuilder({
+            targetVotesAmount: maxCount,
+            vote: pi,
+            votesAmount: count
+        });
+        InstantRunoffSystem memory data = systemBuilder.buildFrom(voteTime);
         
         for (uint32 i = 0; i < n; i++) {
             AssertFirst({
@@ -283,27 +314,34 @@ contract TestRanks {
 
             maxCount = Math.max(val, maxCount);
         }
-        Ranks.Data memory data = Ranks.build(maxCount, n, pi, voteTime, count);
+        InstantRunoffSystemBuilder memory systemBuilder = InstantRunoffSystemBuilder({
+            targetVotesAmount: maxCount,
+            vote: pi,
+            votesAmount: count
+        });
+        InstantRunoffSystem memory data = systemBuilder.buildFrom(voteTime);
         
         AssertFirst({target: 0, expected: 3, time: 7, data: data});
         
-        Assert.equal(data.first[1].choice, 3, "wrong value in `first` array");
-        Assert.equal(data.first[2].choice, 3, "wrong value in `first` array");
-        Assert.equal(data.first[4].choice, 2, "wrong value in `first` array");
+        Assert.equal(data.firstInRank[1].choice, 3, "wrong value in `first` array");
+        Assert.equal(data.firstInRank[2].choice, 3, "wrong value in `first` array");
+        Assert.equal(data.firstInRank[4].choice, 2, "wrong value in `first` array");
     }
 
-    function AssertEmpty(uint32 x, Ranks.Data memory data) private {
-        (uint32 y, uint yTime, bool yEmpty) = data.getFirst(x);
+    function AssertEmpty(uint32 x, InstantRunoffSystem memory data) private {
+        RepresentativeVote memory x1stVote = data.getFirstInRank(x);
 
         Assert.isTrue(
-            yEmpty, 
+            x1stVote.none, 
             string.concat(
                 Strings.toString(x), 
                 " ranking is not empty. y = ",
-                Strings.toString(y),
+                Strings.toString(x1stVote.choice),
                 ", yTime = ",
-                Strings.toString(yTime)
+                Strings.toString(x1stVote.time)
             )
         );
     }
 }
+
+// @TODO refactor

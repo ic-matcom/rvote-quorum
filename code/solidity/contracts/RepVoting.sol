@@ -4,14 +4,15 @@ pragma solidity >=0.4.22 <0.9.0;
 
 import "./TiedPerson.sol";
 import "./TiedPersonHeap.sol";
-import "./Ranks.sol";
+import "./InstantRunoffLib.sol";
 import "./NegativeDefaultArray.sol";
 
 /// @title Representative voting system
 /// @author Andy Ledesma García
 contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
     using TiedPerson for TiedPerson.Data;
-    using Ranks for Ranks.Data;
+    using InstantRunoffLib for InstantRunoffSystem;
+    using InstantRunoffLib for InstantRunoffSystemBuilder;
     using {TiedPerson.defaultAt} for TiedPerson.Data[];
     using TiedPersonHeap for TiedPersonHeap.Data;
     using NegativeDefaultArray for uint32[];
@@ -153,58 +154,57 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
             return mostVotesId;
         }
         uint32 n = uint32(graph.length);
-        Ranks.Data memory ranks = Ranks.build(
-            count[mostVotesId], 
-            n,
-            pi,
-            voteTime,
-            count
-        );  
+        InstantRunoffSystemBuilder memory systemBuilder = InstantRunoffSystemBuilder({
+            targetVotesAmount: count[mostVotesId],
+            vote: pi,
+            votesAmount: count
+        });
+        InstantRunoffSystem memory ranks = systemBuilder.buildFrom(voteTime);  
         (TiedPerson.Data[] memory tiedData, uint32 maxTiedCount) = getAll1stPlaceVotes(ranks, n);
 
         // counting direct votes giving to tied-in-the-first-place (max-tied) people
         TiedPersonHeap.Data memory heap = TiedPersonHeap.build(tiedData, maxTiedCount);
 
-        while (heap.max.votes <= uint(ranks.activeAmount) / 2) {  // majority isn't achieved yet
+        while (heap.max.votes <= uint(ranks.activeVoters) / 2) {  // majority isn't achieved yet
             TiedPerson.Data memory loser = heap.popMin();  // loser (let it be A)
 
             // loser's first choice (let it be B)
-            (uint32 loserFirstId, uint loserFirstTime, bool emptyRank) = ranks.getFirst(loser.id);
+            RepresentativeVote memory loser1stVote = ranks.getFirstInRank(loser.id);
 
-            if (!emptyRank) {
+            if (!loser1stVote.none) {
                 uint votesToSum = loser.votes;
                 
                 // B's first choice (let it be C)
-                (uint32 fFirstId, , bool fEmptyRank) = ranks.getFirst(loserFirstId);
+                RepresentativeVote memory loser1st1stVote = ranks.getFirstInRank(loser1stVote.choice);
 
-                if (!fEmptyRank && fFirstId == loser.id) {  // C = A (B voted for A)
+                if (!loser1st1stVote.none && loser1st1stVote.choice == loser.id) {  // C = A (B voted for A)
                     // A voted for B and B voted for A, so B's ranking is empty after loser 
                     // removal. One vote for A is then lost.
                     votesToSum -= 1;  
                 }
-                uint latestVoteForB = Math.max(loser.oldestVoteTime, loserFirstTime);
-                heap.addVotes(votesToSum, loserFirstId, latestVoteForB);  // all votes for A go to B
+                uint latestVoteForB = Math.max(loser.oldestVoteTime, loser1stVote.time);
+                heap.addVotes(votesToSum, loser1stVote.choice, latestVoteForB);  // all votes for A go to B
             }
             ranks.remove(loser);
         }
         return heap.max.id;
     }
 
-    function getAll1stPlaceVotes(Ranks.Data memory ranks, uint32 n) 
+    function getAll1stPlaceVotes(InstantRunoffSystem memory ranks, uint32 n) 
         private 
         pure 
         returns (TiedPerson.Data[] memory tiedData, uint32 maxTiedCount) 
     {
         tiedData = new TiedPerson.Data[](n);
         for (uint32 x = 0; x < n; x++) {
-            (uint32 firstX, uint xVoteTime, bool emptyRank) = ranks.getFirst(x);
+            RepresentativeVote memory x1stVote = ranks.getFirstInRank(x);
 
-            if (!emptyRank) {
-                if (tiedData.defaultAt(firstX)) {  
-                    tiedData[firstX] = TiedPerson.newData(firstX, xVoteTime);
+            if (!x1stVote.none) {
+                if (tiedData.defaultAt(x1stVote.choice)) {  
+                    tiedData[x1stVote.choice] = TiedPerson.newData(x1stVote.choice, x1stVote.time);
                     maxTiedCount++;
                 } else {
-                    tiedData[firstX].addVote(xVoteTime);
+                    tiedData[x1stVote.choice].addVote(x1stVote.time);
                 }
             }
         }
