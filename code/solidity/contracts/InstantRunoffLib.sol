@@ -16,8 +16,8 @@ struct InstantRunoffSystem {
     /// @dev number of votes a person must has to be a valid person in rank
     uint targetVotesAmount;
     
-    /// @dev not-removed union empty-rank people
-    uint32 activeVoters;
+    /// @dev voters with any valid person in their rankings
+    uint32 activeVoters;  // @FIXME rename and the functions using it
 
     RepresentativeVote[] firstInRank;
     uint[] votesAmount;
@@ -30,11 +30,13 @@ struct InstantRunoffSystemBuilder {
     uint[] votesAmount;
 }
 
+// @TODO removes redundant `usings` in contracts using this lib
+using InstantRunoffLib for InstantRunoffSystem global;  
+using InstantRunoffLib for InstantRunoffSystemBuilder global;
+
 library InstantRunoffLib {
-    using InstantRunoffLib for InstantRunoffSystem;
     using NegativeDefaultArray for uint32[];
     using InstantRunoffLib for FirstInRankResolver;
-    using InstantRunoffLib for InstantRunoffSystemBuilder;
 
     struct FirstInRankResolver {
         InstantRunoffSystem system;
@@ -94,6 +96,7 @@ library InstantRunoffLib {
         if (xFirstVote.none || self.marked[xFirstVote.choice]) {  
             // if `x`'s choice already marked then it's invalid and make `x`'s vote 
             // none is correct
+            self.decreaseActiveVotersIfVoterMarked(xFirstVote.choice);
             return makeVoteNone(xFirstVote);
         }
         if (self.isValid(xFirstVote.choice)) {
@@ -139,6 +142,7 @@ library InstantRunoffLib {
         RepresentativeVote memory first1stVote = self.getFirstInRank(firstVote.choice);
 
         if (first1stVote.none) {  // `xFirst`'s ranking is empty and `xFirst` is not valid
+            self.system.decreaseActiveVoters();
             return makeVoteNone(firstVote);
         }
         return self.updateFirstVote(voter, first1stVote);
@@ -193,6 +197,25 @@ library InstantRunoffLib {
         pure
     {
         self.firstInRank[index] = value;
+    }
+
+    function decreaseActiveVoters(InstantRunoffSystem memory self) 
+        internal 
+        pure 
+    {
+        self.activeVoters--;
+    }
+
+    function decreaseActiveVotersIfVoterMarked(
+        FirstInRankResolver memory self, 
+        uint32 voterId
+    ) 
+        internal 
+        pure 
+    {
+        if (self.marked[voterId]) {
+            self.system.decreaseActiveVoters();
+        }
     }
 }
 
