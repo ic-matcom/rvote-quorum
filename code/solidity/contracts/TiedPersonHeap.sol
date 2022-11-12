@@ -55,7 +55,7 @@ library TiedPersonHeap {
                 heap.dict[x] = node;
             }
         }
-        require (
+        require(
             idx == heap.size, 
             "`heapSize` must equal number of available data in data argument"
         );
@@ -149,7 +149,7 @@ library TiedPersonHeap {
         internal 
         pure 
     {
-        require (!self.dict.defaultAt(targetId), "targetId is not a max-tied person's ID.");
+        require(!self.dict.defaultAt(targetId), "targetId is not a max-tied person's ID.");
 
         Node memory target = self.dict[targetId];
         target.data.votes += votes;

@@ -226,5 +226,3 @@ library InstantRunoffLib {
         }
     }
 }
-
-// @TODO decrease `activeVoters` when a ranking gets empty
