@@ -25,12 +25,12 @@ library NegativeDefaultArray {  // @TODO create a struct for the data structure
         return int32(self[index+1])-1;
     }
 
-    function buildFromStaticArray(int32[5] memory data) internal pure returns (uint32[] memory) {
-        uint32 length = uint32(data.length);
+    function buildFromArray(int32[] memory source) internal pure returns (uint32[] memory) {
+        uint32 length = uint32(source.length);
         uint32[] memory newArray = build(length);
 
         for (uint32 i = 0; i < length; i++) {
-            newArray.setAt(i, data[i]);
+            newArray.setAt(i, source[i]);
         }
         return newArray;
     }

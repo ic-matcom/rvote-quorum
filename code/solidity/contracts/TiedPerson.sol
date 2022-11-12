@@ -15,9 +15,17 @@ library TiedPerson {
         /// @dev Number of votes received by this person in the Instant Runoff
         uint votes;
     }
+
+    event TiedPersonLog(Data person);
+
+    function log(Data memory person) internal {
+        emit TiedPersonLog(person);
+    }
     
     /// @dev Should be taken as the constructor of the `Data` struct
     /// @param voteTime The time of the first vote received by this person
+    // @FIXME rename to `build` or similar so consistency is achieved
+    // @FIXME rename `ans` to `newData` or similar
     function newData(uint32 id, uint voteTime) internal pure returns (Data memory ans) {
         ans.id = id;
         ans.oldestVoteTime = voteTime;

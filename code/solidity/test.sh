@@ -8,4 +8,4 @@ if [ $# -gt 0 ]
         testName="test/Test$1.sol"
 fi
 
-truffle test $testName --compile-all
+truffle test $testName --show-events --compile-all

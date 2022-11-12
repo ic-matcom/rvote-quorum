@@ -120,9 +120,9 @@ contract TestInstantRunoffLib {
         InstantRunoffSystem memory data = systemBuilder.buildFrom(voteTime);
         
         AssertFirst({target: 0, expected: 10, time: 13, data: data});
+        AssertEmpty(3, data);
         AssertEmpty(1, data);
         AssertFirst({target: 2, expected: 10, time: 13, data: data});
-        AssertEmpty(3, data);
         AssertFirst({target: 4, expected: 8, time: 5, data: data});
         AssertFirst({target: 5, expected: 4, time: 7, data: data});
         AssertFirst({target: 6, expected: 4, time: 7, data: data});
@@ -299,6 +299,25 @@ contract TestInstantRunoffLib {
         Assert.equal(system.activeVoters, 1, "wrong active voters amount");
         AssertEmpty(4, system);
         Assert.equal(system.activeVoters, 0, "wrong active voters amount");
+    }
+
+    function testActiveVotersInvalidInTheWayToMaxTied() external {
+        uint32 voters = 13;
+        voteTime = new uint[](voters);
+        InstantRunoffSystem memory system = 
+            InstantRunoffLibTestCases.twoCyclesTheLargestOf4Vertices13Total(voteTime);
+        //      2     7    3
+        //   10 <- 12 <- 2 <- 0
+        //   |  \ 10                       9     1
+        //   |   11                     1 <-> 7 <- 3
+        // 5 ^    | 4                      13
+        //   |    v      6
+        //   8 <- 4 <- 6 <- 9
+        //      12  11  \ 
+        //               -<- 5
+        //                8
+        AssertEmpty(3, system);
+        Assert.equal(system.activeVoters, 10, "wrong active voters amount");
     }
 }
 

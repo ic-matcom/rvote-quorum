@@ -169,6 +169,8 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
         while (!winnerFound(heap, ranks)) {  
             TiedPerson.Data memory loser = heap.popMin();  // loser (let it be A)
 
+            // TiedPerson.log(loser);
+
             // loser's first choice (let it be B)
             RepresentativeVote memory loser1stVote = ranks.getFirstInRank(loser.id);
 
