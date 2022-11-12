@@ -110,6 +110,14 @@ library InstantRunoffLib {
         pure 
     {
         self.removed[voter.id] = true;
+        self.updateActiveVotersInRankOf(voter.id);
+    }
+
+    function updateActiveVotersInRankOf(InstantRunoffSystem memory self, uint32 voter) 
+        internal 
+        pure 
+    {
+        self.getFirstInRank(voter);
     }
 
     function isValid(FirstInRankResolver memory self, uint32 voter) 
