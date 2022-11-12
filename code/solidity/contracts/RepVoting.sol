@@ -33,7 +33,8 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
     /// Makes a vote
     /// @param x Who the vote comes from
     /// @param y Who the vote goes to
-    /// @dev @TODO removes x and take it from msg.sender. y must be an address
+    // @TODO removes x and take it from msg.sender. y must be an address
+    // @FIXME rename to `voteFromIdToId`
     function vote(uint32 x, uint32 y) external {
         require(!voted[x], "Already voted.");
         graph[y].push(x);
@@ -165,7 +166,7 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
         // counting direct votes giving to tied-in-the-first-place (max-tied) people
         TiedPersonHeap.Data memory heap = TiedPersonHeap.build(tiedData, maxTiedCount);
 
-        while (heap.max.votes <= uint(ranks.activeVoters) / 2) {  // majority isn't achieved yet
+        while (!winnerFound(heap, ranks)) {  
             TiedPerson.Data memory loser = heap.popMin();  // loser (let it be A)
 
             // loser's first choice (let it be B)
@@ -220,6 +221,19 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
                 tied = true;
             }
         }
+    }
+
+    function winnerFound(
+        TiedPersonHeap.Data memory maxTiedPersonsHeap,
+        InstantRunoffSystem memory runoffSystem
+    ) 
+        private
+        pure
+        returns (bool)
+    {
+        bool majorityAchieved = 
+            maxTiedPersonsHeap.max.votes > uint(runoffSystem.activeVoters) / 2;
+        return majorityAchieved || maxTiedPersonsHeap.size == 1;
     }
 }
 
