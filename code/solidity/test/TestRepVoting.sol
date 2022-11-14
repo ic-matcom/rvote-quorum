@@ -7,6 +7,8 @@ import "./Array.sol";
 import "./RepVotingTestCases.sol";
 
 contract TestRepVoting {
+    using RepVotingTestCases for RepVoting;
+
     function testVote() external {
         RepVotingTestCases.noCycle5Voters();
     }
@@ -212,6 +214,36 @@ contract TestRepVoting {
     function testGetWinnerEightMaxTiedPersons2CyclesOneChain13Total() external {
         RepVoting voting = RepVotingTestCases.eightMaxTiedPersons2CyclesOneChain13Total();
         Assert.equal(voting.getWinner(), 5, "wrong winner");
+    }
+
+    function testVoteFromRegisteredAddress() external {
+        RepVoting votingSystem = RepVotingTestCases.buildRepVotingFromVotersAmount(3);
+
+        uint32 chosenCandidateId = 1;
+        bool votingSuccess = votingSystem.isSuccessExternalCallToVoteFor(
+            RepVotingTestCases.addressOfVoterId(chosenCandidateId)
+        );
+        Assert.isTrue(votingSuccess, "voting should be successful");
+        Assert.equal(votingSystem.getWinner(), chosenCandidateId, "wrong winner");
+    }
+
+    function testNotRegisteredVoterAddress() external {
+        RepVoting votingSystem = RepVotingTestCases.buildRepVotingFromVotersAmount(5);
+        address notRegisteredAddress = 0x1dbd0dA6F4fA97942A8f1159a946909Cd23A2BC8;
+        Assert.isTrue(
+            votingSystem.notRegisteredAddressErrorWhenVotingFor(notRegisteredAddress), 
+            "not registered address error should be raised"
+        );
+    }
+
+    function testNotRegisteredVoterId() external {
+        uint32 totalVoters = 5;
+        RepVoting votingSystem = RepVotingTestCases.buildRepVotingFromVotersAmount(totalVoters);
+        uint32 notRegisteredVoterId = totalVoters;  // voters IDs go from 0 to `totalVoters-1` 
+        Assert.isTrue(
+            votingSystem.notRegisteredIdErrorWhenVotingFor(notRegisteredVoterId), 
+            "not registered voter ID error should be raised"
+        );
     }
 }
 // @TODO reemplaza la parte donde se setea el grafo x la funcio'n correspondiente de
