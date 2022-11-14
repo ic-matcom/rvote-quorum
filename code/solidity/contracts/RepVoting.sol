@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-// @audit NOTE check if 'UNLICENSED' is suitable
+// @audit NOTE check if 'UNLICENSED' is suitable. See repo license.
 pragma solidity >=0.4.22 <0.9.0;
 
 import "./TiedPerson.sol";
@@ -22,24 +22,89 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
     bool[] voted;
     uint[] voteTime;
     uint time;
+    mapping(address => VoterId) addressToVoterId;
+    uint32 registeredVoters;
 
-    /// @param voters The number of voters the system will support
-    constructor(uint32 voters) {
-        graph = new uint32[][](voters);
-        voted = new bool[](voters);
-        voteTime = new uint[](voters);
+    struct VoterId {
+        uint32 value;
+        bool registered;
     }
 
-    /// Makes a vote
-    /// @param x Who the vote comes from
-    /// @param y Who the vote goes to
-    // @TODO removes x and take it from msg.sender. y must be an address
+    error VoterAddressNotRegistered(address voterAddress);
+    error VoterIdNotRegistered(uint32 voterId);
+    // @TODO make error for double voting and test it in solidity
+
+    constructor(address[] memory voters) {
+        uint votersAmount = voters.length;
+        require(votersAmount > 0, "at least one voter must be registered");
+
+        initializeStateVariables(votersAmount);
+
+        for (uint i = 0; i < votersAmount; i++) {
+            registerVoter(voters[i]);
+        }
+    }
+
+    function initializeStateVariables(uint votersAmount) private {
+        graph = new uint32[][](votersAmount);
+        voted = new bool[](votersAmount);
+        voteTime = new uint[](votersAmount);
+    }
+
+    function registerVoter(address voter) private {  
+        require(!isVoterAddressRegistered(voter), "already registered");
+        addressToVoterId[voter] = VoterId({value: registeredVoters++, registered: true});
+    }
+    
+    function isVoterAddressRegistered(address voter) private view returns (bool) {
+        return addressToVoterId[voter].registered;
+    }
+    
+    function isVoterIdRegistered(uint32 voterId) private view returns (bool) {
+        return voterId < registeredVoters;
+    }
+
+    modifier onlyIfVoterAddressRegistered(address voterAddress) {
+        if (!isVoterAddressRegistered(voterAddress)) {
+            revert VoterAddressNotRegistered(voterAddress);
+        }
+        _;
+    }
+
+    modifier onlyIfVoterIdRegistered(uint32 voterId) {
+        if (!isVoterIdRegistered(voterId)) {
+            revert VoterIdNotRegistered(voterId);
+        }
+        _;
+    }
+
+    function voteFor(address chosenCandidate) 
+        external 
+        onlyIfVoterAddressRegistered(msg.sender)
+        onlyIfVoterAddressRegistered(chosenCandidate)
+    {
+        address voter = msg.sender;
+        uint32 voterId = getVoterIdFromAddress(voter);
+        uint32 chosenCandidateId = getVoterIdFromAddress(chosenCandidate);
+        vote(voterId, chosenCandidateId);
+    }
+
+    function getVoterIdFromAddress(address voterAddress) private view returns (uint32) {
+        return addressToVoterId[voterAddress].value;
+    }
+
     // @FIXME rename to `voteFromIdToId`
-    function vote(uint32 x, uint32 y) external {
-        require(!voted[x], "Already voted.");
-        graph[y].push(x);
-        voted[x] = true;
-        voteTime[x] = ++time;
+    // @TODO owner only
+    function vote(uint32 voterId, uint32 chosenCandidateId) 
+        public 
+        onlyIfVoterIdRegistered(voterId)
+        onlyIfVoterIdRegistered(chosenCandidateId)
+    {
+        require(!voted[voterId], "already voted");
+
+        graph[chosenCandidateId].push(voterId);
+        voted[voterId] = true;
+        voteTime[voterId] = ++time;
     }
 
     enum DfsColor { White, Gray, Black }
@@ -146,7 +211,9 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
         return backEdgesLength;
     }
 
-    /// @return Winner ID.
+    // @TODO owner only
+    // @TODO rename to `getWinnerId`
+    // @TODO make another function that returns the winner address
     function getWinner() external view returns (uint32) {  
         (uint[] memory count, uint32[] memory pi) = countVotes_();
 
@@ -239,7 +306,9 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
     }
 }
 
-// @TODO voting states, e.g. disallow vote() after count_votes() is called
+// @TODO voting states, e.g. disallow vote() after count_votes() is called. Only admin
+// can change states
+// @TODO time limit for states
 // @TODO mapping between address and uint32
 // @FIXME read style guide (documentation) and fix code accordingly
 // @FIXME arguments references in natspec are sourrounded by ``
