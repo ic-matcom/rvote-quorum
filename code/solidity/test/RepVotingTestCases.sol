@@ -34,7 +34,7 @@ library RepVotingTestCases {
         returns (bool notRegisteredIdErrorRaised)
     {
         uint32 voterId = 0;
-        try self.vote(voterId, chosenCandidateId) {
+        try self.voteFromVoterIdToVoterId(voterId, chosenCandidateId) {
             notRegisteredIdErrorRaised = false;
         } catch (bytes memory catchedLowLevelErrorData) {
             bytes4 expectedLowLevelErrorData = RepVoting.VoterIdNotRegistered.selector;
@@ -82,10 +82,10 @@ library RepVotingTestCases {
 
     function noCycle5Voters() internal returns (RepVoting voting) {
         voting = buildRepVotingFromVotersAmount(5);
-        voting.vote(0, 1);  
-        voting.vote(1, 2);
-        voting.vote(2, 3);
-        voting.vote(4, 2);
+        voting.voteFromVoterIdToVoterId(0, 1);  
+        voting.voteFromVoterIdToVoterId(1, 2);
+        voting.voteFromVoterIdToVoterId(2, 3);
+        voting.voteFromVoterIdToVoterId(4, 2);
         // 0 -> 1 -> 2 -> 3
         //          /
         //      4 ->
@@ -93,11 +93,11 @@ library RepVotingTestCases {
 
     function cycle3VotersOf5Total() internal returns (RepVoting voting) {
         voting = buildRepVotingFromVotersAmount(5);
-        voting.vote(3, 1);
-        voting.vote(1, 2);
-        voting.vote(0, 1);  
-        voting.vote(4, 2);
-        voting.vote(2, 3);
+        voting.voteFromVoterIdToVoterId(3, 1);
+        voting.voteFromVoterIdToVoterId(1, 2);
+        voting.voteFromVoterIdToVoterId(0, 1);  
+        voting.voteFromVoterIdToVoterId(4, 2);
+        voting.voteFromVoterIdToVoterId(2, 3);
         //        -----<-
         //       /       \ 
         // 0 -> 1 -> 2 -> 3
@@ -107,11 +107,11 @@ library RepVotingTestCases {
 
     function branch5VotersOf6Total() internal returns (RepVoting voting) {
         voting = buildRepVotingFromVotersAmount(6);
-        voting.vote(1, 2);
-        voting.vote(2, 3);
-        voting.vote(3, 4);
-        voting.vote(4, 5);
-        voting.vote(0, 4);
+        voting.voteFromVoterIdToVoterId(1, 2);
+        voting.voteFromVoterIdToVoterId(2, 3);
+        voting.voteFromVoterIdToVoterId(3, 4);
+        voting.voteFromVoterIdToVoterId(4, 5);
+        voting.voteFromVoterIdToVoterId(0, 4);
         // 1 -> 2 -> 3 -> 4 -> 5
         //               /
         //           0 ->
@@ -119,9 +119,9 @@ library RepVotingTestCases {
 
     function cycle2VotersOf3Total() internal returns (RepVoting voting) {
         voting = buildRepVotingFromVotersAmount(3);
-        voting.vote(1, 2);
-        voting.vote(2, 1);
-        voting.vote(0, 2);
+        voting.voteFromVoterIdToVoterId(1, 2);
+        voting.voteFromVoterIdToVoterId(2, 1);
+        voting.voteFromVoterIdToVoterId(0, 2);
         // 1 -> 2 <- 0
         //  \   /
         //   -<-
@@ -129,19 +129,19 @@ library RepVotingTestCases {
 
     function twoCyclesTheLargestOf4Vertices13Total() internal returns (RepVoting voting) {
         voting = buildRepVotingFromVotersAmount(13);
-        voting.vote(3, 7);
-        voting.vote(12, 10);
-        voting.vote(0, 2);
-        voting.vote(11, 4);
-        voting.vote(8, 10);
-        voting.vote(9, 6);
-        voting.vote(2, 12);
-        voting.vote(5, 6);
-        voting.vote(7, 1);
-        voting.vote(10, 11);
-        voting.vote(6, 4);
-        voting.vote(4, 8);
-        voting.vote(1, 7);
+        voting.voteFromVoterIdToVoterId(3, 7);
+        voting.voteFromVoterIdToVoterId(12, 10);
+        voting.voteFromVoterIdToVoterId(0, 2);
+        voting.voteFromVoterIdToVoterId(11, 4);
+        voting.voteFromVoterIdToVoterId(8, 10);
+        voting.voteFromVoterIdToVoterId(9, 6);
+        voting.voteFromVoterIdToVoterId(2, 12);
+        voting.voteFromVoterIdToVoterId(5, 6);
+        voting.voteFromVoterIdToVoterId(7, 1);
+        voting.voteFromVoterIdToVoterId(10, 11);
+        voting.voteFromVoterIdToVoterId(6, 4);
+        voting.voteFromVoterIdToVoterId(4, 8);
+        voting.voteFromVoterIdToVoterId(1, 7);
         // 10 <- 12 <- 2 <- 0
         // | \
         // |  11                     1 <-> 7 <- 3
@@ -157,16 +157,16 @@ library RepVotingTestCases {
         returns (RepVoting voting) 
     {
         voting = buildRepVotingFromVotersAmount(13); //      1
-        voting.vote(7, 1);    // (6) -> (7) -> (1)             (0)
-        voting.vote(2, 8);    //     11   \     v  9
-        voting.vote(8, 4);    //           -<- (3)
-        voting.vote(3, 7);    //            4
-        voting.vote(11, 12);  // (2) -> (8) -> (4) -> (5)
-        voting.vote(9, 10);   //     2      3      7
-        voting.vote(4, 5);    //       8
-        voting.vote(12, 9);   //  (9) <- (12)
-        voting.vote(1, 3);    // 6 v      ^   5
-        voting.vote(10, 11);  // (10) -> (11)
-        voting.vote(6, 7);    //      10
+        voting.voteFromVoterIdToVoterId(7, 1);    // (6) -> (7) -> (1)             (0)
+        voting.voteFromVoterIdToVoterId(2, 8);    //     11   \     v  9
+        voting.voteFromVoterIdToVoterId(8, 4);    //           -<- (3)
+        voting.voteFromVoterIdToVoterId(3, 7);    //            4
+        voting.voteFromVoterIdToVoterId(11, 12);  // (2) -> (8) -> (4) -> (5)
+        voting.voteFromVoterIdToVoterId(9, 10);   //     2      3      7
+        voting.voteFromVoterIdToVoterId(4, 5);    //       8
+        voting.voteFromVoterIdToVoterId(12, 9);   //  (9) <- (12)
+        voting.voteFromVoterIdToVoterId(1, 3);    // 6 v      ^   5
+        voting.voteFromVoterIdToVoterId(10, 11);  // (10) -> (11)
+        voting.voteFromVoterIdToVoterId(6, 7);    //      10
     }
 }
