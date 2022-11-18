@@ -23,6 +23,7 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
     uint[] voteTime;
     uint time;
     mapping(address => VoterId) addressToVoterId;
+    address[] voterIdToAddress;
     uint32 registeredVoters;
     address owner;
 
@@ -43,7 +44,7 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
         owner = msg.sender;
 
         for (uint i = 0; i < votersAmount; i++) {
-            registerVoter(voters[i]);
+            registerVoterAddress(voters[i]);
         }
     }
 
@@ -53,9 +54,10 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
         voteTime = new uint[](votersAmount);
     }
 
-    function registerVoter(address voter) private {  
-        require(!isVoterAddressRegistered(voter), "already registered");
-        addressToVoterId[voter] = VoterId({value: registeredVoters++, registered: true});
+    function registerVoterAddress(address voterAddress) private {  
+        require(!isVoterAddressRegistered(voterAddress), "already registered");
+        addressToVoterId[voterAddress] = VoterId({value: registeredVoters++, registered: true});
+        voterIdToAddress.push(voterAddress);
     }
     
     function isVoterAddressRegistered(address voter) private view returns (bool) {
@@ -223,8 +225,13 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
         return backEdgesLength;
     }
 
+    function getWinnerAddress() external view returns (address) {
+        uint32 winnerId = getWinnerId();
+        return voterIdToAddress[winnerId];
+    }
+
     // @TODO make another function that returns the winner address
-    function getWinnerId() external view returns (uint32) {  
+    function getWinnerId() public view returns (uint32) {  
         (uint[] memory count, uint32[] memory pi) = countVotes_();
 
         (uint32 mostVotesId, bool tied) = isTied(count);
