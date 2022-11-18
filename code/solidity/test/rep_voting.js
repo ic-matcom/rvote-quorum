@@ -17,7 +17,7 @@ contract("RepVoting", function (accounts) {
         await votingSystem.voteFor(accounts[11], {from: accounts[10]});  // (10) -> (11)
         await votingSystem.voteFor(accounts[7], {from: accounts[6]});    //      10
 
-        const winner = await votingSystem.getWinner();
+        const winner = await votingSystem.getWinnerId();
         assert.equal(winner, 5, "wrong winner");
     });
     it("should abort with an 'only owner allowed' error", async () => {

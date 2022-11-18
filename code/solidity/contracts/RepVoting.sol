@@ -223,10 +223,8 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
         return backEdgesLength;
     }
 
-    // @TODO owner only
-    // @TODO rename to `getWinnerId`
     // @TODO make another function that returns the winner address
-    function getWinner() external view returns (uint32) {  
+    function getWinnerId() external view returns (uint32) {  
         (uint[] memory count, uint32[] memory pi) = countVotes_();
 
         (uint32 mostVotesId, bool tied) = isTied(count);
