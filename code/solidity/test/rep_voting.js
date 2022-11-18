@@ -23,14 +23,14 @@ contract("RepVoting", function (accounts) {
     it("should abort with an 'only owner allowed' error", async () => {
         const votingSystem = await RepVoting.deployed();
         
-        let tryCatch = require("./exceptions.js").tryCatch;
-        let errorTypes = require("./exceptions.js").errorTypes;
+        let assertPromiseRaisesErrorMessage = require("./exceptions.js")
+            .assertPromiseRaisesErrorMessage;
         let notOwner = accounts[1];
-        let onlyOwnerError = errorTypes.revert + " (message: only owner can call this function)";
+        let onlyOwnerErrorMessage = "only owner can call this function";
 
-        await tryCatch(
+        await assertPromiseRaisesErrorMessage(
             votingSystem.voteFromVoterIdToVoterId(1, 2, {from: notOwner}), 
-            onlyOwnerError
+            onlyOwnerErrorMessage
         );
     });
 });
