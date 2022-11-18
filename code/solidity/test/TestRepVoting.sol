@@ -160,6 +160,18 @@ contract TestRepVoting {
         Assert.equal(voting.getWinnerId(), 3, "wrong winner");
     }
 
+    function testGetWinnerAddressNoTie() external {
+        RepVoting voting = RepVotingTestCases.noCycle5Voters();
+        // 0 -> 1 -> 2 -> 3
+        //          /
+        //      4 ->
+        Assert.equal(
+            voting.getWinnerAddress(), 
+            RepVotingTestCases.addressOfVoterId(3), 
+            "wrong winner"
+        );
+    }
+
     function testGetWinnerIdSimpleCycle() external {
         RepVoting voting = RepVotingTestCases.cycle3VotersOf5Total();
         //        -----<-
@@ -170,12 +182,38 @@ contract TestRepVoting {
         Assert.equal(voting.getWinnerId(), 1, "wrong winner");
     }
 
+    function testGetWinnerAddressSimpleCycle() external {
+        RepVoting voting = RepVotingTestCases.cycle3VotersOf5Total();
+        //        -----<-
+        //       /       \ 
+        // 0 -> 1 -> 2 -> 3
+        //          /
+        //      4 ->
+        Assert.equal(
+            voting.getWinnerAddress(), 
+            RepVotingTestCases.addressOfVoterId(1), 
+            "wrong winner"
+        );
+    }
+
     function testGetWinnerId2VerticesCycle() external {
         RepVoting voting = RepVotingTestCases.cycle2VotersOf3Total();
         // 1 -> 2 <- 0
         //  \   /
         //   -<-
         Assert.equal(voting.getWinnerId(), 2, "wrong winner");
+    }
+
+    function testGetWinnerAddress2VerticesCycle() external {
+        RepVoting voting = RepVotingTestCases.cycle2VotersOf3Total();
+        // 1 -> 2 <- 0
+        //  \   /
+        //   -<-
+        Assert.equal(
+            voting.getWinnerAddress(), 
+            RepVotingTestCases.addressOfVoterId(2), 
+            "wrong winner"
+        );
     }
 
     function testGetWinnerId2Cycles() external {
@@ -191,6 +229,25 @@ contract TestRepVoting {
         //               -<- 5
         //                8
         Assert.equal(voting.getWinnerId(), 4, "wrong winner");
+    }
+
+    function testGetWinnerAddress2Cycles() external {
+        RepVoting voting = RepVotingTestCases.twoCyclesTheLargestOf4Vertices13Total();
+        //      2     7    3
+        //   10 <- 12 <- 2 <- 0
+        //   |  \ 10                       9     1
+        //   |   11                     1 <-> 7 <- 3
+        // 5 ^    | 4                      13
+        //   |    v      6
+        //   8 <- 4 <- 6 <- 9
+        //      12  11  \ 
+        //               -<- 5
+        //                8
+        Assert.equal(
+            voting.getWinnerAddress(), 
+            RepVotingTestCases.addressOfVoterId(4), 
+            "wrong winner"
+        );
     }
 
     function testCountEightMaxTiedPersons2CyclesOneChain13Total() external {
