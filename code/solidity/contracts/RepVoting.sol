@@ -24,6 +24,7 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
     uint time;
     mapping(address => VoterId) addressToVoterId;
     uint32 registeredVoters;
+    address owner;
 
     struct VoterId {
         uint32 value;
@@ -38,14 +39,15 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
         uint votersAmount = voters.length;
         require(votersAmount > 0, "at least one voter must be registered");
 
-        initializeStateVariables(votersAmount);
+        initializeStateVariablesFromVotersAmount(votersAmount);
+        owner = msg.sender;
 
         for (uint i = 0; i < votersAmount; i++) {
             registerVoter(voters[i]);
         }
     }
 
-    function initializeStateVariables(uint votersAmount) private {
+    function initializeStateVariablesFromVotersAmount(uint votersAmount) private {
         graph = new uint32[][](votersAmount);
         voted = new bool[](votersAmount);
         voteTime = new uint[](votersAmount);
@@ -78,6 +80,11 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
         _;
     }
 
+    modifier onlyIfSenderIsOwner() {
+        require(msg.sender == owner, "only owner can call this function");
+        _;
+    }
+
     function voteFor(address chosenCandidate) 
         external 
         onlyIfVoterAddressRegistered(msg.sender)
@@ -86,17 +93,22 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
         address voter = msg.sender;
         uint32 voterId = getVoterIdFromAddress(voter);
         uint32 chosenCandidateId = getVoterIdFromAddress(chosenCandidate);
-        vote(voterId, chosenCandidateId);
+        voteFromVoterIdToVoterId_(voterId, chosenCandidateId);
     }
 
     function getVoterIdFromAddress(address voterAddress) private view returns (uint32) {
         return addressToVoterId[voterAddress].value;
     }
 
-    // @FIXME rename to `voteFromIdToId`
-    // @TODO owner only
-    function vote(uint32 voterId, uint32 chosenCandidateId) 
-        public 
+    function voteFromVoterIdToVoterId(uint32 voterId, uint32 chosenCandidateId) 
+        external 
+        onlyIfSenderIsOwner
+    {
+        voteFromVoterIdToVoterId_(voterId, chosenCandidateId);
+    }
+
+    function voteFromVoterIdToVoterId_(uint32 voterId, uint32 chosenCandidateId) 
+        private
         onlyIfVoterIdRegistered(voterId)
         onlyIfVoterIdRegistered(chosenCandidateId)
     {
