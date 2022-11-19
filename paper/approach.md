@@ -56,7 +56,7 @@ Se pueden modelar los votos emitidos mediante un digrafo $G   = \langle D, f \ra
 1. $out(v) \leq 1, \forall v \in D$, ya que $f$ es función. \label{prop:out-deg-1} <!-- @audit mira a ver si out es la notación correcta pa grado d salida -->
 2. **si $v$ es un vértice de un ciclo $c$, entonces $\langle v, f(v) \rangle$ es un arco de $c$**. Esto se debe   a que si $v$ pertenece a un ciclo, entonces $out(v) \geq 1$, y por la propiedad \ref{prop:out-deg-1} se cumple que $out(v) = 1$. Luego, $v \in Dom(f)$ y el arco $\langle v, f(v) \rangle$ es el único arco de salida de $v$ y, por ende, pertenece a $c$. \label{prop:v-fv-cycle}
 
-# Implementación
+# Implementación con BFS
 A continuación se presenta una implementación en *Python* de las funcionalidades principales que debe proveer un sistema electrónico de votación representativa. Los votantes son tratados como números enteros en el rango $[0, |D| - 1]$, de manera tal que a cada votante se le asocia un entero único a modo de identificador. En un arreglo global `vote`, inicializado con todos sus valores en $-1$, se registra el voto de cada participante, tal que al culminar la votación se cumpla que 
 
 $$
@@ -154,3 +154,7 @@ Queda pendiente:
 
 - ¿cómo decidir ganador cuando hay más de una persona con la mayor cantidad de votos?
 - escoger entre *Hyperledger Besu* o *GoQuorum* para la implementación.
+
+# Implementación con DFS
+## Desempates
+<!-- @todo -->
