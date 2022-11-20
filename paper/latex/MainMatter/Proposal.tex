@@ -7,14 +7,21 @@
 \newcommand{\maxincyclecaption}{\hyperref[algo:max-in-cycle]{M\'ax-Votos-en-Ciclo}}
 \newcommand{\setvotestoallincyclecaption}{\hyperref[algo:set-votes-all-in-cycle]{Reasignar-Votos-en-Ciclo}}
 
+\todo[inline]{@audit tengo dudas si la definicio'n formal de conteo d votos debe ir aki' o en la intro. Y si va aki', do'nde va, en la demo d la correctitud o antes d hablar d mi propuesta pal conteo?}
+
+\todo[inline]{@TODO introducir los aspectos fundamentales de la propuesta: conteo d votos y desempate}
+
 \section{Conteo de Votos}
+\todo[inline]{@TODO resumir d lo q vas a hablar: contar con DFS en el grafo inverso al d los votos}
 Sean $V$ el conjunto de los participantes  de la elecci\'on (votantes) y $f \in V \times V$ la relaci\'on de voto, esto es, $ \langle x, y \rangle \in f $ si y s\'olo si $x$ vot\'o por $ y $.  Se asume que culmin\'o el registro de todos los votos y que s\'olo existen votos v\'alidos. Cada votante puede elegir a lo sumo a otra persona, por ende, $f$ es funci\'on.
 
-Sea $G' = \langle V, f \rangle$ el digrafo de votaci\'on. Representaciones de este grafo pueden ser encontradas en las figuras \ref{fig:r-voting} y \ref{fig:voting-cycle}.
+Sea $G' = \langle V, f \rangle$ el digrafo de votaci\'on, con v\'ertices en $V$ y arcos en $f$. Representaciones de este grafo pueden ser encontradas en las figuras~\ref{fig:r-voting}~y~\ref{fig:voting-cycle}.
 
-Ahora bien, sea $G = \langle V, f^{-1} \rangle$. Se denota por $G_\pi$ al subgrafo de predecesores del DFS \citep{intro-to-algo-3}. El conteo de los votos obtenidos por $x$ se reduce a contar la cantidad de nodos en el sub\'arbol de $x$ en $G_\pi$. \todo{@TODO demostrarlo}
+Ahora bien, sea $G = \langle V, f^{-1} \rangle$ el digrafo que resulta de invertir los arcos de $G'$. Se denota por $G_\pi$ a cualquiera de los subgrafos  de predecesores de un recorrido DFS sobre $G$ \citep{intro-to-algo-3}. El conteo de los votos obtenidos por $x$ se reduce a contar la cantidad de nodos en el sub\'arbol de $x$ en $G_\pi$. \todo{@BUG mentira. El del introduction so'lo setea $\pi$ cuando $v$ es gris}
 
-El conteo de los votos puede ser implementado mediante DFS. En este sentido, los algoritmos \ref{algo:dfs} y \ref{algo:dfs-visit} constituyen adaptaciones   a las propuestas de DFS y DFS-Visit de \cite{intro-to-algo-3}, respectivamente. Se asume que $G$ se encuentra representado mediante listas de adyacencia. En $B$ se almacenan los arcos de retroceso de $G$, los cuales ser\'an empleados posteriormente para asignar los votos a los v\'ertices que se encuentran en alg\'un ciclo.  Una vez el algoritmo \ref{algo:dfs} termine, en $u.votos$ se tendr\'a la cantidad de votos obtenidos por el votante representado mediante el v\'ertice $u$.
+\todo[inline]{@NOTE cada vez q digas algo q lleve demostracio'n, pon una referencia al lema/teorema q lo respalda en la subseccio'n d correctitud}
+
+El conteo de los votos puede entonces ser implementado mediante DFS. Los algoritmos~\ref{algo:dfs}~y~\ref{algo:dfs-visit}  constituyen adaptaciones   de las funciones DFS y DFS-Visit de \cite{intro-to-algo-3}, respectivamente. Se asume que $G$ se encuentra representado mediante listas de adyacencia. En $B$ se almacenan los arcos de retroceso de $G$.    Una vez el algoritmo~\ref{algo:dfs} termine, en $u.votos$ se tiene la cantidad de votos obtenidos por el votante representado mediante el v\'ertice $u$. A todos los votantes en alg\'un ciclo se les reasignan votos bajo un criterio justo.
 
 \begin{algorithm}[!h]
     \caption{\dfscaption}
@@ -34,6 +41,8 @@ El conteo de los votos puede ser implementado mediante DFS. En este sentido, los
     \cyclevotescaption($G, B$)\; \label{algo:dfs:line:votes-in-cycles}
 \end{algorithm}
 
+En \dfscaption \;primero se inicializan las propiedades de los v\'ertices. En el algoritmo~\ref{algo:init-dfs-vertices} se pueden observar esas propiedades. La propiedad $votos$ almacena la cantidad de votos recibidos por el v\'ertice. Como se puede apreciar,  \dfscaption \;difiere en muy pocos aspectos a la funci\'on DFS de \cite{intro-to-algo-3}. Uno de los m\'as significativos es el llamado a la funci\'on \cyclevotescaption \;en la l\'inea~\ref{algo:dfs:line:votes-in-cycles}. Esta funci\'on se encarga de reasignar una cantidad justa de votos a cada uno de los v\'ertices que se encuentran en un ciclo.  
+
 \begin{algorithm}[!h]
     \caption{\initdfsvertices}
     \label{algo:init-dfs-vertices}
@@ -44,27 +53,22 @@ El conteo de los votos puede ser implementado mediante DFS. En este sentido, los
 
     \ForEach{v\'ertice $u \in V$}{
         $u.color =$ BLANCO\;
-        $u.candidato =$ NIL\;
         $u.votos = 0$\;
     }
 \end{algorithm}
 
-El algoritmo \ref{algo:dfs} difiere en muy pocos aspectos al de \cite{intro-to-algo-3}. Uno de los m\'as significativos es el llamado a la funci\'on Set-Votes-In-Cycles en la l\'inea \ref{algo:dfs:line:votes-in-cycles}. Esta funci\'on se encarga de asignar los votos a los v\'ertices que se encuentran en alg\'un ciclo.  
-
-El algoritmo \ref{algo:dfs-visit} calcula los votos obtenidos por $u$ y a\~nade a $B$ los arcos de retroceso encontrados durante el proceso.
+El algoritmo~\ref{algo:dfs-visit} calcula los votos obtenidos por $u$ y a\~nade a $B$ los arcos de retroceso encontrados durante el proceso.
 
 \begin{algorithm}[!h]
     \caption{\dfsvisitcaption}
     \label{algo:dfs-visit}
     \DontPrintSemicolon
-    \SetAlgoLined
     \Entrada{Grafo $G$; v\'ertice $u$; conjunto $B$ de arcos de retroceso.}     
     \BlankLine
 
     $u.color =$ GRIS\;
 
     \ForEach{$v \in G.Adj[u]$}{ \label{algo:dfs-visit:line:arc-foreach}
-        $v.candidato = u$\;
         \If{$v.color ==$ {\rm BLANCO}}{
             \dfsvisitcaption($G, v, B$)\;
         }\lElse{\If{$v.color ==$ {\rm GRIS}}{
@@ -73,38 +77,43 @@ El algoritmo \ref{algo:dfs-visit} calcula los votos obtenidos por $u$ y a\~nade 
         \If{$v.color ==$ {\rm NEGRO}}{ \label{algo:dfs-visit:line:if-black}
             $u.votos = u.votos + v.votos + 1$\; \label{algo:dfs-visit:line:votes}
         }
+        \label{algo:dfs-visit:line:if-black:end}
     }
+    \label{algo:dfs-visit:line:arc-foreach:end}
     $u.color =$ NEGRO\;
 \end{algorithm}
 
-El \textbf{foreach} de las l\'ineas \ref{algo:dfs-visit:line:arc-foreach}-\ref{algo:dfs-visit:line:votes} itera por todos los arcos salientes de $u$. N\'otese que $v \in G.Adj[u]$ si y s\'olo si $v$ vot\'o por $u$, por definici\'on de $G$.  Se a\~nade un nuevo arco de retroceso a $B$ en la l\'inea \ref{algo:dfs-visit:line:add-B}. Un arco $\langle u, v \rangle$ es de retroceso si y s\'olo si $v$ es gris cuando se explora ese arco por primera vez \citep{intro-to-algo-3}. El n\'umero de votos obtenidos por $u$ es actualizado solamente en la l\'inea \ref{algo:dfs-visit:line:votes}, cuando $v$ es negro. Esto se debe a que los votos obtenidos por $v$ se encuentran bien calculados cuando es negro. Todos los votos obtenidos por $v$, m\'as el voto que este le confiere a $u$, son contados como votos de  $u$. N\'otese que el bloque de las l\'ineas \ref{algo:dfs-visit:line:if-black}-\ref{algo:dfs-visit:line:votes} es un \textbf{if}, y no un \textbf{else if}. Esto es intencional y permite que se actualicen los votos de $u$ correctamente, incluso cuando $\langle u, v \rangle$ es un arco de \'arbol de $G_\pi$.
+El ciclo de las l\'ineas~\ref{algo:dfs-visit:line:arc-foreach}-\ref{algo:dfs-visit:line:arc-foreach:end} itera por todos los arcos salientes de $u$. N\'otese que $v \in G.Adj[u]$ si y s\'olo si $v$ vot\'o por $u$, por definici\'on de $G$.  Se a\~nade un nuevo arco de retroceso a $B$ en la l\'inea~\ref{algo:dfs-visit:line:add-B}. Un arco $\langle u, v \rangle$ es de retroceso si y s\'olo si $v$ es gris cuando se explora ese arco por primera vez \citep{intro-to-algo-3}. El n\'umero de votos obtenidos por $u$ es actualizado solamente en la l\'inea~\ref{algo:dfs-visit:line:votes}, cuando $v$ es negro. Esto se debe a que los votos obtenidos por $v$ se encuentran bien calculados cuando este es negro. Todos los votos obtenidos por $v$, m\'as el voto que este le confiere a $u$, son contados como votos de  $u$. N\'otese que el bloque de las l\'ineas~\ref{algo:dfs-visit:line:if-black}-\ref{algo:dfs-visit:line:if-black:end} es un ``\textbf{si}'', y no un ``\textbf{en otro caso si}''. Esto es intencional y permite que se actualicen los votos de $u$ correctamente, incluso cuando $\langle u, v \rangle$ es un arco de \'arbol de $G_\pi$. 
 
 \todo[inline]{@TODO probar q cuan2 v es negro entonces los votos d v esta'n bien contados}
 
-El algoritmo \ref{algo:votes-cycles} itera por todos los ciclos de $G$. En cada ciclo, calcula el mayor n\'umero de votos obtenidos por un v\'ertice del ciclo y le asigna esa cantidad a los restantes v\'ertices del ciclo. Los votantes de un mismo ciclo conf\'ian indirectamente entre ellos dos a dos, por ende, se considera justo que cada uno de ellos obtenga la misma cantidad de votos, y que esta sea la mayor obtenida por un miembro del ciclo.
+El algoritmo~\ref{algo:votes-cycles} considera todos los ciclos de $G$. En cada iteraci\'on, se calcula el mayor n\'umero de votos obtenidos por un v\'ertice del ciclo y le asigna esa cantidad a los restantes v\'ertices del propio ciclo. Los votantes de un mismo ciclo conf\'ian indirectamente entre ellos dos a dos, por ende, se considera justo que cada uno de ellos obtenga la misma cantidad de votos, y que esta sea la mayor obtenida por un miembro del ciclo.
+
 
 \begin{algorithm}[!h]
     \caption{\cyclevotescaption}
     \label{algo:votes-cycles}
     \DontPrintSemicolon
     \SetAlgoLined
-    \Entrada{Grafo $G$; conjunto $B$ de arcos de retroceso.}     
+    \Entrada{Grafo $G = \langle V, f^{-1} \rangle$; conjunto $B$ de arcos de retroceso.}     
     \BlankLine
 
     \ForEach{$\langle u, v \rangle \in B$}{
-        $m = $ \maxincyclecaption($\langle u, v \rangle$)\;
-        \setvotestoallincyclecaption($m, \langle u, v \rangle$)\;
+        $m = $ \maxincyclecaption($\langle u, v \rangle, f$)\;
+        \setvotestoallincyclecaption($m, \langle u, v \rangle, f$)\;
     }
 \end{algorithm}
 
 \todo[inline]{@TODO hay q probar q c esta'n considerando todos los ciclos}
+
+Dado un arco de retroceso $\langle u, v \rangle$ y la funci\'on de votaci\'on $f$, \maxincyclecaption \;itera por todos los v\'ertices del ciclo al que ese arco pertenece, mediante m\'ultiples aplicaciones de $f$. El algoritmo devuelve la mayor cantidad de votos obtenidos por alg\'un v\'ertice del ciclo. 
 
 \begin{algorithm}[!h]
     \caption{\maxincyclecaption}
     \label{algo:max-in-cycle}
     \DontPrintSemicolon
     \SetAlgoLined
-    \Entrada{Arco de retroceso $\langle u, v \rangle$.}     
+    \Entrada{Arco de retroceso $\langle u, v \rangle$; funci\'on de votaci\'on $f$.}     
     \Salida{Mayor n\'umero de votos obtenidos por un v\'ertice del ciclo.}
     \BlankLine
 
@@ -112,29 +121,38 @@ El algoritmo \ref{algo:votes-cycles} itera por todos los ciclos de $G$. En cada 
     $x = u$\;
     \While{$x \neq v$}{
         $m = \max(m, x.votos)$\;
-        $x = x.candidato$\;
+        $x = f(x)$\;
     }
     \Return{$m$}\;
 \end{algorithm}
 
-\todo[inline]{@TODO probar q el ciclo de los algoritmos \ref{algo:set-votes-all-in-cycle} y \ref{algo:max-in-cycle} termina}
+El algoritmo~\ref{algo:set-votes-all-in-cycle} itera de igual manera por todos los v\'ertices del ciclo al que pertenece el arco de retroceso dado. La cantidad de votos dada ($m$) es asignada a cada v\'ertice de ciclo.
+
+\todo[inline]{@TODO probar q el ciclo de los algoritmos~\ref{algo:set-votes-all-in-cycle}~y~\ref{algo:max-in-cycle} termina}
 
 \begin{algorithm}[!h]
     \caption{\setvotestoallincyclecaption}
     \label{algo:set-votes-all-in-cycle}
     \DontPrintSemicolon
     \SetAlgoLined
-    \Entrada{$m$ votos a asignar; arco de retroceso $\langle u, v \rangle$.}     
+    \Entrada{$m$ votos a asignar; arco de retroceso $\langle u, v \rangle$; funci\'on de votaci\'on $f$.}     
     \BlankLine
 
     $x = u$\;
     \While{$x \neq v$}{
         $x.votos = m$\;
-        $x = x.candidato$\;
+        $x = f(x)$\;
     }
     $v.votos = m$\;
 \end{algorithm}
 
+\subsection{Correctitud}
+\todo[inline]{@NOTE  antes d tirarte a demostrar algo mira a ver si es necesario o si c puede citar al introduction o a alguna conf d eda, discreta, daa, etc}
+
+El algoritmo~\ref{algo:votes-cycles} itera por todos los arcos de retroceso de $G$, los cuales se encuentran en $B$. Cada uno de ellos pertenece a un ciclo y todo ciclo tiene un arco en $B$. \todo{@TODO demostrar} Basta con un arco de retroceso $\langle u, v \rangle$ y la funci\'on $f$ para hallar todos los arcos del ciclo donde $\langle u, v \rangle$ se encuentra. Las funciones \maxincyclecaption \;y \setvotestoallincyclecaption  \todo{@TODO completar esto}
+
+\subsection{Complejidad temporal}
+\todo[inline]{@TODO complejidad temporal del conteo d votos}
 
 
 \section{Implementaci\'on del Desempate}
@@ -162,3 +180,6 @@ Sea $D$ el conjunto de los votantes que han sido eliminados por el m\'etodo de d
 % $$
 % R(x) = \langle y_{i_1}, y_{i_2}, \ldots, y_{i_t} \rangle, \quad 1 \leq i_1 \leq i_2 \leq \ldots \leq i_t \leq k, \quad y_{i_j} \in W \setminus D, \; 1 \leq \forall j \leq t.
 % $$
+
+% @FIXME change blankspace between (figura|tabla|algoritmo) and (\ref|\cite) command for a ~
+% @TODO remove \SetAlgoLined from all algorithms
