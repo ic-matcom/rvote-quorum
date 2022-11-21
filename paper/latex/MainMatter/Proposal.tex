@@ -15,7 +15,7 @@
 \todo[inline]{@TODO resumir d lo q vas a hablar: contar con DFS en el grafo inverso al d los votos}
 Sean $V$ el conjunto de los participantes  de la elecci\'on (votantes) y $f \in V \times V$ la relaci\'on de voto, esto es, $ \langle x, y \rangle \in f $ si y s\'olo si $x$ vot\'o por $ y $.  Se asume que culmin\'o el registro de todos los votos y que s\'olo existen votos v\'alidos. Cada votante puede elegir a lo sumo a otra persona, por ende, $f$ es funci\'on.
 
-Sea $G' = \langle V, f \rangle$ el digrafo de votaci\'on, con v\'ertices en $V$ y arcos en $f$. Representaciones de este grafo pueden ser encontradas en las figuras~\ref{fig:r-voting}~y~\ref{fig:voting-cycle}.
+Sea $G' = \langle V, f \rangle$ el digrafo de votaci\'on, con v\'ertices en $V$ y arcos en $f$. Representaciones de este grafo pueden ser encontradas en las figuras~\ref{fig:r-voting}~y~\ref{fig:voting-cycle}. \todo[inline]{@FIXME en esas figuras las flechas tienen peso y referenciarlas en este momento puede hacer pensar al lector q el grafo es ponderado}
 
 Ahora bien, sea $G = \langle V, f^{-1} \rangle$ el digrafo que resulta de invertir los arcos de $G'$. Se denota por $G_\pi$ a cualquiera de los subgrafos  de predecesores de un recorrido DFS sobre $G$ \citep{intro-to-algo-3}. El conteo de los votos obtenidos por $x$ se reduce a contar la cantidad de nodos en el sub\'arbol de $x$ en $G_\pi$. \todo{@BUG mentira. El del introduction so'lo setea $\pi$ cuando $v$ es gris}
 
@@ -151,31 +151,63 @@ El algoritmo~\ref{algo:set-votes-all-in-cycle} itera de igual manera por todos l
 
 El algoritmo~\ref{algo:votes-cycles} itera por todos los arcos de retroceso de $G$, los cuales se encuentran en $B$. Cada uno de ellos pertenece a un ciclo y todo ciclo tiene un arco en $B$. \todo{@TODO demostrar} Basta con un arco de retroceso $\langle u, v \rangle$ y la funci\'on $f$ para hallar todos los arcos del ciclo donde $\langle u, v \rangle$ se encuentra. Las funciones \maxincyclecaption \;y \setvotestoallincyclecaption  \todo{@TODO completar esto}
 
-\subsection{Complejidad temporal}
+\subsection{Complejidad Temporal}
 \todo[inline]{@TODO complejidad temporal del conteo d votos}
 
 
-\section{Implementaci\'on del Desempate}
-Sean $m = \max\{ u.votos \;|\; u \in V \}$ y $W = \{ u \in V \;|\; u.votos = m \}$.  Para determinar un ganador cuando $|W| > 1$, se emplea una adaptaci\'on del m\'etodo de desempate instant\'aneo. 
+\section{Desempate}
+\todo[inline]{@TODO haz una pekenya intro: xq hay q desempatar? di q 1ro hay q correr el me'todo d conteo d votos explik2 en la seccio'n anterior}
+Sean $m = \max\{ u.votos \;|\; u \in V \}$ y $W = \{ u \in V \;|\; u.votos = m \}$.  Si $|W| = 1$, entonces se declara como ganador al \'unico elemento de $W$. Para determinar qui\'en gana cuando $|W| > 1$, se emplea una adaptaci\'on del m\'etodo de desempate instant\'aneo. 
 
+Para utilizar ese m\'etodo es necesario definir:
+\begin{enumerate}
+    \item un \textit{ranking} de votaci\'on para cada votante, y
+    \item una manera de seleccionar qu\'e candidato eliminar en cada ronda, en caso de que m\'as de uno  obtenga la menor cantidad de votos.
+\end{enumerate}  
+
+\subsection{\textit{Rankings}}
 Sea $x \in V$ un v\'ertice cualquiera de $G'$. Sea $P(x)$ un camino simple maximal de $G'$ que comienza en $x$. Luego,
 $$
 P(x) = \langle x, f(x), f(f(x)), \ldots, f^{k}(x) \rangle.
 $$
 Como $f$ es funci\'on, entonces $P(x)$ es \'unico. 
 
-Sea $D$ el conjunto de los votantes que han sido eliminados por el m\'etodo de desempate. El \textit{ranking} de $x$ se define como  la subsecuencia maximal de $P(x)$ de v\'ertices que est\'an en $W$ y que no est\'an en $D \cup \{ x \}$. 
+El \textit{ranking} de $x$ se define como  la subsecuencia maximal de $P(x)$ de v\'ertices distintos de $x$ que est\'an en $W$. El orden en el que aparecen los votantes en el \textit{ranking} es el mismo que el orden en el que aparecen en la subsecuencia.
+
+En la figura~\ref{fig:graph-13-voters-2-cycles} se representa un grafo de votaci\'on con 13 votantes y 2 ciclos.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=.9]{Graphics/graph-13-voters-2-cycles-largest-has-4.pdf}
+    \caption{Grafo de votaci\'on con 13 votantes y 2 ciclos.}
+    \label{fig:graph-13-voters-2-cycles}
+\end{figure}
+
+En ese caso, se tiene que $m = 9$ y $W = \{ 4, 8, 10, 11 \}$. En la tabla~\ref{tab:rankings-13-voters} se muestran los \textit{rankings} de cada votante.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        posici\'on/votante & 0  & 1  & 2  & 3  & 4  & 5  & 6  & 7  & 8  & 9  & 10 & 11 & 12 \\ \hline
+        1                  & 10 &    & 10 &    & 8  & 4  & 4  &    & 10 & 4  & 11 & 4  & 10 \\ \hline
+        2                  & 11 &    & 11 &    & 10 & 8  & 8  &    & 11 & 8  & 4  & 8  & 11 \\ \hline
+        3                  & 4  &    & 4  &    & 11 & 10 & 10 &    & 4  & 10 & 8  & 10 & 4  \\ \hline
+        4                  & 8  &    & 8  &    &    & 11 & 11 &    &    & 11 &    &    & 8  \\ \hline
+    \end{tabular}
+    \caption{Ejemplo de \textit{rankings} para 13 votantes (ver figura~\ref{fig:graph-13-voters-2-cycles}).}
+    \label{tab:rankings-13-voters}
+\end{table}
+
+N\'otese que los \textit{rankings}  de los votantes 1, 3 y 7 est\'an vac\'ios, ya que no existe un camino en el grafo desde alguno de ellos hacia un v\'ertice de $W$.
+
+\subsection{Eliminando por Tiempo}
+
+\todo[inline]{@TODO explicar lo del tiempo cuan2 hay dos con la menor cantd d votos. Kiza' debes decir arriba en el estado del arte que' es lo q c usa pa desempatar en irv}
 % Formalmente, el \textit{ranking} de $x$ es
 % $$
 % R(x) = \langle y_{i_1}, y_{i_2}, \ldots, y_{i_t} \rangle, \quad 1 \leq i_1 \leq i_2 \leq \ldots \leq i_t \leq k, \quad y_{i_j} \in W \setminus D, \; 1 \leq \forall j \leq t.
 % $$
-Sea $x \in V$ un v\'ertice cualquiera de $G'$. Sea $P(x)$ un camino simple maximal de $G'$ que comienza en $x$. Luego,
-$$
-P(x) = \langle x, f(x), f(f(x)), \ldots, f^{k}(x) \rangle.
-$$
-Como $f$ es funci\'on, entonces $P(x)$ es \'unico. 
-
-Sea $D$ el conjunto de los votantes que han sido eliminados por el m\'etodo de desempate. El \textit{ranking} de $x$ se define como  la subsecuencia maximal de $P(x)$ de v\'ertices que est\'an en $W$ y que no est\'an en $D \cup \{ x \}$. 
 % Formalmente, el \textit{ranking} de $x$ es
 % $$
 % R(x) = \langle y_{i_1}, y_{i_2}, \ldots, y_{i_t} \rangle, \quad 1 \leq i_1 \leq i_2 \leq \ldots \leq i_t \leq k, \quad y_{i_j} \in W \setminus D, \; 1 \leq \forall j \leq t.
