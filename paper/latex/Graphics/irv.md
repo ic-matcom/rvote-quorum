@@ -1,6 +1,8 @@
 ---
+export_on_save:
+    puppeteer: ["pdf"]
 puppeteer:
-    height: "4.4in"
+    height: "4.3in"
     width: "3in"
     pageRanges: "1"
 ---
@@ -19,7 +21,7 @@ repeat
 
     ->no;
 
-    :eliminar candidato con menos votos;
+    :eliminar un candidato con\nel menor  número de votos;
     :desplazar rankings;
 
 

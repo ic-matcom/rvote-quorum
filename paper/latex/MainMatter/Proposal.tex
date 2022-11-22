@@ -159,7 +159,7 @@ El algoritmo~\ref{algo:votes-cycles} itera por todos los arcos de retroceso de $
 \todo[inline]{@TODO haz una pekenya intro: xq hay q desempatar? di q 1ro hay q correr el me'todo d conteo d votos explik2 en la seccio'n anterior}
 Sean $m = \max\{ u.votos \;|\; u \in V \}$ y $W = \{ u \in V \;|\; u.votos = m \}$.  Si $|W| = 1$, entonces se declara como ganador al \'unico elemento de $W$. Para determinar qui\'en gana cuando $|W| > 1$, se emplea una adaptaci\'on del m\'etodo de desempate instant\'aneo. 
 
-Para utilizar ese m\'etodo es necesario definir:
+Para utilizar ese m\'etodo es necesario definir (secci\'on~\ref{sec:irv}):
 \begin{enumerate}
     \item un \textit{ranking} de votaci\'on para cada votante, y
     \item una manera de seleccionar qu\'e candidato eliminar en cada ronda, en caso de que m\'as de uno  obtenga la menor cantidad de votos.
@@ -202,8 +202,30 @@ En ese caso, se tiene que $m = 9$ y $W = \{ 4, 8, 10, 11 \}$. En la tabla~\ref{t
 N\'otese que los \textit{rankings}  de los votantes 1, 3 y 7 est\'an vac\'ios, ya que no existe un camino en el grafo desde alguno de ellos hacia un v\'ertice de $W$.
 
 \subsection{Eliminando por Tiempo}
+Cuando en una ronda de IRV dos o m\'as candidatos poseen la menor cantidad de votos, es preciso decidir a cu\'al de ellos eliminar. Se propone eliminar al que obtuvo esa cantidad de votos m\'as tarde en el tiempo. La propuesta se basa en la hip\'otesis de que si un candidato obtuvo sus votos en menos tiempo que otro, entonces los votantes del primero poseen m\'as seguridad y confianza en su elecci\'on que los votantes del segundo. Esta hip\'otesis se hace m\'as fuerte cuando es menos el conocimiento que poseen los votantes sobre los candidatos antes de que comience la elecci\'on. 
+\todo[inline]{@TODO propo'n una manera d minimizar ese conocimiento o mira a ver si precisamente esa es una caracter\'istica del problema}
 
-\todo[inline]{@TODO explicar lo del tiempo cuan2 hay dos con la menor cantd d votos. Kiza' debes decir arriba en el estado del arte que' es lo q c usa pa desempatar en irv}
+A continuaci\'on se formaliza la propuesta.
+
+
+Cada voto se registra en el sistema en un tiempo determinado. Sea $t(x)$ el tiempo en el que el voto de $x$ es registrado. $t$ es funci\'on, ya que de cada persona se puede registrar a lo sumo un voto v\'alido. Esta funci\'on est\'a indefinida para las personas que no votaron.
+
+Si antes de la primera ronda de IRV $y$ aparece en el \textit{ranking} de $x$, entonces $y = f^r(x)$, o sea, existe una secuencia de v\'ertices $x = p_1, p_2, ..., p_{r+1} = y$, tal que $p_i$ vot\'o por $p_{i+1}$, para todo $i, 1 \leq i \leq r$. \todo{@TODO referencia a la definicio'n d ranking} Se puede decir que $x$ vot\'o por $y$ directa (si $r=1$) o indirectamente (si $r>1$) y que $y$ obtuvo ese voto en el tiempo $\max (t(p_1), t(p_2), ..., t(p_r))$, el cual se puede denotar por $t_{rank}(x, y)$. 
+
+Si en una ronda cualquiera de IRV, $y$ aparece en la primera posici\'on del \textit{ranking} de $x$, entonces $x$ vot\'o por $y$ directa o indirectamente. En cualquier caso, $t_{rank}(x, y)$ es una definici\'on para el tiempo en que $y$ obtiene ese voto. Sup\'ongase que $y$ se encuentra en la primera posici\'on de los \textit{rankings} de $x_1, x_2, ..., x_s$ en una ronda determinada de IRV. Luego, $y$ tiene $s$ votos en IRV y se dice que los obtuvo en tiempo 
+
+\begin{equation}\label{eq:max-rank-time}
+   t_{round}(y) = \underset{1 \leq i \leq s}{\max} \{ t_{rank}(x_i, y) \}. 
+\end{equation}
+
+Finalmente, de todas las personas con la menor cantidad de votos en una ronda de IRV, se propone eliminar a la que obtuvo sus votos m\'as tarde en el tiempo, esto es, la que tiene mayor valor  de $t_{round}$.
+
+\subsubsection{Correctitud}
+\todo[inline]{@TODO demostrar q desempata y q IRV termina}
+
+\todo[inline]{@TODO di q se habla indistintamente de persona y ve'rtice desde q modelas este problema como uno de grafo}
+
+\todo[inline]{@TODO di q so'lo hay q tener en cuenta la gente q aparece en algu'n ranking, o sea, a la gente de $W$}
 % Formalmente, el \textit{ranking} de $x$ es
 % $$
 % R(x) = \langle y_{i_1}, y_{i_2}, \ldots, y_{i_t} \rangle, \quad 1 \leq i_1 \leq i_2 \leq \ldots \leq i_t \leq k, \quad y_{i_j} \in W \setminus D, \; 1 \leq \forall j \leq t.
@@ -215,3 +237,4 @@ N\'otese que los \textit{rankings}  de los votantes 1, 3 y 7 est\'an vac\'ios, y
 
 % @FIXME change blankspace between (figura|tabla|algoritmo) and (\ref|\cite) command for a ~
 % @TODO remove \SetAlgoLined from all algorithms
+\todo[inline]{@TODO deja claro a la hora d definir el problema d q cada participante es a la vez votante y candidato para poder hablar indistintamente en es senti2}

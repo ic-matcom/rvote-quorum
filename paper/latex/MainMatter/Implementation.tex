@@ -1,1 +1,7 @@
 \chapter{Detalles de Implementación y Experimentos}\label{chapter:implementation}
+\section{Eliminando por Tiempo}
+Sea $v_1, v_2, ..., v_k \in f$ la permutaci\'on de los pares ordenados de $f$ que cumple que $v_i$ fue el $i$-\'esimo voto en registrarse, para todo $i, 1 \leq i \leq k$. A cada votante se le puede asociar una noci\'on de ``tiempo de voto'' en el que vot\'o continuaci\'on se define una funci\'on $t: V \rightarrow \{1, 2, ..., k\}$ que :
+
+$$
+t(x) = i \quad \Leftrightarrow \quad \exists i, 1 \leq i \leq k: v_i = \langle x, y \rangle, \text{ para alg\'un } y \in V 
+$$
