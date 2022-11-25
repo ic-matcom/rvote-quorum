@@ -6,25 +6,37 @@
 El Estado cubano pide dinero prestado a entidades de la econom\'ia a trav\'es del Banco Central de Cuba. El monto solicitado y el inter\'es m\'aximo con el que se devolver\'a se plasman en un documento llamado bono soberano.  Los posibles prestamistas participan en una subasta por el bono y el que menor tasa de inter\'es exija por el pr\'estamo ser\'a el ganador, y el Estado pasar\'a a ser su prestatario.  Para decidir qui\'enes participan en la subasta, se confeccionan los Comit\'es de Mercado Financiero (CMF).  Los miembros y el presidente de cada Comit\'e se deciden mediante un proceso electoral en el que cualquier elector puede ceder su poder de voto a otro elector. A ese tipo de elecci\'on el autor le denomina \textbf{votaci\'on representativa}.  
 
 
-En un sistema de votaci\'on representativa  los votos se transfieren, esto es, si una persona $A$ vota por una persona $B$ y esta, a su vez, vota por  $C$, entonces el voto de $A$ se transfiere a $C$. En el caso particular de la confecci\'on de los CMF, cada individuo puede votar por a lo sumo otra persona.
+En un sistema de votaci\'on representativa  los votos se transfieren, esto es, si una persona $A$ vota por una persona $B$ y esta, a su vez, vota por  $C$, entonces el voto de $A$ se transfiere a $C$. Formalmente, el c\'alculo de los votos obtenidos por un candidato puede ser definido recursivamente de la siguiente manera:
+\begin{equation}\label{eq:votes-count}
+    \#_{votos}(y) = \begin{cases}
+        |V_y| + \underset{x \in V_y}{\sum} \#_{votos}(x) & \text{si } V_y \neq \emptyset \\
+        0 & \text{si } V_y = \emptyset 
+    \end{cases}
+\end{equation}
+donde $V_y$ es el conjunto de personas que votaron por $y$. La figura~\ref{fig:r-voting} ilustra un ejemplo de votación en el que $A$ votó por $B$, $B$ y $E$ votaron por $C$ y $C$ votó por $D$. $B$ obtiene solamente el voto de $A$, mientras que $C$ obtiene los votos de $A$, $B$ y $E$. $D$ recibe el voto directo de $C$ y, con este,  los votos indirectos de los restantes participantes. Cerca de cada flecha se encuentra un n\'umero que indica la cantidad de votos que se transfieren. Encima de cada candidato se encuentra el n\'umero de votos que obtiene.
 
-La figura \ref{fig:r-voting} ilustra un ejemplo de votación en el que $A$ votó por $B$, $B$ y $E$ votaron por $C$ y $C$ votó por $D$. $B$ obtiene solamente el voto de $A$, mientras que $C$ obtiene los votos de $A$, $B$ y $E$. $D$ recibe el voto directo de $C$ y, con este,  los votos indirectos de los restantes participantes.
-
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics{Graphics/rep-voting.pdf}
     \caption{Conteo de votos en votación representativa.}
     \label{fig:r-voting}
 \end{figure}
 
-En un proceso electoral de este tipo pueden surgir ciclos de votación, como el que se muestra en la figura \ref{fig:voting-cycle}, donde el voto emitido por $D$ hacia $B$ forma un ciclo que los involucra a ambos y a $C$. En tal caso, no queda claro cu\'antos votos otorgarle a las personas involucradas en el ciclo.  Uno de los objetivos del presente trabajo es \textbf{dise\~nar e implementar una asignaci\'on justa de  votos para los electores involucrados en un ciclo de votación}. 
+\todo[inline]{@FIXME ba'jales la altura al pdf generado de las figuras~\ref{fig:r-voting}~y~\ref{fig:voting-cycle}}
 
-\begin{figure}[h]
+En el caso particular de la confecci\'on de los CMF, cada individuo puede votar por a lo sumo otra persona.
+
+
+
+En un proceso electoral de este tipo pueden surgir ciclos de votación, como el que se muestra en la figura~\ref{fig:voting-cycle}, donde el voto emitido por $D$ hacia $B$ forma un ciclo que los involucra a ambos y a $C$.  En un  caso como ese, no se puede aplicar sin m\'as la f\'ormula~\eqref{eq:votes-count} para calcular los votos obtenidos por los candidatos involucrados en el ciclo.  La naturaleza recursiva de $\#_{votos}$ impide su c\'alculo en ciclos de votaci\'on, debido a la ocurrencia de dependencias circulares. Por ejemplo, en la figura~\ref{fig:voting-cycle} se puede apreciar que el c\'alculo de los votos que $C$ obtiene depende del c\'alculo de los votos de $B$, y este, a su vez, depende del valor de $\#_{votos}(D)$, pero $D$ depende del n\'umero de votos obtenidos por $C$. Se forma entonces un c\'irculo de dependencias y no puede ser calculado apropiadamente el n\'umero de votos obtenido por cada uno de los candidatos $B$, $C$ y $D$.
+
+\begin{figure}[h!]
     \centering
     \includegraphics{Graphics/voting-cycle.pdf}
     \caption{Ciclo de votaci\'on.}
     \label{fig:voting-cycle}
 \end{figure}
+Uno de los objetivos del presente trabajo es \textbf{dise\~nar e implementar una asignaci\'on justa de  votos para los electores involucrados en un ciclo de votación}. 
 
 Para seleccionar un presidente para un CMF, se realiza una elecci\'on representativa y el que obtenga la mayor cantidad de votos es el ganador. Puede pasar que m\'as de una persona obtenga la mayor cantidad de votos.   Esto no es deseable, ya que el presidente debe ser \'unico. En este sentido, otro de los objetivos de este trabajo es \textbf{dise\~nar e implementar un mecanismo de desempate}.
 
