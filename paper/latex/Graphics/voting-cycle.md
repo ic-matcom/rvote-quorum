@@ -1,6 +1,8 @@
 ---
+export_on_save:
+    puppeteer: ["pdf"]
 puppeteer:
-    height: "3in"
+    height: "3.1in"
     width: "4in"
     pageRanges: "1"
 ---
@@ -16,9 +18,11 @@ left to right direction
 :C: --> :D: : 4
 :D: --> :B: : 5
 
+note top of A: 0
 note top of B: ?
 note top of C: ?
 note top of D: ?
+note top of E: 0
 
 @enduml
 ```
