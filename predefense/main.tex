@@ -1,0 +1,149 @@
+\documentclass{beamer}
+
+\usepackage[spanish,es-ucroman]{babel}
+
+\input{solidity-highlighting.tex}
+
+\usetheme{default}
+
+\title{Sistema de Votaci\'on Representativa sobre \textit{Quorum}}
+\subtitle{Predefensa}
+\author{Andy Ledesma Garc\'ia}
+\institute{Universidad de La Habana}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{API del Contrato}
+    \framesubtitle{Interfaz P\'ublica}
+
+    \begin{lstlisting}[language=Solidity]
+function voteFor(address chosenCandidate) 
+    onlyIfVoterAddressRegistered(msg.sender)
+    onlyIfVoterAddressRegistered(chosenCandidate) 
+
+function countVotes() 
+    view 
+    returns (uint[] memory count) 
+
+function getWinnerAddress() view returns (address) 
+
+function getWinnerId() public view returns (uint32)   
+    \end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{API del Contrato}
+    \framesubtitle{Interfaz del Due\~no}
+
+    \begin{lstlisting}[language=Solidity]
+constructor(address[] memory voters) 
+
+function voteFromVoterIdToVoterId(
+    uint32 voterId, 
+    uint32 chosenCandidateId
+) 
+
+function destroy()
+    \end{lstlisting}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Ejemplo}
+    \framesubtitle{13 Votantes, 2 Ciclos y 1 Cadena}
+
+    \begin{figure}
+        \includegraphics[scale=.5]{graphics/example.pdf}
+        \centering
+    \end{figure}
+
+    \begin{center}
+        \begin{tabular}{r|l}
+            Conteo & \\
+            0 & 0, 2, 6  \\  
+            1 & 8        \\   
+            2 & 4        \\   
+            3 & 1, 3, 5, 7, 9, 10, 11, 12  
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Ejemplo}
+    \framesubtitle{13 Votantes, 2 Ciclos y 1 Cadena}
+
+    \begin{figure}
+        \includegraphics[scale=.5]{graphics/example-tied-colored.pdf}
+        \centering
+    \end{figure}
+
+    \only<1>{
+    \begin{center}
+        ronda: 1 $\quad$ mayor\'ia: 6
+    \end{center}
+    \begin{table}
+        \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} \hline
+            lugar & 0  & 1  & 2  & 3  & 4  & 5  & 6  & 7  & 8  & 9  & 10 & 11 & 12 \\ \hline                  
+            1 &   & 3  & 5  & 7  & 5  &   & 7  & 1  & 5  & 10 & \color{red} 11 & 12 & 9 \\ \hline
+            2 &   & 7  &   & 1  &   &   & 1  & 3  &   & \color{red} 11 & 12 & 9 & 10 \\ \hline
+            3 &   &    &   &    &   &   & 3  &    &   & 12 & 9 & 10 & \color{red} 11 \\ \hline \hline
+            votos &   & 1  &   & 1  &   & 3  &    & 2  &   & 1 & 1 & 1 & 1 \\ \hline
+            tiempo &   & 1  &   & 9  &   & 7  &    & 11  &   & 8 & 6 & 10 & 5 \\ \hline
+        \end{tabular}
+    \end{table}
+    }
+
+    \only<2>{
+    \begin{center}
+        ronda: 2 $\quad$ mayor\'ia: 6
+    \end{center}
+    \begin{table}
+        \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} \hline
+            lugar & 0  & 1  & 2  & 3  & 4  & 5  & 6  & 7  & 8  & 9  & 10 & 11 & 12 \\ \hline                  
+            1 &   & \color{red} 3  & 5  & 7  & 5  &   & 7  & 1  & 5  & 10 & 12 & 12 & 9 \\ \hline
+            2 &   & 7  &   & 1  &   &   & 1  & 3  &   & 12 & 9 & 9 & 10 \\ \hline
+            3 &   &    &   &    &   &   & 3  &    &   &    &   & 10 &    \\ \hline \hline
+            votos &   & 1  &   & 1  &   & 3  &    & 2  &   & 1 & 1 &   & 2 \\ \hline
+            tiempo &   & 1  &   & 9  &   & 7  &    & 11  &   & 8 & 6 & 10 & 10 \\ \hline
+        \end{tabular}
+    \end{table}
+    }
+
+    \only<3>{
+    \begin{center}
+        ronda: 3 $\quad$ mayor\'ia: 6
+    \end{center}
+    \begin{table}
+        \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} \hline
+            lugar & 0  & 1  & 2  & 3  & 4  & 5  & 6  & 7  & 8  & 9  & 10 & 11 & 12 \\ \hline                  
+            1 &   & 7  & 5  & 7  & 5  &   & 7  & 1  & 5  & 10 & 12 & 12 & \color{red} 9 \\ \hline
+            2 &   &   &   & 1  &   &   & 1  & 3  &   & 12 & \color{red} 9 & \color{red} 9 & 10 \\ \hline
+            3 &   &    &   &    &   &   & 3  &    &   &    &   & 10 &    \\ \hline \hline
+            votos &   & 1  &   &  &   & 3  &    & 3  &   & 1 & 1 &   & 2 \\ \hline
+            tiempo &   & 1  &   &   &   & 7  &    & 11  &   & 8 & 6 & 10 & 10 \\ \hline
+        \end{tabular}
+    \end{table}
+    }
+
+    \only<4-5>{
+        \begin{center}
+            un tiempo despu\'es...
+            
+            (me cans\'e de hacer tablas XD)
+        \end{center}
+    }
+    \only<5>{
+        \begin{center}
+            \textbf{GANA EL 5}
+        \end{center}
+    }
+\end{frame}
+
+\end{document}
