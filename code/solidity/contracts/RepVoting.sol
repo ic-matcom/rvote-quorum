@@ -217,7 +217,8 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
             }
             // it's not an else-if 'cause I want it executed when coming out from if above
             if (color[v] == DfsColor.Black) {
-                count[u] += count[v] + 1;  // +1 for the vote from v to u
+                uint voteFromVToU = 1;
+                count[u] += count[v] + voteFromVToU;  
             }
         }
         color[u] = DfsColor.Black;
@@ -230,7 +231,6 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
         return voterIdToAddress[winnerId];
     }
 
-    // @TODO make another function that returns the winner address
     function getWinnerId() public view returns (uint32) {  
         (uint[] memory count, uint32[] memory pi) = countVotes_();
 
@@ -321,11 +321,15 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
             maxTiedPersonsHeap.max.votes > uint(runoffSystem.activeVoters) / 2;
         return majorityAchieved || maxTiedPersonsHeap.size == 1;
     }
+
+    function destroy() external onlyIfSenderIsOwner {
+        address payable fundsRecipient = payable(owner);
+        selfdestruct(fundsRecipient);
+    }
 }
 
 // @TODO voting states, e.g. disallow vote() after count_votes() is called. Only admin
 // can change states
 // @TODO time limit for states
-// @TODO mapping between address and uint32
 // @FIXME read style guide (documentation) and fix code accordingly
 // @FIXME arguments references in natspec are sourrounded by ``
