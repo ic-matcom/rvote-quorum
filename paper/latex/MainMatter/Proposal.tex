@@ -7,8 +7,6 @@
 \newcommand{\maxincyclecaption}{\hyperref[algo:max-in-cycle]{M\'ax-Votos-en-Ciclo}}
 \newcommand{\setvotestoallincyclecaption}{\hyperref[algo:set-votes-all-in-cycle]{Reasignar-Votos-en-Ciclo}}
 
-\todo[inline]{@audit tengo dudas si la definicio'n formal de conteo d votos debe ir aki' o en la intro. Y si va aki', do'nde va, en la demo d la correctitud o antes d hablar d mi propuesta pal conteo?}
-
 \todo[inline]{@TODO introducir los aspectos fundamentales de la propuesta: conteo d votos y desempate}
 
 \section{Conteo de Votos}
@@ -156,7 +154,6 @@ El algoritmo~\ref{algo:votes-cycles} itera por todos los arcos de retroceso de $
 
 
 \section{Desempate}
-\todo[inline]{@TODO haz una pekenya intro: xq hay q desempatar? di q 1ro hay q correr el me'todo d conteo d votos explik2 en la seccio'n anterior}
 Sean $m = \max\{ u.votos \;|\; u \in V \}$ y $W = \{ u \in V \;|\; u.votos = m \}$.  Si $|W| = 1$, entonces se declara como ganador al \'unico elemento de $W$. Para determinar qui\'en gana cuando $|W| > 1$, se emplea una adaptaci\'on del m\'etodo de desempate instant\'aneo. 
 
 Para utilizar ese m\'etodo es necesario definir (secci\'on~\ref{sec:irv}):
@@ -215,10 +212,10 @@ Si antes de la primera ronda de IRV $y$ aparece en el \textit{ranking} de $x$, e
 Si en una ronda cualquiera de IRV, $y$ aparece en la primera posici\'on del \textit{ranking} de $x$, entonces $x$ vot\'o por $y$ directa o indirectamente. En cualquier caso, $t_{rank}(x, y)$ es una definici\'on para el tiempo en que $y$ obtiene ese voto. Sup\'ongase que $y$ se encuentra en la primera posici\'on de los \textit{rankings} de $x_1, x_2, ..., x_s$ en una ronda determinada de IRV. Luego, $y$ tiene $s$ votos en IRV y se dice que los obtuvo en tiempo 
 
 \begin{equation}\label{eq:max-rank-time}
-   t_{round}(y) = \underset{1 \leq i \leq s}{\max} \{ t_{rank}(x_i, y) \}. 
+   t_{ronda}(y) = \underset{1 \leq i \leq s}{\max} \{ t_{rank}(x_i, y) \}. 
 \end{equation}
 
-Finalmente, de todas las personas con la menor cantidad de votos en una ronda de IRV, se propone eliminar a la que obtuvo sus votos m\'as tarde en el tiempo, esto es, la que tiene mayor valor  de $t_{round}$.
+Finalmente, de todas las personas con la menor cantidad de votos en una ronda de IRV, se propone eliminar a la que obtuvo sus votos m\'as tarde en el tiempo, esto es, la que tiene mayor valor  de $t_{ronda}$.
 
 \subsubsection{Correctitud}
 \todo[inline]{@TODO demostrar q desempata y q IRV termina}
