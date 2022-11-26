@@ -6,6 +6,7 @@ import "./TiedPerson.sol";
 import "./TiedPersonHeap.sol";
 import "./InstantRunoffLib.sol";
 import "./NegativeDefaultArray.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 /// @title Representative voting system
 /// @author Andy Ledesma García
@@ -114,7 +115,10 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
         onlyIfVoterIdRegistered(voterId)
         onlyIfVoterIdRegistered(chosenCandidateId)
     {
-        require(!voted[voterId], "already voted");
+        require(
+            !voted[voterId], 
+            string.concat("voter with ID ", Strings.toString(voterId), " already voted")
+        );
 
         graph[chosenCandidateId].push(voterId);
         voted[voterId] = true;
