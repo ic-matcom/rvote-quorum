@@ -44,7 +44,8 @@
 
 // require('dotenv').config();
 // const { MNEMONIC, PROJECT_ID } = process.env;
-
+const secrets = require('./secrets.json');
+const HTTPProviderRateLimitRetry = require('./lib/http-provider-rate-limit-retry')
 
 // const HDWalletProvider = require('@truffle/hdwallet-provider');
 
@@ -95,17 +96,28 @@ module.exports = {
         // },
         //
         // Useful for private networks
-        // private: {
-        //   provider: () => new HDWalletProvider(MNEMONIC, `https://network.io`),
-        //   network_id: 2111,   // This network is yours, in the cloud.
-        //   production: true    // Treats this network as if it was a public net. (default: false)
-        // }
+        kaleido: {
+            provider: () => {
+                return new HTTPProviderRateLimitRetry(
+                    secrets.kaleido.walletHttpRpcEndpoint, 
+                    100000
+                );
+            },
+            network_id: "*",   
+            gasPrice: 0,
+            networkCheckTimeout: 1000000,
+            disableConfirmationListener: true,
+            timeoutBlocks: 3,
+            deploymentPollingInterval: 5000,
+        }
     },
 
   
   // Set default mocha options here, use special reporters, etc.
     mocha: {
-        // timeout: 100000
+        timeout: 3000000000,
+        enableTimeouts: false,
+        before_timeout: 600000000,
     },
 
   

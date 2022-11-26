@@ -4,6 +4,8 @@
   },
   "devDependencies": {
     "hardhat": "^2.12.2",
-    "truffle": "^5.6.5"
+    "retry": "^0.13.1",
+    "truffle": "^5.6.5",
+    "web3": "^1.8.1"
   }
 }
