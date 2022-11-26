@@ -5,3 +5,14 @@ Sea $v_1, v_2, ..., v_k \in f$ la permutaci\'on de los pares ordenados de $f$ qu
 $$
 t(x) = i \quad \Leftrightarrow \quad \exists i, 1 \leq i \leq k: v_i = \langle x, y \rangle, \text{ para alg\'un } y \in V 
 $$
+
+\section{Despliegue en \textit{Kaleido}}
+2 nodos de Quorum con mecanismo de consenso LBFT, no firmantes. Un nodo monitor del sistema, firmante. una \textit{wallet} con m\'as de 100 cuentas
+
+los nodos: Geth/v1.10.2-stable-6c76d816(quorum-v22.4.4)/linux-amd64/go1.16.15
+
+tol mundo tiene un gb d ram y 0.5 vcpu
+
+todos esta'n ubicados en la zona este de usa, hosteados por aws
+
+caso de prueba con 100 votantes, con 21 empates en el primer lugar con 30 votos. Approx 13.7kb el bytecode de creacio'n del contrato. Se compilo' con solc versio'n 0.8.17, con el optimizador habilitado, con para'metro runs = 20 (aki' habla  del promedio d los votantes)  Consumio' un 2\% de cpu de la wallet xq todos los pedidos fueron pa alla'. Los nodos mantuvieron su cpu al 4\%. El consumo normal de la wallet es d 100mb de ram y cuan2 c lanzaron los pedidos alcanzo' un pico de 129mb. los nodos mantuvieron un uso d ram d 500mb approx. El uso del disco tampoco vario' en gran medida. se obtuvo el ganador en 300ms approx desde q c hizo el pedido desde cuba hasta q se obtuvo una respuesta. El gas consumido por el getwinner fue de 92857
