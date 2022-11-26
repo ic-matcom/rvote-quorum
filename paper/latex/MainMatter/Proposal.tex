@@ -15,11 +15,13 @@ Sean $V$ el conjunto de los participantes  de la elecci\'on (votantes) y $f \in 
 
 Sea $G' = \langle V, f \rangle$ el digrafo de votaci\'on, con v\'ertices en $V$ y arcos en $f$. Representaciones de este grafo pueden ser encontradas en las figuras~\ref{fig:r-voting}~y~\ref{fig:voting-cycle}. \todo[inline]{@FIXME en esas figuras las flechas tienen peso y referenciarlas en este momento puede hacer pensar al lector q el grafo es ponderado}
 
-Ahora bien, sea $G = \langle V, f^{-1} \rangle$ el digrafo que resulta de invertir los arcos de $G'$. Se denota por $G_\pi$ a cualquiera de los subgrafos  de predecesores de un recorrido DFS sobre $G$ \citep{intro-to-algo-3}. El conteo de los votos obtenidos por $x$ se reduce a contar la cantidad de nodos en el sub\'arbol de $x$ en $G_\pi$. \todo{@BUG mentira. El del introduction so'lo setea $\pi$ cuando $v$ es gris}
+Ahora bien, sea $G = \langle V, f^{-1} \rangle$ el digrafo que resulta de invertir los arcos de $G'$. Este grafo expresa la dependencia que existe entre el c\'alculo de los distintos valores de $\#_{votos}$. En efecto, si $\langle y, x \rangle \in E(G)$, entonces $\#_{votos}(y)$ depende de $\#_{votos}(x)$ para poder calcularse. Es por ello que se propone calcular los valores de $\#_{votos}$ mediante un recorrido DFS sobre $G$. 
+
+Se propone tambi\'en considerar de manera especial a los candidatos involucrados en ciclos de votaci\'on. Estos ciclos son detectados y registrados en el recorrido DFS. Por cada ciclo, se calcula el mayor n\'umero de votos obtenidos por un v\'ertice de \'el y se le asigna esa cantidad a los restantes v\'ertices del propio ciclo. Los votantes de un mismo ciclo conf\'ian indirectamente entre ellos dos a dos, por ende, se considera justo que cada uno de ellos obtenga la misma cantidad de votos, y que esta sea la mayor obtenida por un miembro del ciclo.
 
 \todo[inline]{@NOTE cada vez q digas algo q lleve demostracio'n, pon una referencia al lema/teorema q lo respalda en la subseccio'n d correctitud}
 
-El conteo de los votos puede entonces ser implementado mediante DFS. Los algoritmos~\ref{algo:dfs}~y~\ref{algo:dfs-visit}  constituyen adaptaciones   de las funciones DFS y DFS-Visit de \cite{intro-to-algo-3}, respectivamente. Se asume que $G$ se encuentra representado mediante listas de adyacencia. En $B$ se almacenan los arcos de retroceso de $G$.    Una vez el algoritmo~\ref{algo:dfs} termine, en $u.votos$ se tiene la cantidad de votos obtenidos por el votante representado mediante el v\'ertice $u$. A todos los votantes en alg\'un ciclo se les reasignan votos bajo un criterio justo.
+Los algoritmos~\ref{algo:dfs}~y~\ref{algo:dfs-visit}  constituyen adaptaciones   de las funciones DFS y DFS-Visit de \cite{intro-to-algo-3}, respectivamente. Se asume que $G$ se encuentra representado mediante listas de adyacencia. En $B$ se almacenan los arcos de retroceso de $G$.    Una vez el algoritmo~\ref{algo:dfs} termine, en $u.votos$ se tiene la cantidad de votos obtenidos por el votante representado por el v\'ertice $u$. 
 
 \begin{algorithm}[!h]
     \caption{\dfscaption}
@@ -39,7 +41,7 @@ El conteo de los votos puede entonces ser implementado mediante DFS. Los algorit
     \cyclevotescaption($G, B$)\; \label{algo:dfs:line:votes-in-cycles}
 \end{algorithm}
 
-En \dfscaption \;primero se inicializan las propiedades de los v\'ertices. En el algoritmo~\ref{algo:init-dfs-vertices} se pueden observar esas propiedades. La propiedad $votos$ almacena la cantidad de votos recibidos por el v\'ertice. Como se puede apreciar,  \dfscaption \;difiere en muy pocos aspectos a la funci\'on DFS de \cite{intro-to-algo-3}. Uno de los m\'as significativos es el llamado a la funci\'on \cyclevotescaption \;en la l\'inea~\ref{algo:dfs:line:votes-in-cycles}. Esta funci\'on se encarga de reasignar una cantidad justa de votos a cada uno de los v\'ertices que se encuentran en un ciclo.  
+En \dfscaption \;primero se inicializan las propiedades de los v\'ertices. En el algoritmo~\ref{algo:init-dfs-vertices} se pueden observar esas propiedades. La propiedad $votos$ almacena la cantidad de votos recibidos por el v\'ertice. Como se puede apreciar,  \dfscaption \;difiere en muy pocos aspectos a la funci\'on DFS de \cite{intro-to-algo-3}. Uno de los m\'as significativos es el llamado a la funci\'on \cyclevotescaption \;en la l\'inea~\ref{algo:dfs:line:votes-in-cycles}. Esta funci\'on se encarga de reasignar una cantidad justa de votos a cada uno de los v\'ertices que se encuentran en un ciclo, como se mencion\'o anteriormente.  
 
 \begin{algorithm}[!h]
     \caption{\initdfsvertices}
@@ -83,9 +85,7 @@ El algoritmo~\ref{algo:dfs-visit} calcula los votos obtenidos por $u$ y a\~nade 
 
 El ciclo de las l\'ineas~\ref{algo:dfs-visit:line:arc-foreach}-\ref{algo:dfs-visit:line:arc-foreach:end} itera por todos los arcos salientes de $u$. N\'otese que $v \in G.Adj[u]$ si y s\'olo si $v$ vot\'o por $u$, por definici\'on de $G$.  Se a\~nade un nuevo arco de retroceso a $B$ en la l\'inea~\ref{algo:dfs-visit:line:add-B}. Un arco $\langle u, v \rangle$ es de retroceso si y s\'olo si $v$ es gris cuando se explora ese arco por primera vez \citep{intro-to-algo-3}. El n\'umero de votos obtenidos por $u$ es actualizado solamente en la l\'inea~\ref{algo:dfs-visit:line:votes}, cuando $v$ es negro. Esto se debe a que los votos obtenidos por $v$ se encuentran bien calculados cuando este es negro. Todos los votos obtenidos por $v$, m\'as el voto que este le confiere a $u$, son contados como votos de  $u$. N\'otese que el bloque de las l\'ineas~\ref{algo:dfs-visit:line:if-black}-\ref{algo:dfs-visit:line:if-black:end} es un ``\textbf{si}'', y no un ``\textbf{en otro caso si}''. Esto es intencional y permite que se actualicen los votos de $u$ correctamente, incluso cuando $\langle u, v \rangle$ es un arco de \'arbol de $G_\pi$. 
 
-\todo[inline]{@TODO probar q cuan2 v es negro entonces los votos d v esta'n bien contados}
-
-El algoritmo~\ref{algo:votes-cycles} considera todos los ciclos de $G$. En cada iteraci\'on, se calcula el mayor n\'umero de votos obtenidos por un v\'ertice del ciclo y le asigna esa cantidad a los restantes v\'ertices del propio ciclo. Los votantes de un mismo ciclo conf\'ian indirectamente entre ellos dos a dos, por ende, se considera justo que cada uno de ellos obtenga la misma cantidad de votos, y que esta sea la mayor obtenida por un miembro del ciclo.
+El algoritmo~\ref{algo:votes-cycles} considera todos los ciclos de $G$. En cada iteraci\'on, se calcula el mayor n\'umero de votos obtenidos por un v\'ertice del ciclo y le asigna esa cantidad a los restantes v\'ertices del propio ciclo. 
 
 
 \begin{algorithm}[!h]
@@ -101,8 +101,6 @@ El algoritmo~\ref{algo:votes-cycles} considera todos los ciclos de $G$. En cada 
         \setvotestoallincyclecaption($m, \langle u, v \rangle, f$)\;
     }
 \end{algorithm}
-
-\todo[inline]{@TODO hay q probar q c esta'n considerando todos los ciclos}
 
 Dado un arco de retroceso $\langle u, v \rangle$ y la funci\'on de votaci\'on $f$, \maxincyclecaption \;itera por todos los v\'ertices del ciclo al que ese arco pertenece, mediante m\'ultiples aplicaciones de $f$. El algoritmo devuelve la mayor cantidad de votos obtenidos por alg\'un v\'ertice del ciclo. 
 
@@ -124,9 +122,7 @@ Dado un arco de retroceso $\langle u, v \rangle$ y la funci\'on de votaci\'on $f
     \Return{$m$}\;
 \end{algorithm}
 
-El algoritmo~\ref{algo:set-votes-all-in-cycle} itera de igual manera por todos los v\'ertices del ciclo al que pertenece el arco de retroceso dado. La cantidad de votos dada ($m$) es asignada a cada v\'ertice de ciclo.
-
-\todo[inline]{@TODO probar q el ciclo de los algoritmos~\ref{algo:set-votes-all-in-cycle}~y~\ref{algo:max-in-cycle} termina}
+El algoritmo~\ref{algo:set-votes-all-in-cycle} itera de igual manera por todos los v\'ertices del ciclo al que pertenece el arco de retroceso dado. La cantidad de votos dada ($m$) es asignada a cada v\'ertice del ciclo.
 
 \begin{algorithm}[!h]
     \caption{\setvotestoallincyclecaption}
@@ -147,10 +143,48 @@ El algoritmo~\ref{algo:set-votes-all-in-cycle} itera de igual manera por todos l
 \subsection{Correctitud}
 \todo[inline]{@NOTE  antes d tirarte a demostrar algo mira a ver si es necesario o si c puede citar al introduction o a alguna conf d eda, discreta, daa, etc}
 
+\begin{lemma}\label{lemma:dfs-visit}
+    Luego de que el llamado a \dfsvisitcaption($G, u, B$) culmina, se cumple que $u.votos = \#_{votos}(u)$.
+\end{lemma}
+
+\todo[inline]{@TODO demuestra lo del dfs x inducci\'on fuerte en tiempo d ponerse negro}
+
+\begin{lemma}\label{lemma:reassign-votes}
+    El algoritmo \cyclevotescaption \;considera a todos los ciclos de $G$ una y s\'olo una vez.
+\end{lemma}
+
+\todo[inline]{@TODO demostrar q el algoritmo~\ref{algo:votes-cycles} considera a todos los ciclos de $G$ una y s\'olo una vez}
+
 El algoritmo~\ref{algo:votes-cycles} itera por todos los arcos de retroceso de $G$, los cuales se encuentran en $B$. Cada uno de ellos pertenece a un ciclo y todo ciclo tiene un arco en $B$. \todo{@TODO demostrar} Basta con un arco de retroceso $\langle u, v \rangle$ y la funci\'on $f$ para hallar todos los arcos del ciclo donde $\langle u, v \rangle$ se encuentra. Las funciones \maxincyclecaption \;y \setvotestoallincyclecaption  \todo{@TODO completar esto}
 
+\begin{lemma}\label{lemma:cycle-iteration}
+    Los algoritmos~\ref{algo:max-in-cycle}~y~\ref{algo:set-votes-all-in-cycle} iteran satisfactoriamente por todos los v\'ertices del ciclo en cuesti\'on y s\'olo por ellos.
+\end{lemma}
+
+\todo[inline]{@TODO probar q el ciclo de los algoritmos~\ref{algo:set-votes-all-in-cycle}~y~\ref{algo:max-in-cycle} termina}
+
+\begin{theorem}
+    El algoritmo \dfscaption \;es correcto.
+\end{theorem}
+
+\begin{proof}
+    Inicialmente, todos los v\'ertices son blancos y no tienen votos. Cuando el ciclo de \dfscaption \;culmina, todo v\'ertice ha sido visitado por \dfsvisitcaption. Luego, por el lema~\ref{lemma:dfs-visit}, se cumple que $u.votos = \#_{votos}(u)$, para todo $u \in V$.
+
+    Por el lema~\ref{lemma:cycle-iteration}, se cumple que los algoritmos \maxincyclecaption \;y \setvotestoallincyclecaption \;son correctos.  Por el lema~\ref{lemma:reassign-votes}, se cumple que el algoritmo~\ref{algo:votes-cycles} itera por y s\'olo por todos los ciclos de $G$. Por todo esto, el algoritmo \cyclevotescaption \;es correcto.
+
+    Queda demostrado que el algoritmo \dfscaption \;es correcto.
+\end{proof}
+
+
 \subsection{Complejidad Temporal}
-\todo[inline]{@TODO complejidad temporal del conteo d votos}
+Hasta el fin del ciclo de \dfscaption, el algoritmo se ejecuta en tiempo $O(b_1(|V| + |E|))$, donde $b_1$ es el costo m\'aximo de a\~nadir un arco a $B$. Como $f$ es funci\'on, entonces 
+$$
+O(b_1(|V| + |E|)) = O(b_1(|V| + |f|)) = O(b_1(|V| + |V|)) = O(b_1|V|).
+$$
+
+De los lemas~\ref{lemma:reassign-votes}~y~\ref{lemma:cycle-iteration} y sus respectivas demostraciones se desprende que el algoritmo \cyclevotescaption \;se ejecuta en tiempo $O(b_2|V|)$, donde $b_2$ es el m\'aximo costo de consultar el $i$-\'esimo arco de $B$, para todo $i, 1 \leq i \leq |B|$.
+
+Por todo lo anterior, la propuesta dada para contar los votos recibidos por los candidatos se ejecuta en tiempo $O((b_1 + b_2)|V|)$. Si $B$ se implementa mediante una lista enlazada, entonces $b_1, b_2 \in O(1)$ y el algoritmo \dfscaption \;se ejecuta en tiempo $O(|V|)$.
 
 
 \section{Desempate}
