@@ -1,8 +1,65 @@
 const RepVoting = artifacts.require("RepVoting");
+const testCases = require("./rep_voting_test_cases.js");
+const set100VotersTestCase = testCases.set100VotersTestCase;
+const get100VotersTestCaseSpecialVoters = testCases.get100VotersTestCaseSpecialVoters;
+const MAX_COUNT_100_VOTERS_TEST_CASE = testCases.MAX_COUNT_100_VOTERS_TEST_CASE;
+const timeUtils = require("../lib/time_utils");
+
+
+contract("RepVoting", function (accounts) {
+    var votingSystem;
+
+    it("should set the 100 voters test case", async function () {
+        assert.isTrue(accounts.length >= 100, "there should be at least 100 accounts")
+        votingSystem = await RepVoting.deployed();
+        votingSystem = await set100VotersTestCase(votingSystem);
+    });
+    it(
+        "should get winner when 22 voters are tied on first place from a total of 100 voters", 
+        async function () {
+            const {time, _} = await timeUtils.getElapsedTimeInMillisecondsAndResultAsync(
+                async () => await votingSystem.getWinnerId()
+            );
+            console.log(`${time}ms elapsed to get winner`);
+        }
+    );
+    it(
+        "should count properly when 22 voters are tied on first place from a total of 100 voters", 
+        async function () {
+            const votesCount = await votingSystem.countVotes();
+            const testCaseSpecialVoters = get100VotersTestCaseSpecialVoters();
+            const {
+                MAX_TIED_IN_TREE_VOTER,
+                MAX_TIED_IN_CYCLE_OF_4,
+                MAX_TIED_IN_CYCLE_OF_16
+            }
+                = testCaseSpecialVoters;
+            assert.equal(
+                MAX_COUNT_100_VOTERS_TEST_CASE, 
+                votesCount[MAX_TIED_IN_TREE_VOTER],
+                "the count of the max-tied voter in the tree is not correct"
+            );
+            assert.equal(
+                MAX_COUNT_100_VOTERS_TEST_CASE, 
+                votesCount[MAX_TIED_IN_CYCLE_OF_4],
+                "the count of the max-tied voter in the cycle of 4 is not correct"
+            );
+            assert.equal(
+                MAX_COUNT_100_VOTERS_TEST_CASE, 
+                votesCount[MAX_TIED_IN_CYCLE_OF_16],
+                "the count of the max-tied voter in the cycle of 16 is not correct"
+            );
+            assertThereAre21MaxTiedVoters(votesCount);
+        }
+    );
+});
 
 contract("RepVoting", function (accounts) {
     it("should get winner after registering votes using addresses", async function () {
-        assert.isTrue(accounts.length >= 13, "should have at least 13 accounts");
+        assert.isTrue(
+            accounts.length >= 13, 
+            "should has at least 13 accounts but only has " + accounts.length
+        );
         
         const votingSystem = await RepVoting.deployed();                 // (0)
         await votingSystem.voteFor(accounts[1], {from: accounts[7]});    // (6) -> (7) -> (1)             
@@ -34,3 +91,17 @@ contract("RepVoting", function (accounts) {
         );
     });
 });
+
+function assertThereAre21MaxTiedVoters(votesCount) {
+    let maxTiedCount = 0;
+    for (let i = 0; i < votesCount.length; i++) {
+        if (votesCount[i] == MAX_COUNT_100_VOTERS_TEST_CASE) {
+            maxTiedCount++;
+        }
+    }
+    assert.equal(
+        21, 
+        maxTiedCount, 
+        "there should be 21 max-tied voters but there are " + maxTiedCount
+    );
+}
