@@ -141,6 +141,8 @@ El algoritmo~\ref{algo:set-votes-all-in-cycle} itera de igual manera por todos l
 \end{algorithm}
 
 \subsection{Correctitud}
+\todo[inline]{@TODO introduce y enlaza los lemas}
+
 N\'otese que $G_{DAG}$ es un grafo ac\'iclico, por lo que  $\#_{votos}$ puede ser calculado aplicando la f\'ormula recursiva \eqref{eq:votes-count}. \todo{@TODO enlaza esto con lo d abajo}
 
 
@@ -214,7 +216,7 @@ N\'otese que $G_{DAG}$ es un grafo ac\'iclico, por lo que  $\#_{votos}$ puede se
 \end{theorem}
 
 \begin{proof}
-    Inicialmente, todos los v\'ertices son blancos y no tienen votos. Cuando el ciclo de \dfscaption \;culmina, todo v\'ertice ha sido visitado por \dfsvisitcaption. Luego, por el lema~\ref{lemma:dfs-visit}, se cumple que $u.votos = \#_{votos}(u)$, para todo $u \in V$.
+    Inicialmente, todos los v\'ertices son blancos y no tienen votos. Cuando el ciclo de \dfscaption \;culmina, todo v\'ertice ha sido visitado por \dfsvisitcaption. Luego, por el lema~\ref{lemma:dfs-visit}, se cumple que $u.votos = \#_{votos}(u)$ en $G_{DAG}$, para todo $u \in V$.
 
     Por el lema~\ref{lemma:cycle-iteration}, se cumple que los algoritmos \maxincyclecaption \;y \setvotestoallincyclecaption \;son correctos.  Por el lema~\ref{lemma:reassign-votes} y su demostraci\'on, se cumple que el algoritmo~\ref{algo:votes-cycles} itera por y s\'olo por todos los ciclos de $G$. Por todo esto, el algoritmo \cyclevotescaption \;es correcto.
 
@@ -298,9 +300,29 @@ Si en una ronda cualquiera de IRV, $y$ aparece en la primera posici\'on del \tex
 Finalmente, de todas las personas con la menor cantidad de votos en una ronda de IRV, se propone eliminar a la que obtuvo sus votos m\'as tarde en el tiempo, esto es, la que tiene mayor valor  de $t_{ronda}$.
 
 \subsubsection{Correctitud}
-\todo[inline]{@TODO demostrar q desempata y q IRV termina}
+\begin{theorem}\label{theorem:irv}
+    Si $t$ es inyectiva y $t_{ronda}(y_1) = t_{ronda}(y_2)$, entonces $y_1 = y_2$.
+\end{theorem}
 
-\todo[inline]{@TODO di q se habla indistintamente de persona y ve'rtice desde q modelas este problema como uno de grafo}
+\begin{proof}
+    Sea $T = t_{ronda}(y_1)$ y sup\'ongase que $T = t_{ronda}(y_2)$. Entonces $t_{rank}(x_{i}, y_1) = t_{rank}(x_{j}, y_2) = T$ \todo{@FIXME se sale del margen}, para alg\'un $i$ y $j$, tal que $y_1$ y $y_2$ aparecen en la primera posici\'on de los \textit{rankings} de $x_{i}$ y $x_{j}$, respectivamente. Luego, en $G'$ existen los caminos
+    $$
+    p_1 = \langle x_{i}, f(x_i), f(f(x_i)), ..., f^k(x_i) = y_1 \rangle \quad \text{y} \quad p_2 = \langle x_{j}, f(x_j), f(f(x_j)), ..., f^l(x_j) = y_2 \rangle,
+    $$
+    tal que $f^\alpha(x_i)$ y $f^\beta(x_j)$ no se encuentran en los \textit{rankings} de $x_i$ y $x_j$, respectivamente, para todo $\alpha$ con $ 1 \leq \alpha < k$ y $\beta$ con $ 1 \leq \beta < l$. Si $t$ es inyectiva, como $t(f^\alpha(x_i)) = t(f^\beta(x_j)) = T$, entonces $f^\alpha(x_i) = f^\beta(x_j)$, para alg\'un $\alpha$ con $ 1 \leq \alpha < k$ y $\beta$ con $ 1 \leq \beta < l$. Sin p\'erdida de generalidad, se puede asumir que $k \leq l$. Luego, existe un subcamino de $p_2$ de la forma
+    $$
+        f^\beta(x_j) \leadsto f^k(x_i) \leadsto f^l(x_j).
+    $$
+    N\'otese que $f^k(x_i) = y_1$ y $f^l(x_j) = y_2$.  Si $k<l$, entonces $y_1$ se encuentra antes de $y_2$ en el \textit{ranking} de $x_j$ en la ronda actual, lo cual es imposible. Luego, $k=l$ y $y_1 = y_2$.
+\end{proof}
+
+\begin{corollary}
+    Si $t$ es inyectiva, entonces no existen dos candidatos distintos con la menor cantidad de votos en una ronda de IRV, que posean el mismo valor de $t_{ronda}$.
+\end{corollary}
+
+\begin{proof}
+    Inmediata del teorema~\ref{theorem:irv}.
+\end{proof}
 
 \todo[inline]{@TODO di q so'lo hay q tener en cuenta la gente q aparece en algu'n ranking, o sea, a la gente de $W$}
 % Formalmente, el \textit{ranking} de $x$ es

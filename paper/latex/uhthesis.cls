@@ -202,6 +202,7 @@
 \newtheorem{theorem}{Teorema}[chapter]
 \newtheorem{definition}{Definición}[chapter]
 \newtheorem{lemma}{Lema}[chapter]
+\newtheorem{corollary}{Corolario}[chapter]
 
 
 \AtBeginDocument{%
