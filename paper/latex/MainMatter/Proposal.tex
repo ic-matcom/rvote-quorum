@@ -149,16 +149,16 @@ El algoritmo~\ref{algo:set-votes-all-in-cycle} itera de igual manera por todos l
 
 \todo[inline]{@TODO demuestra lo del dfs x inducci\'on fuerte en tiempo d ponerse negro}
 
-\begin{lemma}\label{lemma:reassign-votes}
-    El algoritmo \cyclevotescaption \;considera a todos los ciclos de $G$ una y s\'olo una vez. \todo{@FIXME debe ir despue's del q viene}
+\begin{lemma}\label{lemma:one-cycle-only}
+    Sean $c_1$ y $c_2$ dos ciclos de $G'$. Si el v\'ertice $u$ pertenece a $c_1$ y  a $c_2$, entonces $c_1 = c_2$.
 \end{lemma}
 
-\todo[inline]{@TODO demostrar q el algoritmo~\ref{algo:votes-cycles} considera a todos los ciclos de $G$ una y s\'olo una vez}
-
-El algoritmo~\ref{algo:votes-cycles} itera por todos los arcos de retroceso de $G$, los cuales se encuentran en $B$. Cada uno de ellos pertenece a un ciclo y todo ciclo tiene un arco en $B$. \todo{@TODO demostrar} Basta con un arco de retroceso $\langle u, v \rangle$ y la funci\'on $f$ para hallar todos los arcos del ciclo donde $\langle u, v \rangle$ se encuentra. Las funciones \maxincyclecaption \;y \setvotestoallincyclecaption  \todo{@TODO completar esto}
+\begin{proof}
+    \todo{@TODO demostrar arco en u'nico ciclo}
+\end{proof}
 
 \begin{lemma}\label{lemma:cycle-iteration}
-    Los algoritmos~\ref{algo:max-in-cycle}~y~\ref{algo:set-votes-all-in-cycle} iteran satisfactoriamente por todos los v\'ertices del ciclo en cuesti\'on y s\'olo por ellos.
+    Sea $c$ el ciclo al que pertenece el arco de retroceso $\langle u, v \rangle$. Los algoritmos~\ref{algo:max-in-cycle}~y~\ref{algo:set-votes-all-in-cycle} iteran satisfactoriamente por todos los v\'ertices de $c$ y s\'olo por ellos.
 \end{lemma}
 
 \begin{proof}
@@ -167,8 +167,19 @@ El algoritmo~\ref{algo:votes-cycles} itera por todos los arcos de retroceso de $
     \langle u, f(u), f(f(u)), ..., f^k(u) = v \rangle.
     $$
     Por ende, en $k$ iteraciones del ciclo de \maxincyclecaption \;o de \setvotestoallincyclecaption, se llega a $v$ y el ciclo se detiene. Las iteraciones fueron realizadas  por y s\'olo por los v\'ertices del ciclo de $G$ del cual $\langle u, v \rangle$ es arco de retroceso, excepto $v$. No considerar a $v$ en el ciclo obliga a ambos algoritmos a tenerlo en cuenta de manera separada.  En el caso de \maxincyclecaption, a $m$ se le asigna el valor de $v.votos$ en la l\'inea \ref{algo:max-in-cycle:line:m-declaration}. En el caso de \setvotestoallincyclecaption, se le asigna en la \'ultima l\'inea a $v.votos$ el valor de $m$. Todo esto hace que ambos algoritmos sean correctos.
-
 \end{proof}
+
+\begin{lemma}\label{lemma:reassign-votes}
+    El algoritmo \cyclevotescaption \;visita dos y s\'olo dos veces a todo v\'ertice perteneciente a un ciclo de $G$. Una de esas veces es en el algoritmo~\ref{algo:max-in-cycle} y la otra es en el algoritmo~\ref{algo:set-votes-all-in-cycle}.
+\end{lemma}
+
+\begin{proof}
+    Sea $x$ un v\'ertice perteneciente a un ciclo $c$ de $G$. Luego, existe un y s\'olo un arco $\langle u, v \rangle$ de retroceso que pertenece a $c$. Se cumple que $\langle u, v \rangle \in B$ y, por ende, se considera en alguna iteraci\'on del algoritmo \cyclevotescaption. Por el lema~\ref{lemma:cycle-iteration}, al invocar a \maxincyclecaption \;y \setvotestoallincyclecaption \;en $\langle u, v \rangle$, $x$ es considerado una y s\'olo una vez en cada uno. 
+
+    Si $x$ pertenece a un ciclo de $G$, entonces tambi\'en pertenece a un ciclo  $c'$ de $G'$. Por el lema~\ref{lemma:one-cycle-only}, $x$ no pertenece a un ciclo distinto de $c'$ en $G'$. Por ende, el v\'ertice tampoco pertenece a un ciclo distinto de $c$ en $G$. Luego, $x$ es considerado s\'olo dos veces por el algoritmo~\ref{algo:votes-cycles}: una vez en el algoritmo~\ref{algo:max-in-cycle} y una segunda vez en el algoritmo~\ref{algo:set-votes-all-in-cycle}.
+\end{proof}
+
+
 
 \begin{theorem}
     El algoritmo \dfscaption \;es correcto.
@@ -177,7 +188,7 @@ El algoritmo~\ref{algo:votes-cycles} itera por todos los arcos de retroceso de $
 \begin{proof}
     Inicialmente, todos los v\'ertices son blancos y no tienen votos. Cuando el ciclo de \dfscaption \;culmina, todo v\'ertice ha sido visitado por \dfsvisitcaption. Luego, por el lema~\ref{lemma:dfs-visit}, se cumple que $u.votos = \#_{votos}(u)$, para todo $u \in V$.
 
-    Por el lema~\ref{lemma:cycle-iteration}, se cumple que los algoritmos \maxincyclecaption \;y \setvotestoallincyclecaption \;son correctos.  Por el lema~\ref{lemma:reassign-votes}, se cumple que el algoritmo~\ref{algo:votes-cycles} itera por y s\'olo por todos los ciclos de $G$. Por todo esto, el algoritmo \cyclevotescaption \;es correcto.
+    Por el lema~\ref{lemma:cycle-iteration}, se cumple que los algoritmos \maxincyclecaption \;y \setvotestoallincyclecaption \;son correctos.  Por el lema~\ref{lemma:reassign-votes} y su demostraci\'on, se cumple que el algoritmo~\ref{algo:votes-cycles} itera por y s\'olo por todos los ciclos de $G$. Por todo esto, el algoritmo \cyclevotescaption \;es correcto.
 
     Queda demostrado que el algoritmo \dfscaption \;es correcto.
 \end{proof}
