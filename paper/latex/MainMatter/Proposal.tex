@@ -154,7 +154,15 @@ El algoritmo~\ref{algo:set-votes-all-in-cycle} itera de igual manera por todos l
 \end{lemma}
 
 \begin{proof}
-    \todo{@TODO demostrar arco en u'nico ciclo}
+    Como $u$ pertenece a $c_1$ y $c_2$, existen dos caminos simples $p_1 = u \leadsto x$ y $p_2 = u \leadsto y$, tal que $\langle x, u \rangle, \langle y, u \rangle \in E(G')$. Como $E(G') = f$, entonces $p_1$ y $p_2$ son de la forma
+    $$
+    p_1 = \langle u, f(u), f(f(u)), ..., f^k(u) = x \rangle \quad \text{y} \quad p_2 = \langle u, f(u), f(f(u)), ..., f^t(u) = y \rangle
+    $$
+    Sin p\'erdida de generalidad, se puede asumir que $k \leq t$. Si $k < t$, entonces $k+1 \leq t$, de donde $f^{k+1}(u)$ pertenece a $p_2$. Pero como $\langle x, u \rangle \in E(G')$, entonces
+    $$
+    f^{k+1}(u) = f(f^k(u)) = f(x) = u.
+    $$
+    Esto es imposible, ya que en $p_2$ no se repiten v\'ertices. Por lo tanto, $k = t$ y $p_1 = p_2$, lo que implica que $c_1 = c_2$.
 \end{proof}
 
 \begin{lemma}\label{lemma:cycle-iteration}
