@@ -70,7 +70,7 @@ El algoritmo~\ref{algo:dfs-visit} calcula los votos obtenidos por $u$ y a\~nade 
 
     \ForEach{$v \in G.Adj[u]$}{ \label{algo:dfs-visit:line:arc-foreach}
         \If{$v.color ==$ {\rm BLANCO}}{
-            \dfsvisitcaption($G, v, B$)\;
+            \dfsvisitcaption($G, v, B$)\;\label{algo:dfs-visit:line:visit}
         }\lElse{\If{$v.color ==$ {\rm GRIS}}{
             $B = B \cup \{\langle u, v \rangle\}$\; \label{algo:dfs-visit:line:add-B}
         }}
@@ -80,7 +80,7 @@ El algoritmo~\ref{algo:dfs-visit} calcula los votos obtenidos por $u$ y a\~nade 
         \label{algo:dfs-visit:line:if-black:end}
     }
     \label{algo:dfs-visit:line:arc-foreach:end}
-    $u.color =$ NEGRO\;
+    $u.color =$ NEGRO\;\label{algo:dfs-visit:line:set-black}
 \end{algorithm}
 
 El ciclo de las l\'ineas~\ref{algo:dfs-visit:line:arc-foreach}-\ref{algo:dfs-visit:line:arc-foreach:end} itera por todos los arcos salientes de $u$. N\'otese que $v \in G.Adj[u]$ si y s\'olo si $v$ vot\'o por $u$, por definici\'on de $G$.  Se a\~nade un nuevo arco de retroceso a $B$ en la l\'inea~\ref{algo:dfs-visit:line:add-B}. Un arco $\langle u, v \rangle$ es de retroceso si y s\'olo si $v$ es gris cuando se explora ese arco por primera vez \citep{intro-to-algo-3}. El n\'umero de votos obtenidos por $u$ es actualizado solamente en la l\'inea~\ref{algo:dfs-visit:line:votes}, cuando $v$ es negro. Esto se debe a que los votos obtenidos por $v$ se encuentran bien calculados cuando este es negro. Todos los votos obtenidos por $v$, m\'as el voto que este le confiere a $u$, son contados como votos de  $u$. N\'otese que el bloque de las l\'ineas~\ref{algo:dfs-visit:line:if-black}-\ref{algo:dfs-visit:line:if-black:end} es un ``\textbf{si}'', y no un ``\textbf{en otro caso si}''. Esto es intencional y permite que se actualicen los votos de $u$ correctamente, incluso cuando $\langle u, v \rangle$ es un arco de \'arbol de $G_\pi$. 
@@ -141,13 +141,33 @@ El algoritmo~\ref{algo:set-votes-all-in-cycle} itera de igual manera por todos l
 \end{algorithm}
 
 \subsection{Correctitud}
-\todo[inline]{@NOTE  antes d tirarte a demostrar algo mira a ver si es necesario o si c puede citar al introduction o a alguna conf d eda, discreta, daa, etc}
+N\'otese que $G_{DAG}$ es un grafo ac\'iclico, por lo que  $\#_{votos}$ puede ser calculado aplicando la f\'ormula recursiva \eqref{eq:votes-count}. \todo{@TODO enlaza esto con lo d abajo}
+
 
 \begin{lemma}\label{lemma:dfs-visit}
-    Luego de que el llamado a \dfsvisitcaption($G, u, B$) culmina, se cumple que $u.votos = \#_{votos}(u)$.
+    Sea $B$ el conjunto de todos los arcos de retroceso. Sea el grafo $G_{DAG} = \langle V(G), E(G) - B \rangle$.  Luego de que el llamado a \dfsvisitcaption($G_{DAG}, u, B$) culmina, se cumple que $u.votos = \#_{votos}(u)$ en $G_{DAG}$.
 \end{lemma}
 
-\todo[inline]{@TODO demuestra lo del dfs x inducci\'on fuerte en tiempo d ponerse negro}
+\begin{proof}
+    Como en $G_{DAG}$ no hay ciclos, entonces ning\'un v\'ertice $v$ adyacente $u$ puede ser gris cuando se visita a $u$.
+
+    A continuaci\'on se emplea la variante fuerte del Principio de Inducci\'on Matem\'atica sobre la propiedad:
+    \begin{center}
+        $P(n, u)$ := el lema se cumple cuando el v\'ertice $u$ es el $n$-\'esimo en volverse negro.
+    \end{center}
+
+    N\'otese que un v\'ertice $u$ se vuelve negro si y s\'olo si se ejecuta la l\'inea \ref{algo:dfs-visit:line:set-black} del algoritmo~\ref{algo:dfs-visit} sobre $u$.
+
+    Si $n=1$, entonces cuando se visita a $u$ ninguno de sus adyacentes es blanco o negro. Luego, no existe un arco saliente de $u$ en $G$. Esto implica que la propiedad $u.votos$ no se actualiza y mantiene su valor inicial $0$ al culminar la visita sobre $u$. Tambi\'en implica que $\#_{votos}(u) = 0$. Queda demostrado $P(1, u)$, para todo $u \in V$.
+
+    Sea $n>1$. Sup\'ongase que $P(k, x)$ se cumple para todo $x \in V$ y $k < n$. Todo v\'ertice $v$ adyacente a $u$ cumple que es blanco o negro cuando se visita a $u$. Si es blanco, se visita en la l\'inea~\ref{algo:dfs-visit:line:visit} y al culminar la visita se vuelve negro. Luego, en cualquier caso, la l\'inea~\ref{algo:dfs-visit:line:votes} se ejecuta. $P(k_v, v)$ se cumple para alg\'un $k_v < n$, por ende, $v.votos = \#_{votos}(v)$. Al culminar la visita sobre $u$, se cumple que
+    \begin{align*}
+        u.votos &= \sum_{v \in G.Adj[u]} (v.votos + 1) \\
+        &= |G.Adj[u]| + \sum_{v \in G.Adj[u]} v.votos \\
+        &= |G.Adj[u]| + \sum_{v \in G.Adj[u]} \#_{votos}(v) \\
+        &= \#_{votos}(u)
+    \end{align*}
+\end{proof}
 
 \begin{lemma}\label{lemma:one-cycle-only}
     Sean $c_1$ y $c_2$ dos ciclos de $G'$. Si el v\'ertice $u$ pertenece a $c_1$ y  a $c_2$, entonces $c_1 = c_2$.
