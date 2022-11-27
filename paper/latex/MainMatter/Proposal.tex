@@ -113,7 +113,7 @@ Dado un arco de retroceso $\langle u, v \rangle$ y la funci\'on de votaci\'on $f
     \Salida{Mayor n\'umero de votos obtenidos por un v\'ertice del ciclo.}
     \BlankLine
 
-    $m = v.votos$\;
+    $m = v.votos$\;\label{algo:max-in-cycle:line:m-declaration}
     $x = u$\;
     \While{$x \neq v$}{
         $m = \max(m, x.votos)$\;
@@ -150,7 +150,7 @@ El algoritmo~\ref{algo:set-votes-all-in-cycle} itera de igual manera por todos l
 \todo[inline]{@TODO demuestra lo del dfs x inducci\'on fuerte en tiempo d ponerse negro}
 
 \begin{lemma}\label{lemma:reassign-votes}
-    El algoritmo \cyclevotescaption \;considera a todos los ciclos de $G$ una y s\'olo una vez.
+    El algoritmo \cyclevotescaption \;considera a todos los ciclos de $G$ una y s\'olo una vez. \todo{@FIXME debe ir despue's del q viene}
 \end{lemma}
 
 \todo[inline]{@TODO demostrar q el algoritmo~\ref{algo:votes-cycles} considera a todos los ciclos de $G$ una y s\'olo una vez}
@@ -161,7 +161,14 @@ El algoritmo~\ref{algo:votes-cycles} itera por todos los arcos de retroceso de $
     Los algoritmos~\ref{algo:max-in-cycle}~y~\ref{algo:set-votes-all-in-cycle} iteran satisfactoriamente por todos los v\'ertices del ciclo en cuesti\'on y s\'olo por ellos.
 \end{lemma}
 
-\todo[inline]{@TODO probar q el ciclo de los algoritmos~\ref{algo:set-votes-all-in-cycle}~y~\ref{algo:max-in-cycle} termina}
+\begin{proof}
+    Ambos algoritmos reciben un arco de retroceso $\langle u, v \rangle$. Se cumple entonces que $u$ es un descendiente de $v$ en $G_\pi$ \citep{intro-to-algo-3}. Luego, existe un camino en $G$ desde $v$ hasta $u$. Esto significa que existe  un camino simple desde $u$ hasta $v$ en $G'$. Como $E(G') = f$, entonces ese camino es \'unico y de la forma
+    $$
+    \langle u, f(u), f(f(u)), ..., f^k(u) = v \rangle.
+    $$
+    Por ende, en $k$ iteraciones del ciclo de \maxincyclecaption \;o de \setvotestoallincyclecaption, se llega a $v$ y el ciclo se detiene. Las iteraciones fueron realizadas  por y s\'olo por los v\'ertices del ciclo de $G$ del cual $\langle u, v \rangle$ es arco de retroceso, excepto $v$. No considerar a $v$ en el ciclo obliga a ambos algoritmos a tenerlo en cuenta de manera separada.  En el caso de \maxincyclecaption, a $m$ se le asigna el valor de $v.votos$ en la l\'inea \ref{algo:max-in-cycle:line:m-declaration}. En el caso de \setvotestoallincyclecaption, se le asigna en la \'ultima l\'inea a $v.votos$ el valor de $m$. Todo esto hace que ambos algoritmos sean correctos.
+
+\end{proof}
 
 \begin{theorem}
     El algoritmo \dfscaption \;es correcto.
