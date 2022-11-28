@@ -1,5 +1,33 @@
 \chapter{Detalles de Implementación y Experimentos}\label{chapter:implementation}
+
+Se implement\'o un contrato inteligente en el lenguaje de programaci\'on Solidity. 
+
+Existen tres roles en el sistema: 
+\begin{enumerate}
+    \item usuario: puede consultar la informaci\'on p\'ublica del sistema. Toda persona posee este rol.
+    \item votante: puede votar por un candidato. 
+    \item due\~no: es el creador del contrato y tiene acceso a sus funcionalidades administrativas. Es el \'unico capaz de otorgar el rol votante a otra persona e incluso, a s\'i mismo. 
+\end{enumerate}
+
+Funcionalidades del contrato:
+\begin{itemize}
+    \item registro de votantes: el due\~no puede registrar a los votantes cuando crea el contrato. Para ello, debe proveer las direcciones p\'ublicas de Ethereum de los votantes. El sistema le asigna un identificador (ID) a cada votante. Consiste en un entero no negativo menor que la cantidad de votantes registrados y se corresponde con el \'indice del votante en la lista dada por el due\~no. A lo largo de la implementaci\'on de las funcionalidades del contrato, se utiliza el ID, en lugar de la direcci\'on p\'ublica, como forma  de representaci\'on del votante. \todo{@TODO decir xq?}
+    \item registro de un voto por parte del votante: un votante puede votar por un candidato. Para ello, debe proveer la direcci\'on p\'ublica de Ethereum del candidato.
+    \item registro de un voto por parte del due\~no: el due\~no puede registrar un voto, aun cuando \'el no sea el votante o el candidato en cuesti\'on. Para ello, debe proveer el identificador del votante y el identificador del candidato.
+    \item conteo de votos: todo usuario puede consultar en cualquier momento la informaci\'on actualizada del conteo de votos.  La respuesta a la consulta es un arreglo \lstinline{count} de enteros no negativos, donde \lstinline{count[id]} es el n\'umero de votos obtenido por el candidato cuyo identificador es \lstinline{id}. Para obtener este resultado no se realiza el proceso de desempate, por lo que puede existir m\'as de un candidato con el mayor n\'umero de votos.  \todo{@audit el sistema aki'  es +- justo xq el tipo tiene q conocer el id}
+    \item consultar qui\'en es el ganador:  todo usuario puede consultar en cualquier momento qui\'en es el ganador de la votaci\'on. \todo{@audit el sistema no es justo}
+    \item destruir el contrato: el due\~no puede destruir el contrato. Esto imposibilita un uso posterior de cualquiera de sus funcionalidades. 
+\end{itemize}
+
+\todo[inline]{@TODO di lo d q el usuario debe conocer el id de un candidato si kiere saber su conteo en cualkier momento}
+
+\todo[inline]{@TODO co'mo hicit el conteo. Detalla lo d listas d adyacencia y co'mo guardaste la funci\'on f}
+
+\todo[inline]{@TODO co'mo hicit el desempate. Habla del heap, del path compression de los ranks y del delay del ciclo pa encontrar al ganador. Complejidad temporal}
+
 \section{Eliminando por Tiempo}
+\todo[inline]{@TODO co'mo aseguras q no voten en el mismo tiempo. Habla aki' del consenso en la red y to eso}
+
 Sea $v_1, v_2, ..., v_k \in f$ la permutaci\'on de los pares ordenados de $f$ que cumple que $v_i$ fue el $i$-\'esimo voto en registrarse, para todo $i, 1 \leq i \leq k$. A cada votante se le puede asociar una noci\'on de ``tiempo de voto'' en el que vot\'o continuaci\'on se define una funci\'on $t: V \rightarrow \{1, 2, ..., k\}$ que :
 
 $$
@@ -7,6 +35,7 @@ t(x) = i \quad \Leftrightarrow \quad \exists i, 1 \leq i \leq k: v_i = \langle x
 $$
 
 \section{Despliegue en \textit{Kaleido}}
+\todo[inline]{@TODO completar lo d kaleido}
 2 nodos de Quorum con mecanismo de consenso LBFT, no firmantes. Un nodo monitor del sistema, firmante. una \textit{wallet} con m\'as de 100 cuentas
 
 los nodos: Geth/v1.10.2-stable-6c76d816(quorum-v22.4.4)/linux-amd64/go1.16.15
