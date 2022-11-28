@@ -13,7 +13,7 @@ La propuesta consta de dos ideas fundamentales:
     \item el empleo de IRV para desempatar y eligir un ganador. 
 \end{enumerate} 
 
-\section{Conteo de Votos}
+\section{Conteo de Votos}\label{sec:dfs-counting}
 El problema se puede enfocar desde la Teor\'ia de Grafos. Los votantes pueden ser vistos como v\'ertices y los votos como arcos. Contar los votos obtenidos por cada candidato se reduce a recorrer un grafo convenientemente. En esta secci\'on se detalla ese enfoque.
 
 Sean $V$ el conjunto de los participantes  de la elecci\'on (votantes) y $f \in V \times V$ la relaci\'on de voto, esto es, $ \langle x, y \rangle \in f $ si y s\'olo si $x$ vot\'o por $ y $.  Se asume que culmin\'o el registro de todos los votos y que s\'olo existen votos v\'alidos. Cada votante puede elegir a lo sumo a otra persona, por ende, $f$ es funci\'on.
@@ -240,7 +240,7 @@ El teorema~\ref{theorem:counting} re\'une los anteriores resultados para probar 
 \end{proof}
 
 
-\subsection{Complejidad Temporal}
+\subsection{Complejidad Temporal}\label{sec:dfs-counting:time}
 En esta secci\'on se asume que $G$ est\'a representado mediante listas de adyacencia y que evaluar $f$ toma $O(1)$.
 
 Hasta el fin del ciclo de \dfscaption, el algoritmo se ejecuta en tiempo $O(b_1(|V| + |E|))$, donde $b_1$ es el costo m\'aximo de a\~nadir un arco a $B$. Como $f$ es funci\'on, entonces 
@@ -253,7 +253,7 @@ De los lemas~\ref{lemma:reassign-votes}~y~\ref{lemma:cycle-iteration} y sus resp
 Por todo lo anterior, la propuesta dada para contar los votos recibidos por los candidatos se ejecuta en tiempo $O((b_1 + b_2)|V|)$. Si $B$ se implementa mediante una lista enlazada, entonces $b_1, b_2 \in O(1)$ y el algoritmo \dfscaption \;se ejecuta en tiempo $O(|V|)$.
 
 
-\section{Desempate con IRV}
+\section{Desempate con IRV}\label{sec:irv+time-untie}
 Sean $m = \max\{ u.votos \;|\; u \in V \}$ y $W = \{ u \in V \;|\; u.votos = m \}$. El ganador del proceso electoral se encuentra en $W$. Si $|W| = 1$, entonces se declara como ganador al \'unico elemento de $W$. Para determinar qui\'en gana cuando $|W| > 1$, se emplea una adaptaci\'on del m\'etodo de desempate instant\'aneo. 
 
 De la secci\'on~\ref{sec:irv} se conoce que para utilizar ese m\'etodo es necesario definir:
@@ -303,7 +303,7 @@ En ese caso, se tiene que $m = 9$ y $W = \{ 4, 8, 10, 11 \}$. En la tabla~\ref{t
 
 N\'otese que los \textit{rankings}  de los votantes 1, 3 y 7 est\'an vac\'ios, ya que no existe un camino en el grafo desde alguno de ellos hacia un v\'ertice de $W$.
 
-\subsection{Eliminando por Tiempo}
+\subsection{Eliminando por Tiempo}\label{sec:irv+time-untie:removing}
 Cuando en una ronda de IRV dos o m\'as candidatos poseen la menor cantidad de votos, es preciso decidir a cu\'al de ellos eliminar. Se propone eliminar al que obtuvo esa cantidad de votos m\'as tarde en el tiempo. La propuesta se basa en la hip\'otesis de que si un candidato obtuvo sus votos en menos tiempo que otro, entonces los votantes del primero poseen m\'as seguridad y confianza en su elecci\'on que los votantes del segundo. Esta hip\'otesis se hace m\'as fuerte cuando es menos el conocimiento que poseen los votantes sobre los candidatos antes de que comience la elecci\'on. 
 \todo[inline]{@TODO propo'n una manera d minimizar ese conocimiento o mira a ver si precisamente esa es una caracter\'istica del problema}
 

@@ -1,5 +1,7 @@
 \chapter{Detalles de Implementación y Experimentos}\label{chapter:implementation}
 
+\todo[inline]{@TODO introduce y enlaza las cosas}
+
 Se implement\'o un contrato inteligente en el lenguaje de programaci\'on Solidity. 
 
 Existen tres roles en el sistema: 
@@ -12,27 +14,26 @@ Existen tres roles en el sistema:
 Funcionalidades del contrato:
 \begin{itemize}
     \item registro de votantes: el due\~no puede registrar a los votantes cuando crea el contrato. Para ello, debe proveer las direcciones p\'ublicas de Ethereum de los votantes. El sistema le asigna un identificador (ID) a cada votante. Consiste en un entero no negativo menor que la cantidad de votantes registrados y se corresponde con el \'indice del votante en la lista dada por el due\~no. A lo largo de la implementaci\'on de las funcionalidades del contrato, se utiliza el ID, en lugar de la direcci\'on p\'ublica, como forma  de representaci\'on del votante. \todo{@TODO decir xq?}
-    \item registro de un voto por parte del votante: un votante puede votar por un candidato. Para ello, debe proveer la direcci\'on p\'ublica de Ethereum del candidato.
-    \item registro de un voto por parte del due\~no: el due\~no puede registrar un voto, aun cuando \'el no sea el votante o el candidato en cuesti\'on. Para ello, debe proveer el identificador del votante y el identificador del candidato.
+    \item registro de un voto por parte del votante: un votante puede votar por un candidato. Para ello, debe proveer la direcci\'on p\'ublica de Ethereum del candidato. No se permite el doble voto.
+    \item registro de un voto por parte del due\~no: el due\~no puede registrar un voto, aun cuando \'el no sea el votante o el candidato en cuesti\'on. Para ello, debe proveer el identificador del votante y el identificador del candidato. No se permite el doble voto.
     \item conteo de votos: todo usuario puede consultar en cualquier momento la informaci\'on actualizada del conteo de votos.  La respuesta a la consulta es un arreglo \lstinline{count} de enteros no negativos, donde \lstinline{count[id]} es el n\'umero de votos obtenido por el candidato cuyo identificador es \lstinline{id}. Para obtener este resultado no se realiza el proceso de desempate, por lo que puede existir m\'as de un candidato con el mayor n\'umero de votos.  \todo{@audit el sistema aki'  es +- justo xq el tipo tiene q conocer el id}
-    \item consultar qui\'en es el ganador:  todo usuario puede consultar en cualquier momento qui\'en es el ganador de la votaci\'on. \todo{@audit el sistema no es justo}
+    \item consultar qui\'en es el ganador:  todo usuario puede consultar en cualquier momento qui\'en es el ganador de la votaci\'on. El sistema realiza el conteo de votos y, de ser necesario, ejecuta el algoritmo de desempate por IRV (secci\'on~\ref{sec:irv+time-untie}). \todo{@audit el sistema no es justo}
     \item destruir el contrato: el due\~no puede destruir el contrato. Esto imposibilita un uso posterior de cualquiera de sus funcionalidades. 
 \end{itemize}
 
 \todo[inline]{@TODO di lo d q el usuario debe conocer el id de un candidato si kiere saber su conteo en cualkier momento}
 
-\todo[inline]{@TODO co'mo hicit el conteo. Detalla lo d listas d adyacencia y co'mo guardaste la funci\'on f}
+\section{Conteo de Votos}
+Se implement\'o la idea propuesta en la secci\'on~\ref{sec:dfs-counting}. Se almacena la lista de adyacencia del grafo $G$ en el estado del contrato y se modifica cada vez que se registra un voto. La funci\'on $f$ es calculada en la implementaci\'on de \dfsvisitcaption: cada vez que se visita el arco $\langle u, v \rangle$, se a\~nade el arco $\langle v, u \rangle$ a $f$. Consultar el valor de $f(x)$ es $O(1)$. El conjunto $B$ se implementa mediante una lista en la que agregar un elemento y consultar en una posici\'on toma $O(1)$. De esta forma, se satisfacen todas las hip\'otesis de la secci\'on~\ref{sec:dfs-counting:time}. Luego, el conteo se realiza en tiempo $O(n)$, donde $n$ es el n\'umero de votantes registrados.
 
-\todo[inline]{@TODO co'mo hicit el desempate. Habla del heap, del path compression de los ranks y del delay del ciclo pa encontrar al ganador. Complejidad temporal}
+\section{Desempate}
+El registro del tiempo de voto de un votante se realiza empleando un contador global. Inicialmente, su valor es $0$. Cuando se registra el voto de $x$, se incrementa el contador y se toma su valor como el tiempo en que $x$ vot\'o. Es as\'i como se implementa la funci\'on de tiempo $t$, empleada en el mecanismo propuesto de desempate. Las caracter\'isticas que  poseen la tecnolog\'ia \textit{blockchain}  y los algoritmos de consenso, aseguran con alt\'isima probabilidad que el tiempo asignado a cada votante sea \'unico. \todo{@TODO cita} Luego, se puede dar por satisfecha la hip\'otesis del corolario~\ref{corollary:irv}.
 
-\section{Eliminando por Tiempo}
-\todo[inline]{@TODO co'mo aseguras q no voten en el mismo tiempo. Habla aki' del consenso en la red y to eso}
+Para obtener en cada ronda el candidato a eliminar, se implement\'o la estructura de datos \textit{heap de m\'inimos} \citep{intro-to-algo-3}. Un candidato es ``menor'' que otro si posee menor cantidad de votos en IRV. Si ambos poseen la misma cantidad, entonces es menor el que mayor de $t_{ronda}$ tenga. El \textit{heap} implementado permite modificaciones en los votos, ya que es necesario actualizarlos cuando se elimina un candidato. Todas las operaciones sobre la estructura de datos se realizan en tiempo $O(\log n)$.
 
-Sea $v_1, v_2, ..., v_k \in f$ la permutaci\'on de los pares ordenados de $f$ que cumple que $v_i$ fue el $i$-\'esimo voto en registrarse, para todo $i, 1 \leq i \leq k$. A cada votante se le puede asociar una noci\'on de ``tiempo de voto'' en el que vot\'o continuaci\'on se define una funci\'on $t: V \rightarrow \{1, 2, ..., k\}$ que :
+Para actualizar los votos cuando se elimina un candidato, es necesario consultar el primer lugar de los \textit{rankings} de ciertos votantes. Estas consultas las satisface una estructura de datos que mantiene actualizado los \textit{rankings} a demanda. Cuando se consulta el primer lugar del \textit{ranking} de $x$, la estructura se desplaza por el grafo $G'$ desde $x$ mediante sucesivas aplicaciones de la funci\'on $f$. Cuando encuentra a un candidato v\'alido, lo reporta y mueve las referencias desde todos los v\'ertices recorridos hacia ese candidato. De esta manera, futuras consultas del primer lugar del \textit{ranking} de alguno de esos candidatos ser\'an satisfechas en menor tiempo. Esta heur\'istica es conocida como \textit{compresi\'on del camino} o \textit{path compression} \citep{intro-to-algo-3}. \todo{@TODO no estari'a mal una figura o un ejemplo} Un v\'ertice intermedio en el camino entre el votante y su candidato v\'alido no se visita dos veces durante la resoluci\'on de todas las consultas. Por ende, el costo total del empleo de la estructura de datos es $O(n)$.
 
-$$
-t(x) = i \quad \Leftrightarrow \quad \exists i, 1 \leq i \leq k: v_i = \langle x, y \rangle, \text{ para alg\'un } y \in V 
-$$
+Por decisiones de implementaci\'on, puede que en un momento dado se haya alcanzado la mayor\'ia de  votos por parte del candidato a la cabeza y, sin embargo, el algoritmo siga iterando sin declararlo ganador. En el peor de los casos, el algoritmo realiza $n$ iteraciones, eliminando en cada una a un candidato en tiempo $O(\log n)$ y consultando el primer lugar del \textit{ranking} de algunos candidatos. Luego, el costo total del algoritmo de desempate es $O(n \log n)$.
 
 \section{Despliegue en \textit{Kaleido}}
 \todo[inline]{@TODO completar lo d kaleido}
