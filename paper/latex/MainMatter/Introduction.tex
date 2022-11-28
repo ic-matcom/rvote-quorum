@@ -1,19 +1,44 @@
 \chapter*{Introducción}\label{chapter:introduction}
 \addcontentsline{toc}{chapter}{Introducción}
 
+Resulta común que la actividad de los gobiernos nacionales genere déficits 
+continuados en los balances presupuestarios anuales, por lo que se emplean mecanismos de financiación adicionales a las fuentes convencionales de 
+ingresos fiscales. En este sentido, se reconocen dos vías para la financiación pública: 
+la monetización  y los mecanismos de mercado a partir de una política de endeudamiento público. 
+La experiencia negativa de un numeroso grupo de países con relación a los efectos de 
+la monetización sobre la inflación generó un rechazo prácticamente rotundo a esta 
+alternativa, concentrando la financiación del gobierno en el endeudamiento soberano. 
+
+En la actualidad ambos tipos de financiamiento ocurren en los Mercados de Deuda 
+Pública (MDP). 
+El MDP es un mercado financiero que cuenta con dos segmentos o submercados: el 
+primario y el secundario. En el primero de ellos se emiten y colocan inicialmente los 
+títulos de deuda del gobierno, y en el segundo, estos valores se transan continuamente 
+hasta su vencimiento. Es el espacio, no necesariamente físico, donde se comercializan 
+los valores del gobierno y donde éste obtiene financiamiento de diversos agentes. 
+
+En Cuba, durante más de 40 años los déficits fiscales fueron monetizados 
+íntegramente, en una primera etapa por el Banco Nacional de Cuba (BNC) y luego por 
+el Banco Central de Cuba (como prestamista de única instancia), sin el establecimiento 
+de un compromiso explícito de amortización. 
+Si bien en los años más recientes la monetización en el país no se ha traducido en un impacto directo sobre los precios, dadas las características peculiares de la economía 
+doméstica, su empleo a lo largo del tiempo ha generado otras distorsiones. 
+A raíz del proceso de actualización del modelo económico iniciado con el VI Congreso 
+del Partido Comunista de Cuba y en particular, del reordenamiento del entorno económico, monetario y financiero, se comenzaron a gestar e implementar un conjunto de transformaciones en los mecanismos para financiar al Presupuesto del Estado. Este proceso ha estado apoyado en la intención institucional de crear a mediano plazo un Mercado de Deuda Pública. 
+
+En un futuro escenario de ese tipo, el Estado cubano pide dinero prestado a entidades de la econom\'ia a trav\'es del Banco Central de Cuba. El monto solicitado y el inter\'es m\'aximo con el que se devolver\'a se plasman en un documento llamado bono soberano.  Los posibles prestamistas participan en una subasta por el bono y el que menor tasa de inter\'es exija por el pr\'estamo ser\'a el ganador, y el Estado pasar\'a a ser su prestatario.  
+
+Para decidir qui\'enes participan en la subasta, se confeccionan los Comit\'es de Mercado Financiero (CMF).  El Comité de Mercados Financieros (CMF) del BCC es la Autoridad de Mercado (AM) que regirá el reglamento del MDP. Podrá adoptar todas aquellas medidas que juzgue convenientes para la estabilidad y desarrollo del mercado, y tendrá potestad disciplinaria sobre todos los Operadores del Mercado, cualquiera sea su clase o naturaleza. Los miembros y el presidente de cada Comit\'e se deciden mediante un proceso electoral en el que cualquier elector puede ceder su poder de voto a otro elector. A ese tipo de elecci\'on el autor le denomina \textbf{votaci\'on representativa}.  
 
 
-El Estado cubano pide dinero prestado a entidades de la econom\'ia a trav\'es del Banco Central de Cuba. El monto solicitado y el inter\'es m\'aximo con el que se devolver\'a se plasman en un documento llamado bono soberano.  Los posibles prestamistas participan en una subasta por el bono y el que menor tasa de inter\'es exija por el pr\'estamo ser\'a el ganador, y el Estado pasar\'a a ser su prestatario.  Para decidir qui\'enes participan en la subasta, se confeccionan los Comit\'es de Mercado Financiero (CMF).  Los miembros y el presidente de cada Comit\'e se deciden mediante un proceso electoral en el que cualquier elector puede ceder su poder de voto a otro elector. A ese tipo de elecci\'on el autor le denomina \textbf{votaci\'on representativa}.  
-
-
-En un sistema de votaci\'on representativa  los votos se transfieren, esto es, si una persona $A$ vota por una persona $B$ y esta, a su vez, vota por  $C$, entonces el voto de $A$ se transfiere a $C$. Formalmente, el c\'alculo de los votos obtenidos por un candidato puede ser definido recursivamente de la siguiente manera:
+En un sistema de votaci\'on representativa  los votos se transfieren, esto es, si una persona $A$ vota por una persona $B$ y esta, a su vez, vota por  $C$, entonces el voto de $A$ se transfiere a $C$. Luego, cada participante puede ser a la vez votante y candidato. Formalmente, el c\'alculo de los votos obtenidos por un candidato puede ser definido recursivamente de la siguiente manera:
 \begin{equation}\label{eq:votes-count}
     \#_{votos}(y) = \begin{cases}
         |V_y| + \underset{x \in V_y}{\sum} \#_{votos}(x) & \text{si } V_y \neq \emptyset \\
         0 & \text{si } V_y = \emptyset 
     \end{cases}
 \end{equation}
-donde $V_y$ es el conjunto de personas que votaron por $y$. La figura~\ref{fig:r-voting} ilustra un ejemplo de votación en el que $A$ votó por $B$, $B$ y $E$ votaron por $C$ y $C$ votó por $D$. $B$ obtiene solamente el voto de $A$, mientras que $C$ obtiene los votos de $A$, $B$ y $E$. $D$ recibe el voto directo de $C$ y, con este,  los votos indirectos de los restantes participantes. Cerca de cada flecha se encuentra un n\'umero que indica la cantidad de votos que se transfieren. Encima de cada candidato se encuentra el n\'umero de votos que obtiene.
+donde $V_y$ es el conjunto de personas que votaron directamente por $y$. La figura~\ref{fig:r-voting} ilustra un ejemplo de votación en el que $A$ votó por $B$, $B$ y $E$ votaron por $C$ y $C$ votó por $D$. $B$ obtiene solamente el voto de $A$, mientras que $C$ obtiene los votos de $A$, $B$ y $E$. $D$ recibe el voto directo de $C$ y, con este,  los votos indirectos de los restantes participantes. Cerca de cada flecha se encuentra un n\'umero que indica la cantidad de votos que se transfieren. Encima de cada candidato se encuentra el n\'umero de votos que obtiene.
 
 \begin{figure}[h!]
     \centering
@@ -28,7 +53,7 @@ En el caso particular de la confecci\'on de los CMF, cada individuo puede votar 
 
 
 
-En un proceso electoral de este tipo pueden surgir ciclos de votación, como el que se muestra en la figura~\ref{fig:voting-cycle}, donde el voto emitido por $D$ hacia $B$ forma un ciclo que los involucra a ambos y a $C$.  En un  caso como ese, no se puede aplicar sin m\'as la f\'ormula~\eqref{eq:votes-count} para calcular los votos obtenidos por los candidatos involucrados en el ciclo.  La naturaleza recursiva de $\#_{votos}$ impide su c\'alculo en ciclos de votaci\'on, debido a la ocurrencia de dependencias circulares. Por ejemplo, en la figura~\ref{fig:voting-cycle} se puede apreciar que el c\'alculo de los votos que $C$ obtiene depende del c\'alculo de los votos de $B$, y este, a su vez, depende del valor de $\#_{votos}(D)$, pero $D$ depende del n\'umero de votos obtenidos por $C$. Se forma entonces un c\'irculo de dependencias y no puede ser calculado apropiadamente el n\'umero de votos obtenido por cada uno de los candidatos $B$, $C$ y $D$.
+En un proceso electoral de este tipo pueden surgir ciclos de votación, como el que se muestra en la figura~\ref{fig:voting-cycle}, donde el voto emitido por $D$ hacia $B$ forma un ciclo que los involucra a ambos y a $C$.  
 
 \begin{figure}[h!]
     \centering
@@ -36,9 +61,11 @@ En un proceso electoral de este tipo pueden surgir ciclos de votación, como el 
     \caption{Ciclo de votaci\'on.}
     \label{fig:voting-cycle}
 \end{figure}
-Uno de los objetivos del presente trabajo es \textbf{dise\~nar e implementar una asignaci\'on justa de  votos para los electores involucrados en un ciclo de votación}. 
 
-Para seleccionar un presidente para un CMF, se realiza una elecci\'on representativa y el que obtenga la mayor cantidad de votos es el ganador. Puede pasar que m\'as de una persona obtenga la mayor cantidad de votos.   Esto no es deseable, ya que el presidente debe ser \'unico. En este sentido, otro de los objetivos de este trabajo es \textbf{dise\~nar e implementar un mecanismo de desempate}.
+
+En un  caso como ese, no se puede aplicar sin m\'as la f\'ormula~\eqref{eq:votes-count} para calcular los votos obtenidos por los candidatos involucrados en el ciclo.  La naturaleza recursiva de $\#_{votos}$ impide su c\'alculo en ciclos de votaci\'on, debido a la ocurrencia de dependencias circulares. Por ejemplo, en la figura~\ref{fig:voting-cycle} se puede apreciar que el c\'alculo de los votos que $C$ obtiene depende del c\'alculo de los votos de $B$, y este, a su vez, depende del valor de $\#_{votos}(D)$, pero $D$ depende del n\'umero de votos obtenidos por $C$. Se forma entonces un c\'irculo de dependencias y no puede ser calculado apropiadamente el n\'umero de votos obtenido por cada uno de los candidatos $B$, $C$ y $D$.
+
+
 
 % pa mantener un sistema distribuido de goquorum es necesario al menos 4 nodos % @NOTE chekea eso 
 
@@ -62,30 +89,29 @@ GoQuorum es una implementaci\'on de Ethereum capaz de crear redes privadas y con
 
 Existen implementaciones de sistemas de votaci\'on en otras \textit{blockchain} (\cite{agora}) y tambi\'en en Ethereum (\cite{ovn} y \cite{borda_count}), pero no se conoce ninguna implementaci\'on de un sistema de voto representativo en GoQuorum.
 
-\todo[inline, disable]{@TODO decir que el Instituto de Criptograf\'ia implement\'o un sistema de votaci\'on en hyperledger fabric pero tampoco nos sirve. ?`C\'omo cito eso?}
-
-En \cite{wang2017review} se proponen los requisitos principales y opcionales que debe cumplir todo sistema de votaci\'on electr\'onico. Entre ellos est\'an:
+El sistema a implementar debe cumplir los siguientes requisitos:
 \begin{itemize}
-    \item correctitud: los votos deben ser contados correctamente, esto es, todos los votos v\'alidos deben ser contados y los votos inv\'alidos no deben ser contados.
-
-    \item privacidad: no se conoce la decisi\'on del votante.
-
-    \item prevenci\'on del doble voto: un votante no puede emitir la misma boleta dos veces. También se debe evitar que un tercero pueda clonar una boleta previamente emitida por un votante, para registrarla de nuevo a nombre de ese votante.
-
-    \item elegibilidad: s\'olo los votantes autorizados pueden votar.
-
-    \item robustez: poder lidiar con una cierta cantidad de comportamientos incorrectos por parte de los votantes o con una falla parcial del sistema.
-
-    \item justeza: no se calculan los resultados hasta el fin de la votaci\'on.
-
+    \item ser capaz de calcular los votos siguiendo la f\'ormula~\eqref{eq:votes-count}, teniendo en cuenta la ocurrencia de ciclos;
+    \item obtener un \'unico ganador como resultado de las elecciones;
+    \item que pueda ser desplegado sobre una red GoQuorum;
+    \item contar correctamente todos los votos v\'alidos e ignorar los votos inv\'alidos;
+    \item prevenir que sean registrados dos votos distintos a nombre del mismo votante;
+    \item permitir votar a s\'olo los votantes registrados.
 \end{itemize}
 
-Con el presente trabajo de diploma  se pretende dise\~nar e implementar un sistema de votaci\'on representativa en GoQuorum que cumpla con los requisitos mencionados anteriormente. El sistema debe ser capaz, adem\'as, de realizar elecciones para un CMF, asignando un valor justo de votos para los electores involucrados en un ciclo de votaci\'on y determinando un ganador, incluso cuando hay empate en el primer lugar. El sistema debe ser lo m\'as gen\'erico posible, de forma tal que sea factible su uso m\'as all\'a del entorno bancario.
+\todo[inline, disable]{@TODO decir que el Instituto de Criptograf\'ia implement\'o un sistema de votaci\'on en hyperledger fabric pero tampoco nos sirve. ?`C\'omo cito eso?}
 
-\todo[inline]{@TODO deja claro a la hora d definir el problema d q cada participante puede ser a la vez votante y candidato para poder hablar indistintamente en ese senti2}
+El presente trabajo de diploma   debe responder a la interrogante: ?`c\'omo dise\~nar un sistema de votaci\'on electr\'onico que cumpla con los requisitos mencionados anteriormente? Para ello deben lograrse ciertos objetivos, a saber: dise\~nar algoritmos que satisfagan los requerimientos,  implementarlos en forma de contratos inteligentes y evaluarlos en una red privada de GoQuorum.
 
-
-% estudiar, disenyar y modelar, implementar y evaluar resultados
+A continuaci\'on se enumeran las tareas que deben ser realizadas para lograr los objetivos mencionados:
+\begin{enumerate}
+    \item realizar una revisi\'on de la bibliograf\'ia existente acerca de sistemas de votaci\'on electr\'onico sobre \textit{blockchain}, as\'i como de los sistemas electorales que se utilizan en la actualidad y sus mecanismos de desempate;
+    \item valorar los resultados de la revisi\'on anterior;
+    \item dise\~nar algoritmos que permitan contar y desempatar apropiadamente;
+    \item estudiar el lenguaje de programaci\'on Solidity;
+    \item implementar los contratos inteligentes que sean necesarios;
+    \item evaluar esos contratos.
+\end{enumerate}
 
 \todo[inline]{@TODO decir d q' va cada capi'tulo}
 
