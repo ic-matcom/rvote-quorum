@@ -35,14 +35,11 @@ Para actualizar los votos cuando se elimina un candidato, es necesario consultar
 
 Por decisiones de implementaci\'on, puede que en un momento dado se haya alcanzado la mayor\'ia de  votos por parte del candidato a la cabeza y, sin embargo, el algoritmo siga iterando sin declararlo ganador. En el peor de los casos, el algoritmo realiza $n$ iteraciones, eliminando en cada una a un candidato en tiempo $O(\log n)$ y consultando el primer lugar del \textit{ranking} de algunos candidatos. Luego, el costo total del algoritmo de desempate es $O(n \log n)$.
 
-\section{Despliegue en \textit{Kaleido}}
-\todo[inline]{@TODO completar lo d kaleido}
-2 nodos de Quorum con mecanismo de consenso LBFT, no firmantes. Un nodo monitor del sistema, firmante. una \textit{wallet} con m\'as de 100 cuentas
+\section{Despliegue}
+El contrato fue desplegado en una red GoQuorum versi\'on 22.4.4 en Kaleido,  \todo{@TODO cita kaleido} con LBFT como protocolo de consenso.  \todo{@TODO cita LBFT. X ahi' anda el paper} La red est\'a formada por dos nodos no firmantes y un nodo monitor firmante. Cada uno de ellos con sistema operativo Linux, arquitectura AMD64 y versi\'on de Go 1.16.15. Se encuentran ubicados en la zona este de Estados Unidos  y son mantenidos por Servicios Web de Amazon (AWS).  Poseen 1 GB de RAM y utilizan la mitad del CPU virtual asignado. \todo{@TODO explik lo del vcpu}  Tambi\'en se cre\'o una billetera en Kaleido con m\'as de 100 cuentas. 
 
-los nodos: Geth/v1.10.2-stable-6c76d816(quorum-v22.4.4)/linux-amd64/go1.16.15
+Se ejecut\'o un caso de prueba de 100 votantes. Se compil\'o el contrato con \texttt{solc} versi\'on 0.8.17, habilitando el optimizador  con el par\'ametro \lstinline{--optimize-runs=20}. 
+\todo[inline]{@TODO ak\'i habla  d xq' 20 y una posible excusa puede ser el promedio d los votantes. Lo de abajo no va en un pa'rrafo aparte}
+El \textit{bytecode} de creaci\'on del contrato ocup\'o apr\'oximadamente 13.7 KB.  Al contar los votos,   21 candidatos resultan empatados en el primer lugar con un total de 30 votos cada uno.   Desde que se consult\'o por el ganador de la votaci\'on hasta que se obtuvo una respuesta  satisfactoria, transcurrieron 300 milisegundos apr\'oximadamente y se consumieron 92857 unidades de \textit{gas}.  Todos los pedidos web se realizaron a un mismo destino, el cual consumi\'o un 2\% de su CPU y elev\'o su consumo de RAM en 29 MB. El uso de CPU y RAM de los nodos se mantuvo relativamente constante. El uso del disco tampoco vari\'o en gran medida. 
 
-tol mundo tiene un gb d ram y 0.5 vcpu
-
-todos esta'n ubicados en la zona este de usa, hosteados por aws
-
-caso de prueba con 100 votantes, con 21 empates en el primer lugar con 30 votos. Approx 13.7kb el bytecode de creacio'n del contrato. Se compilo' con solc versio'n 0.8.17, con el optimizador habilitado, con para'metro runs = 20 (aki' habla  del promedio d los votantes)  Consumio' un 2\% de cpu de la wallet xq todos los pedidos fueron pa alla'. Los nodos mantuvieron su cpu al 4\%. El consumo normal de la wallet es d 100mb de ram y cuan2 c lanzaron los pedidos alcanzo' un pico de 129mb. los nodos mantuvieron un uso d ram d 500mb approx. El uso del disco tampoco vario' en gran medida. se obtuvo el ganador en 300ms approx desde q c hizo el pedido desde cuba hasta q se obtuvo una respuesta. El gas consumido por el getwinner fue de 92857
+% @remind El servidor en el que se encontraba la billetera consumi\'o un 2\% del CPU, ya que todos los pedidos fueron pa all\'a. Los nodos mantuvieron su cpu al 4\%. El consumo normal de la wallet es d 100mb de ram y cuan2 c lanzaron los pedidos alcanz\'o un pico de 129mb. los nodos mantuvieron un uso d ram d 500mb approx. El uso del disco tampoco vari\'o en gran medida.  El gas consumido por el getwinner fue de 92857
