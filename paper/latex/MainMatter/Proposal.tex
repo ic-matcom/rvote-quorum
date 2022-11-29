@@ -22,7 +22,7 @@ Sea $G' = \langle V, f \rangle$ el digrafo de votaci\'on, con v\'ertices en $V$ 
 
 Se propone tambi\'en considerar de manera especial a los candidatos involucrados en ciclos de votaci\'on. Estos ciclos son detectados y registrados en el recorrido DFS. Por cada ciclo, se calcula el mayor n\'umero de votos obtenidos por un v\'ertice de \'el y se le asigna esa cantidad a los restantes v\'ertices del propio ciclo. Los votantes de un mismo ciclo conf\'ian indirectamente entre ellos dos a dos, por ende, se considera justo que cada uno de ellos obtenga la misma cantidad de votos, y que esta sea la mayor obtenida por un miembro del ciclo.
 
-\todo[inline]{@NOTE cada vez q digas algo q lleve demostracio'n, pon una referencia al lema/teorema q lo respalda en la subseccio'n d correctitud}
+\todo[inline,disable]{@NOTE cada vez q digas algo q lleve demostracio'n, pon una referencia al lema/teorema q lo respalda en la subseccio'n d correctitud}
 
 Los algoritmos~\ref{algo:dfs}~y~\ref{algo:dfs-visit}  constituyen adaptaciones   de las funciones DFS y DFS-Visit de \cite{intro-to-algo-3}, respectivamente. En $B$ se almacenan los arcos de retroceso de $G$.    Una vez el algoritmo~\ref{algo:dfs} termine, en $u.votos$ se tiene la cantidad de votos obtenidos por el votante representado por el v\'ertice $u$. 
 
@@ -232,7 +232,7 @@ El teorema~\ref{theorem:counting} re\'une los anteriores resultados para probar 
 \end{theorem}
 
 \begin{proof}
-    Inicialmente, todos los v\'ertices son blancos y no tienen votos. Cuando el ciclo de \dfscaption \;culmina, todo v\'ertice ha sido visitado por \dfsvisitcaption. Luego, por el lema~\ref{lemma:dfs-visit}, se cumple que $u.votos = \#_{votos}(u)$ en $G_{DAG}$, para todo $u \in V$. El grafo $G$ es el resultado de colocar en $G_{DAG}$ los arcos de $B$. Luego, el comportamiento del algoritmo~\ref{algo:dfs-visit} sobre $G_{DAG}$ es el mismo que sobre $G$, en lo que se refiere a conteo de votos. \todo{@NOTE quiza' c puede dejar ma's claro}
+    Inicialmente, todos los v\'ertices son blancos y no tienen votos. Cuando el ciclo de \dfscaption \;culmina, todo v\'ertice ha sido visitado por \dfsvisitcaption. Luego, por el lema~\ref{lemma:dfs-visit}, se cumple que $u.votos = \#_{votos}(u)$ en $G_{DAG}$, para todo $u \in V$. El grafo $G$ es el resultado de colocar en $G_{DAG}$ los arcos de $B$. Luego, el comportamiento del algoritmo~\ref{algo:dfs-visit} sobre $G_{DAG}$ es el mismo que sobre $G$, en lo que se refiere a conteo de votos. \todo[disable]{@NOTE quiza' c puede dejar ma's claro}
 
     Por el lema~\ref{lemma:cycle-iteration}, se cumple que los algoritmos \maxincyclecaption \;y \setvotestoallincyclecaption \;son correctos.  Por el lema~\ref{lemma:reassign-votes} y su demostraci\'on, se cumple que el algoritmo~\ref{algo:votes-cycles} itera por y s\'olo por todos los ciclos de $G$. Por todo esto, el algoritmo \cyclevotescaption \;es correcto.
 
@@ -283,7 +283,7 @@ En la figura~\ref{fig:graph-13-voters-2-cycles} se representa un grafo de votaci
     \caption{Grafo de votaci\'on con 13 votantes y 2 ciclos.}
     \label{fig:graph-13-voters-2-cycles}
 \end{figure}
-\todo[inline]{@TODO pon en amarillo a la gente q esta'n empatadas}
+\todo[inline,disable]{@TODO pon en amarillo a la gente q esta'n empatadas}
 
 En ese caso, se tiene que $m = 9$ y $W = \{ 4, 8, 10, 11 \}$. En la tabla~\ref{tab:rankings-13-voters} se muestran los \textit{rankings} de cada votante.
 
@@ -305,7 +305,7 @@ N\'otese que los \textit{rankings}  de los votantes 1, 3 y 7 est\'an vac\'ios, y
 
 \subsection{Eliminando por Tiempo}\label{sec:irv+time-untie:removing}
 Cuando en una ronda de IRV dos o m\'as candidatos poseen la menor cantidad de votos, es preciso decidir a cu\'al de ellos eliminar. Se propone eliminar al que obtuvo esa cantidad de votos m\'as tarde en el tiempo. La propuesta se basa en la hip\'otesis de que si un candidato obtuvo sus votos en menos tiempo que otro, entonces los votantes del primero poseen m\'as seguridad y confianza en su elecci\'on que los votantes del segundo. Esta hip\'otesis se hace m\'as fuerte cuando es menos el conocimiento que poseen los votantes sobre los candidatos antes de que comience la elecci\'on. 
-\todo[inline]{@TODO propo'n una manera d minimizar ese conocimiento o mira a ver si precisamente esa es una caracter\'istica del problema}
+\todo[inline,disable]{@TODO propo'n una manera d minimizar ese conocimiento o mira a ver si precisamente esa es una caracter\'istica del problema}
 
 A continuaci\'on se formaliza la propuesta.
 
@@ -332,7 +332,7 @@ S\'olo existe un candidato que cumple con el criterio de eliminaci\'on en cada r
 \end{theorem}
 
 \begin{proof}
-    Sea $T = t_{ronda}(y_1)$ y sup\'ongase que $T = t_{ronda}(y_2)$. Entonces $t_{rank}(x_{i}, y_1) = t_{rank}(x_{j}, y_2) = T$ \todo{@FIXME se sale del margen}, para alg\'un $i$ y $j$, tal que $y_1$ y $y_2$ aparecen en la primera posici\'on de los \textit{rankings} de $x_{i}$ y $x_{j}$, respectivamente. Luego, en $G'$ existen los caminos
+    Sea $T = t_{ronda}(y_1)$ y sup\'ongase que $T = t_{ronda}(y_2)$. Entonces $t_{rank}(x_{i}, y_1) = t_{rank}(x_{j}, y_2) = T$ \todo[disable]{@FIXME se sale del margen}, para alg\'un $i$ y $j$, tal que $y_1$ y $y_2$ aparecen en la primera posici\'on de los \textit{rankings} de $x_{i}$ y $x_{j}$, respectivamente. Luego, en $G'$ existen los caminos
     $$
     p_1 = \langle x_{i}, f(x_i), f(f(x_i)), ..., f^k(x_i) = y_1 \rangle \quad \text{y} \quad p_2 = \langle x_{j}, f(x_j), f(f(x_j)), ..., f^l(x_j) = y_2 \rangle,
     $$
