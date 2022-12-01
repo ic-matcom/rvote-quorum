@@ -1,0 +1,16 @@
+/.vscode/
+/info/
+/posible-tesis-de-inteligencia*/
+/refs/
+/rsrcs/conting.md
+/rsrcs/irv.md
+/rsrcs/irv.png
+/deliver.sh
+/diagrams.md
+/out.pdf
+/todo.txt
+
+/quorum.*
+!/quorum.pdf 
+!/quorum.tex
+!/quorum.md

@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [{
+        "label": "run-pandoc",
+        "command": "pandoc",
+        "args": [
+            "-f", "markdown+example_lists+link_attributes",
+            "${file}",
+            "-o", "out.pdf",
+            "--citeproc"
+        ],
+        "presentation": {
+            "reveal": "never"
+        }
+    }, {
+        "label": "todo.txt-sort-by-priority",
+        "command": "${command:extension.sortByPriority}"
+    }]
+}
