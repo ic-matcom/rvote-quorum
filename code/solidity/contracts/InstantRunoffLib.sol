@@ -165,7 +165,9 @@ library InstantRunoffLib {
         pure 
         returns (RepresentativeVote memory newFirstVote) 
     {
-        RepresentativeVote memory xFirstVote = self.system.firstInRank[voter];
+        // @TODO `system` is an object, so Demeter Law is violated here. Make the
+        // update a method of `system`. You can delete `setFirstInRankAt`
+        RepresentativeVote memory xFirstVote = self.system.firstInRank[voter];  
         newFirstVote.choice = voter1st1stVote.choice;
         newFirstVote.time = Math.max(voter1st1stVote.time, xFirstVote.time);
         self.system.setFirstInRankAt(voter, newFirstVote);

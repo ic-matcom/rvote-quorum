@@ -337,3 +337,4 @@ contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
 // @TODO time limit for states
 // @FIXME read style guide (documentation) and fix code accordingly
 // @FIXME arguments references in natspec are sourrounded by ``
+// @FIXME consider using `calldata` instead of `memory` for arguments in external functions
