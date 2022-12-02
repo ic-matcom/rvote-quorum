@@ -8,9 +8,8 @@ import "./InstantRunoffLib.sol";
 import "./NegativeDefaultArray.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-/// @title Representative voting system
 /// @author Andy Ledesma García
-contract RepVoting {  // @FIXME rename to `RepresentativeVoting`
+contract RepresentativeVoting {  
     using TiedPerson for TiedPerson.Data;
     using InstantRunoffLib for InstantRunoffSystem;
     using InstantRunoffLib for InstantRunoffSystemBuilder;

@@ -2,12 +2,12 @@
 
 pragma solidity >=0.4.22 <0.9.0;
 
-import "../contracts/RepVoting.sol";
+import "../contracts/RepresentativeVoting.sol";
 
 uint32 constant MAX_AMOUNT_OF_VOTERS = 13;
 
-library RepVotingTestCases {
-    function isSuccessExternalCallToVoteFor(RepVoting self, address chosenCandidate) 
+library RepresentativeVotingTestCases {
+    function isSuccessExternalCallToVoteFor(RepresentativeVoting self, address chosenCandidate) 
         internal 
         returns (bool votingSuccess) 
     {
@@ -16,20 +16,20 @@ library RepVotingTestCases {
         );
     }
 
-    function notRegisteredAddressErrorWhenVotingFor(RepVoting self, address chosenCandidate)
+    function notRegisteredAddressErrorWhenVotingFor(RepresentativeVoting self, address chosenCandidate)
         internal
         returns (bool notRegisteredAddressErrorRaised)
     {
         try self.voteFor(chosenCandidate) {
             notRegisteredAddressErrorRaised = false;
         } catch (bytes memory catchedLowLevelErrorData) {
-            bytes4 expectedLowLevelErrorData = RepVoting.VoterAddressNotRegistered.selector;
+            bytes4 expectedLowLevelErrorData = RepresentativeVoting.VoterAddressNotRegistered.selector;
             notRegisteredAddressErrorRaised = 
                 expectedLowLevelErrorData == bytes4(catchedLowLevelErrorData);
         }
     }
 
-    function notRegisteredIdErrorWhenVotingFor(RepVoting self, uint32 chosenCandidateId)
+    function notRegisteredIdErrorWhenVotingFor(RepresentativeVoting self, uint32 chosenCandidateId)
         internal
         returns (bool notRegisteredIdErrorRaised)
     {
@@ -37,7 +37,7 @@ library RepVotingTestCases {
         try self.voteFromVoterIdToVoterId(voterId, chosenCandidateId) {
             notRegisteredIdErrorRaised = false;
         } catch (bytes memory catchedLowLevelErrorData) {
-            bytes4 expectedLowLevelErrorData = RepVoting.VoterIdNotRegistered.selector;
+            bytes4 expectedLowLevelErrorData = RepresentativeVoting.VoterIdNotRegistered.selector;
             notRegisteredIdErrorRaised = 
                 expectedLowLevelErrorData == bytes4(catchedLowLevelErrorData);
         }
@@ -47,9 +47,9 @@ library RepVotingTestCases {
         return allFakeAddresses()[voterId];
     }
 
-    function buildRepVotingFromVotersAmount(uint32 votersAmount) 
+    function buildRepresentativeVotingFromVotersAmount(uint32 votersAmount) 
         internal 
-        returns (RepVoting voting) 
+        returns (RepresentativeVoting voting) 
     {
         require(votersAmount <= MAX_AMOUNT_OF_VOTERS, "too many voters");
 
@@ -57,7 +57,7 @@ library RepVotingTestCases {
         for (uint32 voterId = 0; voterId < votersAmount; voterId++) {
             voterAddresses[voterId] = addressOfVoterId(voterId);
         }
-        voting = new RepVoting(voterAddresses);
+        voting = new RepresentativeVoting(voterAddresses);
     }
 
     function allFakeAddresses() private view returns (address[13] memory) {
@@ -80,8 +80,8 @@ library RepVotingTestCases {
         return addresses;
     }
 
-    function noCycle5Voters() internal returns (RepVoting voting) {
-        voting = buildRepVotingFromVotersAmount(5);
+    function noCycle5Voters() internal returns (RepresentativeVoting voting) {
+        voting = buildRepresentativeVotingFromVotersAmount(5);
         voting.voteFromVoterIdToVoterId(0, 1);  
         voting.voteFromVoterIdToVoterId(1, 2);
         voting.voteFromVoterIdToVoterId(2, 3);
@@ -91,8 +91,8 @@ library RepVotingTestCases {
         //      4 ->
     }
 
-    function cycle3VotersOf5Total() internal returns (RepVoting voting) {
-        voting = buildRepVotingFromVotersAmount(5);
+    function cycle3VotersOf5Total() internal returns (RepresentativeVoting voting) {
+        voting = buildRepresentativeVotingFromVotersAmount(5);
         voting.voteFromVoterIdToVoterId(3, 1);
         voting.voteFromVoterIdToVoterId(1, 2);
         voting.voteFromVoterIdToVoterId(0, 1);  
@@ -105,8 +105,8 @@ library RepVotingTestCases {
         //      4 ->
     }
 
-    function branch5VotersOf6Total() internal returns (RepVoting voting) {
-        voting = buildRepVotingFromVotersAmount(6);
+    function branch5VotersOf6Total() internal returns (RepresentativeVoting voting) {
+        voting = buildRepresentativeVotingFromVotersAmount(6);
         voting.voteFromVoterIdToVoterId(1, 2);
         voting.voteFromVoterIdToVoterId(2, 3);
         voting.voteFromVoterIdToVoterId(3, 4);
@@ -117,8 +117,8 @@ library RepVotingTestCases {
         //           0 ->
     }
 
-    function cycle2VotersOf3Total() internal returns (RepVoting voting) {
-        voting = buildRepVotingFromVotersAmount(3);
+    function cycle2VotersOf3Total() internal returns (RepresentativeVoting voting) {
+        voting = buildRepresentativeVotingFromVotersAmount(3);
         voting.voteFromVoterIdToVoterId(1, 2);
         voting.voteFromVoterIdToVoterId(2, 1);
         voting.voteFromVoterIdToVoterId(0, 2);
@@ -127,8 +127,8 @@ library RepVotingTestCases {
         //   -<-
     }
 
-    function twoCyclesTheLargestOf4Vertices13Total() internal returns (RepVoting voting) {
-        voting = buildRepVotingFromVotersAmount(13);
+    function twoCyclesTheLargestOf4Vertices13Total() internal returns (RepresentativeVoting voting) {
+        voting = buildRepresentativeVotingFromVotersAmount(13);
         voting.voteFromVoterIdToVoterId(3, 7);
         voting.voteFromVoterIdToVoterId(12, 10);
         voting.voteFromVoterIdToVoterId(0, 2);
@@ -154,9 +154,9 @@ library RepVotingTestCases {
 
     function eightMaxTiedPersons2CyclesOneChain13Total() 
         internal 
-        returns (RepVoting voting) 
+        returns (RepresentativeVoting voting) 
     {
-        voting = buildRepVotingFromVotersAmount(13); //      1
+        voting = buildRepresentativeVotingFromVotersAmount(13); //      1
         voting.voteFromVoterIdToVoterId(7, 1);    // (6) -> (7) -> (1)             (0)
         voting.voteFromVoterIdToVoterId(2, 8);    //     11   \     v  9
         voting.voteFromVoterIdToVoterId(8, 4);    //           -<- (3)

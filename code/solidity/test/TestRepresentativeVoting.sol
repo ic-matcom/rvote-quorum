@@ -2,19 +2,19 @@
 pragma solidity >=0.4.25 <0.9.0;
 
 import "truffle/Assert.sol";
-import "../contracts/RepVoting.sol";
+import "../contracts/RepresentativeVoting.sol";
 import "./Array.sol";
-import "./RepVotingTestCases.sol";
+import "./RepresentativeVotingTestCases.sol";
 
-contract TestRepVoting {
-    using RepVotingTestCases for RepVoting;
+contract TestRepresentativeVoting {
+    using RepresentativeVotingTestCases for RepresentativeVoting;
 
     function testVote() external {
-        RepVotingTestCases.noCycle5Voters();
+        RepresentativeVotingTestCases.noCycle5Voters();
     }
 
     function testNoCycleVoting() external {
-        RepVoting voting = RepVotingTestCases.noCycle5Voters();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.noCycle5Voters();
         // 0 -> 1 -> 2 -> 3
         //          /
         //      4 ->
@@ -34,7 +34,7 @@ contract TestRepVoting {
     }
 
     function testSimpleCycleVoting() external {
-        RepVoting voting = RepVotingTestCases.cycle3VotersOf5Total();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.cycle3VotersOf5Total();
         //        -----<-
         //       /       \ 
         // 0 -> 1 -> 2 -> 3
@@ -56,7 +56,7 @@ contract TestRepVoting {
     }
 
     function testLongBranch() external {
-        RepVoting voting = RepVotingTestCases.branch5VotersOf6Total();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.branch5VotersOf6Total();
         // 1 -> 2 -> 3 -> 4 -> 5
         //               /
         //           0 ->
@@ -76,7 +76,7 @@ contract TestRepVoting {
     }
 
     function test2VerticesCycle() external {
-        RepVoting voting = RepVotingTestCases.cycle2VotersOf3Total();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.cycle2VotersOf3Total();
         // 1 -> 2 <- 0
         //  \   /
         //   -<-
@@ -100,7 +100,7 @@ contract TestRepVoting {
     }
 
     function test2Cycles() external {
-        RepVoting voting = RepVotingTestCases.twoCyclesTheLargestOf4Vertices13Total();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.twoCyclesTheLargestOf4Vertices13Total();
         uint[] memory expected = Array.fromStaticArray(
             [uint(0), 2, 1, 0, 9, 0, 2, 2, 9, 0, 9, 9, 2]
         );
@@ -119,7 +119,7 @@ contract TestRepVoting {
     }
 
     function testCountVotesTwice() external {
-        RepVoting voting = RepVotingTestCases.cycle2VotersOf3Total();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.cycle2VotersOf3Total();
         // 1 -> 2 <- 0
         //  \   /
         //   -<-
@@ -153,7 +153,7 @@ contract TestRepVoting {
     }
 
     function testGetWinnerIdNoTie() external {
-        RepVoting voting = RepVotingTestCases.noCycle5Voters();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.noCycle5Voters();
         // 0 -> 1 -> 2 -> 3
         //          /
         //      4 ->
@@ -161,19 +161,19 @@ contract TestRepVoting {
     }
 
     function testGetWinnerAddressNoTie() external {
-        RepVoting voting = RepVotingTestCases.noCycle5Voters();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.noCycle5Voters();
         // 0 -> 1 -> 2 -> 3
         //          /
         //      4 ->
         Assert.equal(
             voting.getWinnerAddress(), 
-            RepVotingTestCases.addressOfVoterId(3), 
+            RepresentativeVotingTestCases.addressOfVoterId(3), 
             "wrong winner"
         );
     }
 
     function testGetWinnerIdSimpleCycle() external {
-        RepVoting voting = RepVotingTestCases.cycle3VotersOf5Total();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.cycle3VotersOf5Total();
         //        -----<-
         //       /       \ 
         // 0 -> 1 -> 2 -> 3
@@ -183,7 +183,7 @@ contract TestRepVoting {
     }
 
     function testGetWinnerAddressSimpleCycle() external {
-        RepVoting voting = RepVotingTestCases.cycle3VotersOf5Total();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.cycle3VotersOf5Total();
         //        -----<-
         //       /       \ 
         // 0 -> 1 -> 2 -> 3
@@ -191,13 +191,13 @@ contract TestRepVoting {
         //      4 ->
         Assert.equal(
             voting.getWinnerAddress(), 
-            RepVotingTestCases.addressOfVoterId(1), 
+            RepresentativeVotingTestCases.addressOfVoterId(1), 
             "wrong winner"
         );
     }
 
     function testGetWinnerId2VerticesCycle() external {
-        RepVoting voting = RepVotingTestCases.cycle2VotersOf3Total();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.cycle2VotersOf3Total();
         // 1 -> 2 <- 0
         //  \   /
         //   -<-
@@ -205,19 +205,19 @@ contract TestRepVoting {
     }
 
     function testGetWinnerAddress2VerticesCycle() external {
-        RepVoting voting = RepVotingTestCases.cycle2VotersOf3Total();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.cycle2VotersOf3Total();
         // 1 -> 2 <- 0
         //  \   /
         //   -<-
         Assert.equal(
             voting.getWinnerAddress(), 
-            RepVotingTestCases.addressOfVoterId(2), 
+            RepresentativeVotingTestCases.addressOfVoterId(2), 
             "wrong winner"
         );
     }
 
     function testGetWinnerId2Cycles() external {
-        RepVoting voting = RepVotingTestCases.twoCyclesTheLargestOf4Vertices13Total();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.twoCyclesTheLargestOf4Vertices13Total();
         //      2     7    3
         //   10 <- 12 <- 2 <- 0
         //   |  \ 10                       9     1
@@ -232,7 +232,7 @@ contract TestRepVoting {
     }
 
     function testGetWinnerAddress2Cycles() external {
-        RepVoting voting = RepVotingTestCases.twoCyclesTheLargestOf4Vertices13Total();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.twoCyclesTheLargestOf4Vertices13Total();
         //      2     7    3
         //   10 <- 12 <- 2 <- 0
         //   |  \ 10                       9     1
@@ -245,13 +245,13 @@ contract TestRepVoting {
         //                8
         Assert.equal(
             voting.getWinnerAddress(), 
-            RepVotingTestCases.addressOfVoterId(4), 
+            RepresentativeVotingTestCases.addressOfVoterId(4), 
             "wrong winner"
         );
     }
 
     function testCountEightMaxTiedPersons2CyclesOneChain13Total() external {
-        RepVoting voting = RepVotingTestCases.eightMaxTiedPersons2CyclesOneChain13Total();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.eightMaxTiedPersons2CyclesOneChain13Total();
         uint[] memory expected = Array.fromStaticArray(
             [uint(0), 3, 0, 3, 2, 3, 0, 3, 1, 3, 3, 3, 3]
         );
@@ -269,23 +269,23 @@ contract TestRepVoting {
     }
 
     function testGetWinnerIdEightMaxTiedPersons2CyclesOneChain13Total() external {
-        RepVoting voting = RepVotingTestCases.eightMaxTiedPersons2CyclesOneChain13Total();
+        RepresentativeVoting voting = RepresentativeVotingTestCases.eightMaxTiedPersons2CyclesOneChain13Total();
         Assert.equal(voting.getWinnerId(), 5, "wrong winner");
     }
 
     function testVoteFromRegisteredAddress() external {
-        RepVoting votingSystem = RepVotingTestCases.buildRepVotingFromVotersAmount(3);
+        RepresentativeVoting votingSystem = RepresentativeVotingTestCases.buildRepresentativeVotingFromVotersAmount(3);
 
         uint32 chosenCandidateId = 1;
         bool votingSuccess = votingSystem.isSuccessExternalCallToVoteFor(
-            RepVotingTestCases.addressOfVoterId(chosenCandidateId)
+            RepresentativeVotingTestCases.addressOfVoterId(chosenCandidateId)
         );
         Assert.isTrue(votingSuccess, "voting should be successful");
         Assert.equal(votingSystem.getWinnerId(), chosenCandidateId, "wrong winner");
     }
 
     function testNotRegisteredVoterAddress() external {
-        RepVoting votingSystem = RepVotingTestCases.buildRepVotingFromVotersAmount(5);
+        RepresentativeVoting votingSystem = RepresentativeVotingTestCases.buildRepresentativeVotingFromVotersAmount(5);
         address notRegisteredAddress = 0x1dbd0dA6F4fA97942A8f1159a946909Cd23A2BC8;
         Assert.isTrue(
             votingSystem.notRegisteredAddressErrorWhenVotingFor(notRegisteredAddress), 
@@ -295,7 +295,7 @@ contract TestRepVoting {
 
     function testNotRegisteredVoterId() external {
         uint32 totalVoters = 5;
-        RepVoting votingSystem = RepVotingTestCases.buildRepVotingFromVotersAmount(totalVoters);
+        RepresentativeVoting votingSystem = RepresentativeVotingTestCases.buildRepresentativeVotingFromVotersAmount(totalVoters);
         uint32 notRegisteredVoterId = totalVoters;  // voters IDs go from 0 to `totalVoters-1` 
         Assert.isTrue(
             votingSystem.notRegisteredIdErrorWhenVotingFor(notRegisteredVoterId), 
@@ -304,4 +304,4 @@ contract TestRepVoting {
     }
 }
 // @TODO reemplaza la parte donde se setea el grafo x la funcio'n correspondiente de
-// RepVotingTestCases
+// RepresentativeVotingTestCases

@@ -1,8 +1,8 @@
-const RepVoting = artifacts.require("RepVoting");
+const RepresentativeVoting = artifacts.require("RepresentativeVoting");
 const timeUtils = require("../lib/time_utils");
 
 module.exports = async function(callback) {
-    const votingSystem = await RepVoting.deployed();
+    const votingSystem = await RepresentativeVoting.deployed();
     const { time, result } = await timeUtils.getElapsedTimeInMillisecondsAndResultAsync(
         async () => await votingSystem.getWinnerId()
     );

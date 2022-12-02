@@ -1,17 +1,17 @@
-const RepVoting = artifacts.require("RepVoting");
-const testCases = require("./rep_voting_test_cases.js");
+const RepresentativeVoting = artifacts.require("RepresentativeVoting");
+const testCases = require("./representative_voting_test_cases.js");
 const set100VotersTestCase = testCases.set100VotersTestCase;
 const get100VotersTestCaseSpecialVoters = testCases.get100VotersTestCaseSpecialVoters;
 const MAX_COUNT_100_VOTERS_TEST_CASE = testCases.MAX_COUNT_100_VOTERS_TEST_CASE;
 const timeUtils = require("../lib/time_utils");
 
 
-contract("RepVoting", function (accounts) {
+contract("RepresentativeVoting", function (accounts) {
     var votingSystem;
 
     it("should set the 100 voters test case", async function () {
         assert.isTrue(accounts.length >= 100, "there should be at least 100 accounts")
-        votingSystem = await RepVoting.deployed();
+        votingSystem = await RepresentativeVoting.deployed();
         votingSystem = await set100VotersTestCase(votingSystem);
     });
     it(
@@ -54,14 +54,14 @@ contract("RepVoting", function (accounts) {
     );
 });
 
-contract("RepVoting", function (accounts) {
+contract("RepresentativeVoting", function (accounts) {
     it("should get winner after registering votes using addresses", async function () {
         assert.isTrue(
             accounts.length >= 13, 
             "should has at least 13 accounts but only has " + accounts.length
         );
         
-        const votingSystem = await RepVoting.deployed();                 // (0)
+        const votingSystem = await RepresentativeVoting.deployed();                 // (0)
         await votingSystem.voteFor(accounts[1], {from: accounts[7]});    // (6) -> (7) -> (1)             
         await votingSystem.voteFor(accounts[8], {from: accounts[2]});    //     11   \     v  9
         await votingSystem.voteFor(accounts[4], {from: accounts[8]});    //           -<- (3)
@@ -78,7 +78,7 @@ contract("RepVoting", function (accounts) {
         assert.equal(winner, 5, "wrong winner");
     });
     it("should abort with an 'only owner allowed' error", async () => {
-        const votingSystem = await RepVoting.deployed();
+        const votingSystem = await RepresentativeVoting.deployed();
         
         let assertPromiseRaisesErrorMessage = require("./exceptions.js")
             .assertPromiseRaisesErrorMessage;
