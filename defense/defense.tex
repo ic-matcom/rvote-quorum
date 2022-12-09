@@ -1,8 +1,12 @@
 \documentclass{beamer}
-\setbeameroption{show notes}
+% \setbeameroption{show notes}
+\setbeamertemplate{section in toc}[sections numbered]
 
 \usepackage[spanish,es-ucroman]{babel}
 \usepackage[spanish, backgroundcolor=green]{todonotes}
+\usepackage[lined,linesnumbered,spanish,onelanguage]{algorithm2e}
+
+\usepackage[beamer,customcolors]{hf-tikz} \hfsetfillcolor{alerted text.fg!10} \hfsetbordercolor{alerted text.fg}
 
 \usetheme[
     language=spanish,
@@ -94,7 +98,8 @@
     }
     \includegraphics<2>{graphics/rep-voting-colored-winner.pdf}
 
-    \note<2>{en este sistema hay dos problemas principales a enfrentar...}
+    \note<2>[item]{gana $D$}
+    \note<2>[item]{en este sistema hay dos problemas principales a enfrentar...}
 \end{frame}
 
 \begin{frame}
@@ -121,12 +126,192 @@
 \begin{frame}
     \frametitle{Implementaci\'on en \textit{Quorum}}
 
-    \begin{itemize}
-        \item registro perdurable de votos
-        \item conteo autom\'atico
+    \note<1>{habla a grandes razgos de lo q es Quorum}
 
-        \todo[inline]{@TODO poner todo lo bueno q tiene hacerlo  en quorum y poner pause cada vez q hayas puesto items afines a lo mismo: cosas buenas heredadas de ser un sistema electro'nico, cosas buenas d ser descentralizado, cosas buenas d ser cliente de ethereum...}
-    \end{itemize}
+    \todo[inline]{@TODO poner logo a la der de quorum}
+
+    \pause
+
+    Por ser un sistema electrónico:
+    \begin{adv}
+        \item conteo autom\'atico
+        \note<2>{Que sea autom\'atico facilita la correctitud y la eficiencia.}
+        \item bajos costos 
+    \end{adv}
+
+    \pause
+
+    Por ser tecnología \textit{blockchain}:
+    \begin{adv}
+        \item registro perdurable de votos
+        \item sistema descentralizado
+    \end{adv}
+
+    \pause
+
+    Ventajas particulares:
+    \begin{adv}
+        \item el costo  de las transacciones es personalizable
+        \item transacciones privadas
+        \item contratos inteligentes 
+    \end{adv}
+\end{frame}
+
+\newcommand{\countsectionname}{contar los votos correctamente}
+\newcommand{\cyclecountsectionname}{asignar conteo justo a los candidatos en ciclos}
+\newcommand{\onewinneronlysectionname}{obtener s\'olo un ganador}
+\newcommand{\quorumimplementationsectionname}{implementar los algoritmos sobre {\it Quorum}}
+
+\begin{frame}
+    \frametitle{Objetivos}
+
+    \begin{alertblock}{Objetivo Principal}
+        Dise\~nar algoritmos para el desarrollo de sistemas de votaciones representativas sobre \textit{Quorum}.
+    \end{alertblock}
+
+    \pause
+
+    Objetivos espec\'ificos:
+
+    \pause
+
+    \begin{enumerate}[<+->]
+        \item \countsectionname
+        \item \cyclecountsectionname
+        \item \onewinneronlysectionname
+        \item \quorumimplementationsectionname
+    \end{enumerate}
+\end{frame}
+
+\note{y ahora vamos a ir respondiendo c\'omo se fueron cumpliendo cada uno de ellos}
+
+\AtBeginSection{
+    \begin{frame}<beamer>
+        \frametitle{Objetivos Espec\'ificos}
+        \tableofcontents[currentsection]
+    \end{frame}
+}
+
+\section{\countsectionname}
+\begin{frame}
+    \frametitle{Conteo de Votos}
+    \framesubtitle{Definici\'on}
+
+    \begin{center}
+        \includegraphics[scale=0.7]{graphics/incoming-votes.pdf}
+    \end{center}
+    \only<1>{
+        $$
+        \#_{votos}(y) = \text{\color{red} votos directos} + \text{\color{blue} votos indirectos} 
+        $$
+    }
+    \only<2>{
+        $$
+        \#_{votos}(y) = \begin{cases}
+        {\color{red} |V_y|} + {\color{blue} \underset{x \in V_y}{\sum} \#_{votos}(x)} & \text{si } V_y \neq \emptyset \\
+        0 & \text{si } V_y = \emptyset 
+        \end{cases}
+        $$
+    }
+\end{frame}
+
+\begin{frame}
+    \frametitle{Conteo de Votos}
+    \framesubtitle{Invirtiendo Grafo}
+
+    \begin{center}
+        \includegraphics[scale=0.7]{graphics/incoming-votes-inverted-graph.pdf}
+    \end{center}
+    $$
+    \#_{votos}(y) = \begin{cases}
+    |V_y| + \underset{x \in V_y}{\sum} \#_{votos}(x) & \text{si } V_y \neq \emptyset \\
+    0 & \text{si } V_y = \emptyset 
+    \end{cases}
+    $$
+
+    \note[item]{en este grafo invertido los arcos representan la dependencia del c\'alculo de $\#_{votos}$}
+    \note[item]{dada la naturaleza recursiva de la definici\'on del conteo de votos y la forma del grafo, se hace DFS}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Conteo de Votos}
+    \framesubtitle{Contando con DFS}
+    
+    \begin{columns}
+        \begin{column}{.52\textwidth}
+            \begin{center}
+                \includegraphics<1>[scale=0.6]{graphics/dfs-all-white.pdf}
+
+                \note<1>{nota q pueden haber v\'ertices q ya sean negros antes de visitar $y$, debido  a llamados previos a DFS-Visit}
+
+                \includegraphics<2-3>[scale=0.6]{graphics/dfs-y-gray.pdf}
+                \includegraphics<4>[scale=0.6]{graphics/dfs-x2-gray.pdf}
+                \includegraphics<5>[scale=0.6]{graphics/dfs-x2-black.pdf}
+                \includegraphics<6>[scale=0.6]{graphics/dfs-x3-gray.pdf}
+                \includegraphics<7>[scale=0.6]{graphics/dfs-x3-black.pdf}
+                \includegraphics<8>[scale=0.6]{graphics/dfs-x4-gray.pdf}
+                \includegraphics<9>[scale=0.6]{graphics/dfs-x4-black.pdf}
+                \includegraphics<10>[scale=0.6]{graphics/dfs-y-black.pdf}
+            \end{center}
+        \end{column}
+
+        \column{.48\textwidth}
+        DFS-Visit($y$):
+        \begin{algorithm}[H]
+            \DontPrintSemicolon
+
+            $\tikzmarkin<2>{a} y.color = \text{GRIS} \tikzmarkend{a}$\; 
+
+            \ForEach{$x \in V_y$}{ 
+                \If{$x.color ==$ {\rm BLANCO}}{
+                    $\tikzmarkin<4,6,8>{c} \text{DFS-Visit}(x) \tikzmarkend{c} $\;
+                }
+                \If{$x.color ==$ {\rm NEGRO}}{ 
+                    $\tikzmarkin<3,5,7,9>{b} y.votos += 1 + x.votos \tikzmarkend{b} $\; 
+                }
+            }
+            $\tikzmarkin<10>{d} y.color = \text{NEGRO} \tikzmarkend{d}$\;
+        \end{algorithm}
+    \end{columns}
+\end{frame}
+
+\section{\cyclecountsectionname}
+
+\begin{frame}
+    \frametitle{Candidatos en Ciclo}
+    \framesubtitle{M\'aximo N\'umero de Votos}
+
+    \begin{center}
+        \includegraphics[scale=0.65]{graphics/max-votes-in-cycle.pdf}
+    \end{center}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Candidatos en Ciclo}
+    \framesubtitle{Reasignando Votos}
+
+    \begin{center}
+        \includegraphics[scale=0.6]{graphics/same-votes-in-cycle.pdf}
+    \end{center}
+
+    \note[item]{se detectan los ciclos en el algoritmo DFS-Visit cuan2 se encuentra un arco entre v\'ertices grises}
+    \note[item]{luego q todo el DFS termina, es q se reasignan los votos}
+\end{frame}
+
+\section{\onewinneronlysectionname}
+
+\begin{frame}
+    \frametitle{habla mi'o}
+
+    
+
+\end{frame}
+
+\section{\quorumimplementationsectionname}
+
+\begin{frame}
+    \frametitle{habla mi'o}
 
 \end{frame}
 
