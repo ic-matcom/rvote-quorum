@@ -1,4 +1,6 @@
 \begin{conclusions}
+    \todo[inline]{@audit debes responder la pregunta objetiva de la tesis}
+
     En este trabajo se model\'o el problema desde la Teor\'ia de Grafos y  se contaron los votos obtenidos por cada candidato mediante una B\'usqueda del Primero en Profundidad. A los candidatos involucrados en ciclos de votaci\'on se les reasignaron los votos siguiendo un criterio justo. El algoritmo se ejecuta en tiempo lineal con respecto al n\'umero de participantes.
 
     Se emple\'o el M\'etodo de Desempate Instant\'aneo (IRV) para escoger un ganador cuando existe empate en el primer lugar. Este m\'etodo de desempate no necesita de una segunda ronda de elecciones y es totalmente autom\'atico. El algoritmo se ejecuta en tiempo $O(n \log n)$, donde $n$ es el total de participantes.
@@ -7,7 +9,7 @@
 
     Se implement\'o un contrato inteligente en  Solidity que ofrece funcionalidades b\'asicas para la realizaci\'on de elecciones representativas. El creador del contrato (due\~no) registra a los votantes autorizados y tiene acceso a funcionalidades administrativas. El due\~no tiene demasiado poder: s\'olo es necesaria su aprobaci\'on para registrar a los votantes, puede registrar votos de terceros e inhabilitar el contrato. Por otro lado, cualquier usuario puede conocer qui\'en va ganando las elecciones en cualquier momento. Esto puede considerarse injusto en muchos entornos, ya que puede predisponer la decisi\'on del votante.
 
-    Implementar el contrato en Solidity permite que pueda ser desplegado en cualquier cliente de Ethereum. GoQuorum es uno de esos clientes que permite la realizaci\'on de transacciones privadas, las cuales pueden ser empleadas para ocultar las decisiones de los votantes.
+    Implementar el contrato en Solidity permite que pueda ser desplegado en cualquier cliente de Ethereum. GoQuorum es uno de esos clientes que permite la realizaci\'on de transacciones privadas, las cuales pueden ser empleadas para ocultar las decisiones de los votantes. \todo{@audit va en el capt 3}
     
     El contrato fue evaluado en una red privada de GoQuorum, obteni\'endose resultados satisfactorios.
 \end{conclusions}

@@ -1,6 +1,9 @@
 \chapter*{Introducción}\label{chapter:introduction}
 \addcontentsline{toc}{chapter}{Introducción}
 
+\todo[inline]{@audit puede q estemos enunciando mal el problema, ya q lo q estamos resolviendo es un sistema de votaci\'on representativa general, sin especificidades q conciernan a lo del banco y los MDP. Parece inncesaria toa esa muela sobre el banco y los MDP y los CMF}
+\todo[inline]{@TODO faltan refs. Posiblemente matemos con la d la tesis d econom\'ia}
+
 Resulta común que la actividad de los gobiernos nacionales genere déficits 
 continuados en los balances presupuestarios anuales, por lo que se emplean mecanismos de financiación adicionales a las fuentes convencionales de 
 ingresos fiscales. En este sentido, se reconocen dos vías para la financiación pública: 
@@ -28,7 +31,7 @@ del Partido Comunista de Cuba y en particular, del reordenamiento del entorno ec
 
 En un futuro escenario de ese tipo, el Estado cubano pide dinero prestado a entidades de la econom\'ia a trav\'es del Banco Central de Cuba. El monto solicitado y el inter\'es m\'aximo con el que se devolver\'a se plasman en un documento llamado bono soberano.  Los posibles prestamistas participan en una subasta por el bono y el que menor tasa de inter\'es exija por el pr\'estamo ser\'a el ganador, y el Estado pasar\'a a ser su prestatario.  
 
-Para decidir qui\'enes participan en la subasta, se confeccionan los Comit\'es de Mercado Financiero (CMF).  El Comité de Mercados Financieros (CMF) del BCC es la Autoridad de Mercado (AM) que regirá el reglamento del MDP. Podrá adoptar todas aquellas medidas que juzgue convenientes para la estabilidad y desarrollo del mercado, y tendrá potestad disciplinaria sobre todos los Operadores del Mercado, cualquiera sea su clase o naturaleza. Los miembros y el presidente de cada Comit\'e se deciden mediante un proceso electoral en el que cualquier elector puede ceder su poder de voto a otro elector. A ese tipo de elecci\'on el autor le denomina \textbf{votaci\'on representativa}.  
+Para decidir qui\'enes participan en la subasta, se confeccionan los Comit\'es de Mercado Financiero (CMF).  Estos constituyen la Autoridad de Mercado (AM) que regirá el reglamento del MDP. Podrá adoptar todas aquellas medidas que juzgue convenientes para la estabilidad y desarrollo del mercado, y tendrá potestad disciplinaria sobre todos los Operadores del Mercado, cualquiera sea su clase o naturaleza. Los miembros y el presidente de cada Comit\'e se deciden mediante un proceso electoral en el que cualquier elector puede ceder su poder de voto a otro elector. A ese tipo de elecci\'on se le puede denominar \textbf{votaci\'on representativa}.  
 
 
 En un sistema de votaci\'on representativa  los votos se transfieren, esto es, si una persona $A$ vota por una persona $B$ y esta, a su vez, vota por  $C$, entonces el voto de $A$ se transfiere a $C$. Luego, cada participante puede ser a la vez votante y candidato. Formalmente, el c\'alculo de los votos obtenidos por un candidato puede ser definido recursivamente de la siguiente manera:
@@ -71,18 +74,20 @@ En un  caso como ese, no se puede aplicar sin m\'as la f\'ormula~\eqref{eq:votes
 
 Tradicionalmente en estas elecciones, como en muchas otras, los votos son emitidos en boletas de papel y el conteo es realizado manualmente. Esto puede traer consigo ciertos problemas que causan desconfianza en el electorado, como son los votos falsos y el mal conteo de los votos.   Si no se hace una verificaci\'on rigurosa de la identidad del votante, entonces se puede emitir votos con relativa facilidad en nombre de personas que no han votado (votos falsos). Si el conteo no est\'a supervisado adecuadamente, pueden surgir errores en los resultados, ya sea por intereses personales o errores humanos.
 
-En un sistema de votaci\'on electr\'onico se  pueden lograr diversas formas de verificaci\'on biom\'etrica, por ejemplo, mediante la huella digital o el esc\'aner ocular. Por otro lado, en estos sistemas se puede contar los votos de manera eficiente mientras se van realizando y se  puede publicar en vivo los resultados. 
+En un sistema de votaci\'on electr\'onico se  pueden lograr diversas formas de verificaci\'on biom\'etrica, por ejemplo, mediante la huella digital o el esc\'aner ocular. \todo{@audit ref} Por otro lado, en estos sistemas se puede contar los votos de manera eficiente mientras se van realizando y se  puede publicar en vivo los resultados. 
 
-Otras bondades poseen los sistemas electrónicos, como son la flexibilidad, lo fácil que pueden ser de usar y lo baratos que resultan con respecto a los sistemas tradicionales. Sin embargo, muchos de los sistemas electrónicos existentes son centralizados, esto es, dependen de que una agencia central se encargue de registrar, manejar, calcular y revisar los votos. Toda la confianza debe entonces ser depositada en esa agencia, lo cual hace vulnerable al sistema.
+Otras bondades poseen los sistemas electrónicos, como son la flexibilidad, lo fácil que pueden ser de usar y lo baratos que resultan con respecto a los sistemas tradicionales. Sin embargo, muchos de los sistemas electrónicos existentes son centralizados, esto es, dependen de que una agencia central se encargue de registrar, manejar, calcular y revisar los votos. Toda la confianza debe entonces ser depositada en esa agencia, lo cual hace vulnerable al sistema. \todo{@audit ref}
  
-Un sistema digital descentralizado de votación no tiene ese problema. Una de las tecnologías descentralizadas empleadas actualmente es \textit{blockchain}.   \textit{Blockchain} es un registro distribuido e inmutable  de transacciones. Lo que se transacciona puede ser tangible, como son  una casa o dinero en efectivo, o intangible, como son el derecho de autor de una obra o el voto de un elector por un candidato (\cite{blockchain-ibm}). La inmutabilidad y seguridad de este registro se basan en principios de  criptografía, descentralizaci\'on y mecanismos de consenso (\cite{blockch-security-ibm}). 
+Un sistema digital descentralizado de votación no tiene ese problema. \todo{@audit no keda tan claro} Una de las tecnologías descentralizadas empleadas actualmente es \textit{blockchain}.   Se basa en un registro distribuido e inmutable  de transacciones. Lo que se transacciona puede ser tangible, como son  una casa o dinero en efectivo, \todo{@audit pon otro ejemplo q no sea ``dinero en efectivo''} o intangible, como son el derecho de autor de una obra o el voto de un elector por un candidato (\cite{blockchain-ibm}). La inmutabilidad y seguridad de este registro se basan en principios de  criptografía, descentralizaci\'on y mecanismos de consenso (\cite{blockch-security-ibm}). 
 
 
 % Hacerlo con \textit{blockchain} ta bueno xq resuelve la parte m\'as importante de esos problemas. 
 
-Desde el surgimiento de Ethereum se puede implementar comportamientos complejos mediante contratos inteligentes. Ethereum es una plataforma \textit{blockchain} que establece una red p\'ublica que ejecuta y verifica c\'odigo de manera segura. A dicho c\'odigo o al programa que resulta de ejecutarlo se le conoce como contrato inteligente (\cite{eth-aws}).  
+Desde el surgimiento de Ethereum se puede implementar comportamientos complejos mediante contratos inteligentes. Ethereum es una plataforma \textit{blockchain} que establece una red p\'ublica que ejecuta y verifica c\'odigo de manera segura. \todo{@audit dices lo  q es despue's d q lo mencionas} A dicho c\'odigo o al programa que resulta de ejecutarlo se le conoce como contrato inteligente (\cite{eth-aws}).  
 
 No es deseable que el proceso electoral en el CMF se realice en una red p\'ublica, ya que es un proceso que s\'olo concierne a las partes involucradas. Por otro lado, desplegar un contrato inteligente en Ethereum puede costar miles de d\'olares (\cite{eth-deploy}). Estos dos factores hacen que no sea factible realizar la implementaci\'on de este trabajo sobre la red p\'ublica de Ethereum. 
+
+\todo[inline]{@audit especificas y cometes un error xq puede ser factible. Es mejor hablar en general d cualkier red pu'blica}
 
 GoQuorum es una implementaci\'on de Ethereum capaz de crear redes privadas y con mecanismos de autorizaci\'on. En GoQuorum tambi\'en se puede personalizar el costo del despliegue de los contratos inteligentes, incluso, puede hacerse nulo. Por todo lo dicho anteriormente, GoQuorum es una buena opci\'on en la que implementar el sistema de votaci\'on representativa del CMF.
 
@@ -90,13 +95,16 @@ GoQuorum es una implementaci\'on de Ethereum capaz de crear redes privadas y con
 Existen implementaciones de sistemas de votaci\'on en otras \textit{blockchain} (\cite{agora}) y tambi\'en en Ethereum (\cite{ovn} y \cite{borda_count}), pero no se conoce ninguna implementaci\'on de un sistema de voto representativo en GoQuorum.
 
 El sistema a implementar debe cumplir los siguientes requisitos:
+
+\todo[inline]{@audit redefine los objetivos como lo hiciste en la presentacio'n de la defensa}
+
 \begin{itemize}
     \item ser capaz de calcular los votos siguiendo la f\'ormula~\eqref{eq:votes-count}, teniendo en cuenta la ocurrencia de ciclos;
     \item obtener un \'unico ganador como resultado de las elecciones;
     \item que pueda ser desplegado sobre una red GoQuorum;
     \item contar correctamente todos los votos v\'alidos e ignorar los votos inv\'alidos;
     \item prevenir que sean registrados dos votos distintos a nombre del mismo votante;
-    \item permitir votar a s\'olo los votantes registrados.
+    \item permitir votar s\'olo a los votantes registrados.
 \end{itemize}
 
 \todo[inline, disable]{@TODO decir que el Instituto de Criptograf\'ia implement\'o un sistema de votaci\'on en hyperledger fabric pero tampoco nos sirve. ?`C\'omo cito eso?}
