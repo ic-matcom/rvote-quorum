@@ -7,13 +7,8 @@
 \newcommand{\maxincyclecaption}{\hyperref[algo:max-in-cycle]{M\'ax-Votos-en-Ciclo}}
 \newcommand{\setvotestoallincyclecaption}{\hyperref[algo:set-votes-all-in-cycle]{Reasignar-Votos-en-Ciclo}}
 
-\todo[inline]{@audit intro + amplia}
 
-La propuesta consta de dos ideas fundamentales: 
-\begin{enumerate}
-    \item el conteo de votos mediante el algoritmo de B\'usqueda del Primero en Profundidad (DFS), y
-    \item el empleo de IRV para desempatar y eligir un ganador. 
-\end{enumerate} 
+En este cap\'itulo se proponen algoritmos para satisfacer los objetivos~\ref{item:objectives:count}, \ref{item:objectives:cycle} y \ref{item:objectives:winner}. En la secci\'on~\ref{sec:dfs-counting} se muestra c\'omo se emple\'o la B\'usqueda del Primero en Profundidad  (DFS) para contar los votos obtenidos por cada candidato y para registrar los ciclos de votaci\'on. En esa misma secci\'on se plasma una propuesta justa de asignaci\'on de votos a los candidatos que se encuentran en ciclos. En la secci\'on~\ref{sec:irv+time-untie} se explica c\'omo se adapt\'o  IRV para elegir un ganador en un sistema de votaci\'on representativa. En cada apartado se demuestran resultados que respaldan la correctitud y eficiencia de los algoritmos propuestos.
 
 \section{Conteo de Votos}\label{sec:dfs-counting}
 El problema se puede enfocar desde la Teor\'ia de Grafos. Los votantes pueden ser vistos como v\'ertices y los votos como arcos. Contar los votos obtenidos por cada candidato se reduce a recorrer un grafo convenientemente. En esta secci\'on se detalla ese enfoque.
